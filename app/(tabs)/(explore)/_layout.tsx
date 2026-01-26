@@ -8,13 +8,18 @@ export default function ExploreLayout() {
         headerTransparent: true,
         headerBlurEffect: "systemMaterial",
         headerShadowVisible: false,
-        headerLargeTitleShadowVisible: false,
         headerTitleStyle: { color: PlatformColor("label") },
         headerLargeTitle: true,
         headerLargeStyle: { backgroundColor: "transparent" },
       }}
     >
-      <Stack.Screen name="index" options={{ title: "History" }} />
+      <Stack.Screen
+        name="index"
+        options={{
+          title: "History",
+          headerLargeTitle: true,
+        }}
+      />
     </Stack>
   );
 }

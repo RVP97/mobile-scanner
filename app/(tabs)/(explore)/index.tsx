@@ -1,4 +1,3 @@
-import { useSearch } from "@/hooks/useSearch";
 import { useStorage } from "@/hooks/useStorage";
 import {
   clearScanHistory,
@@ -7,11 +6,12 @@ import {
   type ScanHistoryItem,
 } from "@/utils/scanHistory";
 import { useFocusEffect } from "@react-navigation/native";
+import { BlurView } from "expo-blur";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import * as LocalAuthentication from "expo-local-authentication";
 import { SymbolView } from "expo-symbols";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -65,12 +65,8 @@ export default function ScanHistoryScreen() {
   const theme = colors[colorScheme ?? "light"];
   const [saveHistory, setSaveHistory] = useStorage("saveHistory", true);
   const [requireAuth] = useStorage("requireAuthForHistory", false);
-
-  // Native search bar
-  const search = useSearch({
-    placeholder: "Search scans...",
-    autoCapitalize: "none",
-  });
+  const [search, setSearch] = useState("");
+  const searchInputRef = useRef<TextInput>(null);
 
   // Filter history based on search
   const filteredHistory = useMemo(() => {
@@ -434,15 +430,66 @@ export default function ScanHistoryScreen() {
     );
   };
 
+  const handleClearSearch = () => {
+    setSearch("");
+    searchInputRef.current?.blur();
+  };
+
+  const renderSearchBar = () => {
+    if (history.length === 0) return null;
+
+    return (
+      <View style={styles.searchContainer}>
+        <BlurView
+          tint={colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial"}
+          intensity={80}
+          style={styles.searchBlur}
+        >
+          <SymbolView
+            name="magnifyingglass"
+            tintColor={theme.tertiaryLabel}
+            style={styles.searchIcon}
+          />
+          <TextInput
+            ref={searchInputRef}
+            style={[styles.searchInput, { color: theme.label }]}
+            placeholder="Search scans..."
+            placeholderTextColor={theme.tertiaryLabel}
+            value={search}
+            onChangeText={setSearch}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="search"
+            clearButtonMode="never"
+          />
+          {search.length > 0 && (
+            <Animated.View entering={FadeIn.duration(150)} exiting={FadeOut.duration(150)}>
+              <Pressable
+                onPress={handleClearSearch}
+                style={styles.clearSearchButton}
+                hitSlop={8}
+              >
+                <SymbolView
+                  name="xmark.circle.fill"
+                  tintColor={theme.tertiaryLabel}
+                  style={styles.clearSearchIcon}
+                />
+              </Pressable>
+            </Animated.View>
+          )}
+        </BlurView>
+      </View>
+    );
+  };
+
   const renderHeader = () => {
     const banner = renderDisabledBanner();
     const hasItems = history.length > 0;
     const isSearching = search.length > 0;
 
-    if (!banner && !hasItems) return null;
-
     return (
       <View>
+        {renderSearchBar()}
         {banner}
         {hasItems && (
           <Animated.View entering={FadeIn} style={styles.listHeader}>
@@ -528,30 +575,29 @@ export default function ScanHistoryScreen() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <FlatList
-        data={filteredHistory}
-        renderItem={renderScanItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={[
-          styles.listContent,
-          filteredHistory.length === 0 && styles.listContentEmpty,
-        ]}
-        contentInsetAdjustmentBehavior="automatic"
-        ListHeaderComponent={renderHeader}
-        ListEmptyComponent={renderEmptyState}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={theme.blue}
-          />
-        }
-        showsVerticalScrollIndicator={false}
-        bounces={filteredHistory.length > 3}
-        ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-      />
-    </View>
+    <FlatList
+      style={[styles.container, { backgroundColor: theme.background }]}
+      data={filteredHistory}
+      renderItem={renderScanItem}
+      keyExtractor={(item) => item.id}
+      contentContainerStyle={[
+        styles.listContent,
+        filteredHistory.length === 0 && styles.listContentEmpty,
+      ]}
+      contentInsetAdjustmentBehavior="automatic"
+      ListHeaderComponent={renderHeader}
+      ListEmptyComponent={renderEmptyState}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor={theme.blue}
+        />
+      }
+      showsVerticalScrollIndicator={false}
+      keyboardDismissMode="on-drag"
+      ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+    />
   );
 }
 
@@ -564,6 +610,35 @@ const styles = StyleSheet.create({
   },
   listContentEmpty: {
     flexGrow: 1,
+  },
+  searchContainer: {
+    marginBottom: 16,
+  },
+  searchBlur: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 12,
+    borderCurve: "continuous",
+    overflow: "hidden",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    gap: 8,
+  },
+  searchIcon: {
+    width: 18,
+    height: 18,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 17,
+    padding: 0,
+  },
+  clearSearchButton: {
+    padding: 2,
+  },
+  clearSearchIcon: {
+    width: 18,
+    height: 18,
   },
   disabledBanner: {
     flexDirection: "row",

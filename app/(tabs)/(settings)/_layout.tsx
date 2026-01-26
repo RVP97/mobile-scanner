@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { PlatformColor } from "react-native";
 
-export default function ExploreLayout() {
+export default function SettingsLayout() {
   return (
     <Stack
       screenOptions={{
@@ -14,7 +14,12 @@ export default function ExploreLayout() {
         headerLargeStyle: { backgroundColor: "transparent" },
       }}
     >
-      <Stack.Screen name="index" options={{ title: "History" }} />
+      <Stack.Screen
+        name="index"
+        options={{
+          title: "Settings",
+        }}
+      />
     </Stack>
   );
 }

@@ -81,3 +81,24 @@ export function formatScanData(data: string, maxLength: number = 50): string {
   if (data.length <= maxLength) return data;
   return `${data.substring(0, maxLength)}...`;
 }
+
+export async function exportHistoryToCSV(): Promise<string | null> {
+  try {
+    const history = await getScanHistory();
+    if (history.length === 0) return null;
+
+    // CSV header
+    const header = "ID,Data,Type,Date";
+
+    // CSV rows - escape quotes and commas in data
+    const rows = history.map((item) => {
+      const escapedData = `"${item.data.replace(/"/g, '""')}"`;
+      return `${item.id},${escapedData},${item.type},"${item.formattedDate}"`;
+    });
+
+    return [header, ...rows].join("\n");
+  } catch (error) {
+    console.error("Error exporting history to CSV:", error);
+    return null;
+  }
+}

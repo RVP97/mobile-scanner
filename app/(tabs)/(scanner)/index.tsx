@@ -1,15 +1,21 @@
+import { useStorage } from "@/hooks/useStorage";
+import { saveScanToHistory } from "@/utils/scanHistory";
+import { useAudioPlayer } from "expo-audio";
+import { BlurView } from "expo-blur";
 import {
   type BarcodeScanningResult,
+  Camera,
   type CameraType,
   CameraView,
   useCameraPermissions,
 } from "expo-camera";
-import * as Burnt from "burnt";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
+import * as ImagePicker from "expo-image-picker";
 import { SymbolView } from "expo-symbols";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  Alert,
   Linking,
   PlatformColor,
   Pressable,
@@ -23,8 +29,6 @@ import {
 } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { BlurView } from "expo-blur";
-import { saveScanToHistory } from "@/utils/scanHistory";
 
 // Static colors for Reanimated (PlatformColor not supported)
 const colors = {
@@ -52,6 +56,9 @@ const colors = {
   },
 };
 
+// Local scan sound asset
+const scanSound = require("@/assets/sounds/scan.m4a");
+
 export default function ScannerScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
@@ -61,6 +68,23 @@ export default function ScannerScreen() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
+
+  // Settings
+  const [hapticEnabled] = useStorage("hapticEnabled", true);
+  const [soundEnabled] = useStorage("soundEnabled", true);
+  const [saveHistory] = useStorage("saveHistory", true);
+  const [autoCopy] = useStorage("autoCopy", false);
+  const [autoOpenUrl] = useStorage("autoOpenUrl", false);
+
+  // Audio player for scan sound
+  const player = useAudioPlayer(scanSound);
+
+  // Reset player position when sound finishes
+  useEffect(() => {
+    if (player.currentTime > 0 && !player.playing) {
+      player.seekTo(0);
+    }
+  }, [player.playing, player.currentTime, player.seekTo]);
 
   const isValidUrl = (string: string): boolean => {
     try {
@@ -73,11 +97,12 @@ export default function ScannerScreen() {
 
   const handleOpenUrl = async () => {
     if (isValidUrl(scannedData)) {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      const supported = await Linking.canOpenURL(scannedData);
-      if (supported) {
-        await Linking.openURL(scannedData);
+      if (hapticEnabled) {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
+      Linking.openURL(scannedData).catch(() => {
+        Alert.alert("Error", "Unable to open this URL");
+      });
     }
   };
 
@@ -86,42 +111,153 @@ export default function ScannerScreen() {
     data,
   }: BarcodeScanningResult) => {
     if (!scanned) {
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      // Play sound if enabled
+      if (soundEnabled) {
+        player.seekTo(0);
+        player.play();
+      }
+
+      // Haptic feedback if enabled
+      if (hapticEnabled) {
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success,
+        );
+      }
+
       setScanned(true);
       setScannedData(data);
-      await saveScanToHistory(data, type);
+
+      // Save to history if enabled
+      if (saveHistory) {
+        await saveScanToHistory(data, type);
+      }
+
+      // Auto-copy if enabled
+      if (autoCopy) {
+        await Clipboard.setStringAsync(data);
+      }
+
+      // Auto-open URL if enabled (Scan and Go)
+      if (autoOpenUrl && isValidUrl(data)) {
+        Linking.openURL(data).catch(() => {
+          // Silently fail if URL can't be opened
+        });
+      }
     }
   };
 
   const copyToClipboard = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (hapticEnabled) {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     await Clipboard.setStringAsync(scannedData);
-    Burnt.toast({
-      title: "Copied",
-      preset: "done",
-      haptic: "success",
-    });
+    Alert.alert("Copied", "Text copied to clipboard");
   };
 
   const shareData = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (hapticEnabled) {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     await Share.share({ message: scannedData });
   };
 
   const resetScanner = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (hapticEnabled) {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
     setScanned(false);
     setScannedData("");
   };
 
   const toggleFlash = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (hapticEnabled) {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     setFlashOn(!flashOn);
   };
 
   const toggleCamera = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (hapticEnabled) {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     setCameraType((current) => (current === "back" ? "front" : "back"));
+  };
+
+  const pickFromGallery = async () => {
+    if (hapticEnabled) {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "images",
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets?.[0]) {
+      const imageUri = result.assets[0].uri;
+
+      try {
+        const barcodes = await Camera.scanFromURLAsync(imageUri, [
+          "qr",
+          "pdf417",
+          "aztec",
+          "ean13",
+          "ean8",
+          "upc_e",
+          "datamatrix",
+          "code128",
+          "code39",
+          "code93",
+          "itf14",
+          "codabar",
+          "upc_a",
+        ]);
+
+        if (barcodes.length > 0) {
+          const barcode = barcodes[0];
+          // Play sound if enabled
+          if (soundEnabled) {
+            player.seekTo(0);
+            player.play();
+          }
+
+          // Haptic feedback if enabled
+          if (hapticEnabled) {
+            await Haptics.notificationAsync(
+              Haptics.NotificationFeedbackType.Success,
+            );
+          }
+
+          setScanned(true);
+          setScannedData(barcode.data);
+
+          // Save to history if enabled
+          if (saveHistory) {
+            await saveScanToHistory(barcode.data, barcode.type);
+          }
+
+          // Auto-copy if enabled
+          if (autoCopy) {
+            await Clipboard.setStringAsync(barcode.data);
+          }
+
+          // Auto-open URL if enabled (Scan and Go)
+          if (autoOpenUrl && isValidUrl(barcode.data)) {
+            Linking.openURL(barcode.data).catch(() => {
+              // Silently fail if URL can't be opened
+            });
+          }
+        } else {
+          Alert.alert(
+            "No Code Found",
+            "No barcode or QR code was found in the selected image.",
+          );
+        }
+      } catch {
+        Alert.alert("Error", "Failed to scan the image. Please try another.");
+      }
+    }
   };
 
   if (!permission) {
@@ -140,7 +276,10 @@ export default function ScannerScreen() {
   if (!permission.granted) {
     return (
       <View style={styles.centerContainer}>
-        <Animated.View entering={FadeInDown.duration(400)} style={styles.permissionContent}>
+        <Animated.View
+          entering={FadeInDown.duration(400)}
+          style={styles.permissionContent}
+        >
           <SymbolView
             name="camera.fill"
             tintColor={PlatformColor("systemBlue")}
@@ -179,8 +318,18 @@ export default function ScannerScreen() {
           entering={FadeInDown.duration(500).springify()}
           style={styles.successHeader}
         >
-          <View style={[styles.successIconRing, { borderColor: theme.green + "30" }]}>
-            <View style={[styles.successIconInner, { backgroundColor: theme.green + "15" }]}>
+          <View
+            style={[
+              styles.successIconRing,
+              { borderColor: theme.green + "30" },
+            ]}
+          >
+            <View
+              style={[
+                styles.successIconInner,
+                { backgroundColor: theme.green + "15" },
+              ]}
+            >
               <SymbolView
                 name="checkmark.circle.fill"
                 tintColor={theme.green}
@@ -194,15 +343,22 @@ export default function ScannerScreen() {
           <Text style={[styles.successTitle, { color: theme.label }]}>
             Scan Complete
           </Text>
-          <Text style={[styles.successSubtitle, { color: theme.secondaryLabel }]}>
-            {isValidUrl(scannedData) ? "Website URL detected" : "Content captured"}
+          <Text
+            style={[styles.successSubtitle, { color: theme.secondaryLabel }]}
+          >
+            {isValidUrl(scannedData)
+              ? "Website URL detected"
+              : "Content captured"}
           </Text>
         </Animated.View>
 
         {/* Content Card */}
         <Animated.View
           entering={FadeInDown.delay(100).duration(400)}
-          style={[styles.contentCard, { backgroundColor: theme.secondaryBackground }]}
+          style={[
+            styles.contentCard,
+            { backgroundColor: theme.secondaryBackground },
+          ]}
         >
           <View style={styles.contentHeader}>
             <SymbolView
@@ -210,7 +366,9 @@ export default function ScannerScreen() {
               tintColor={theme.blue}
               style={{ width: 18, height: 18 }}
             />
-            <Text style={[styles.contentLabel, { color: theme.secondaryLabel }]}>
+            <Text
+              style={[styles.contentLabel, { color: theme.secondaryLabel }]}
+            >
               {isValidUrl(scannedData) ? "URL" : "Content"}
             </Text>
           </View>
@@ -241,14 +399,21 @@ export default function ScannerScreen() {
               ]}
               onPress={copyToClipboard}
             >
-              <View style={[styles.gridIconWrap, { backgroundColor: theme.blue + "15" }]}>
+              <View
+                style={[
+                  styles.gridIconWrap,
+                  { backgroundColor: theme.blue + "15" },
+                ]}
+              >
                 <SymbolView
                   name="doc.on.doc.fill"
                   tintColor={theme.blue}
                   style={{ width: 24, height: 24 }}
                 />
               </View>
-              <Text style={[styles.gridButtonLabel, { color: theme.label }]}>Copy</Text>
+              <Text style={[styles.gridButtonLabel, { color: theme.label }]}>
+                Copy
+              </Text>
             </Pressable>
 
             <Pressable
@@ -259,14 +424,21 @@ export default function ScannerScreen() {
               ]}
               onPress={shareData}
             >
-              <View style={[styles.gridIconWrap, { backgroundColor: theme.green + "15" }]}>
+              <View
+                style={[
+                  styles.gridIconWrap,
+                  { backgroundColor: theme.green + "15" },
+                ]}
+              >
                 <SymbolView
                   name="square.and.arrow.up.fill"
                   tintColor={theme.green}
                   style={{ width: 24, height: 24 }}
                 />
               </View>
-              <Text style={[styles.gridButtonLabel, { color: theme.label }]}>Share</Text>
+              <Text style={[styles.gridButtonLabel, { color: theme.label }]}>
+                Share
+              </Text>
             </Pressable>
 
             {isValidUrl(scannedData) && (
@@ -278,7 +450,12 @@ export default function ScannerScreen() {
                 ]}
                 onPress={handleOpenUrl}
               >
-                <View style={[styles.gridIconWrap, { backgroundColor: theme.indigo + "15" }]}>
+                <View
+                  style={[
+                    styles.gridIconWrap,
+                    { backgroundColor: theme.indigo + "15" },
+                  ]}
+                >
                   <SymbolView
                     name="safari.fill"
                     tintColor={theme.indigo}
@@ -382,7 +559,7 @@ export default function ScannerScreen() {
           <View style={[styles.corner, styles.bottomRight]} />
         </Animated.View>
 
-        {/* Bottom Instruction */}
+        {/* Bottom Area */}
         <View style={[styles.bottomArea, { bottom: insets.bottom + 100 }]}>
           <BlurView
             tint="systemMaterialDark"
@@ -398,6 +575,28 @@ export default function ScannerScreen() {
               Point at a barcode or QR code
             </Text>
           </BlurView>
+
+          {/* Gallery Button */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.galleryButton,
+              pressed && styles.controlButtonPressed,
+            ]}
+            onPress={pickFromGallery}
+          >
+            <BlurView
+              tint="systemMaterialDark"
+              intensity={80}
+              style={styles.galleryButtonInner}
+            >
+              <SymbolView
+                name="photo.on.rectangle"
+                tintColor="rgba(255,255,255,0.9)"
+                style={{ width: 22, height: 22 }}
+              />
+              <Text style={styles.galleryButtonText}>From Gallery</Text>
+            </BlurView>
+          </Pressable>
         </View>
       </View>
     </View>
@@ -526,6 +725,25 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 24,
     right: 24,
+    gap: 12,
+  },
+  galleryButton: {
+    alignSelf: "center",
+    borderRadius: 12,
+    borderCurve: "continuous",
+    overflow: "hidden",
+  },
+  galleryButtonInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+  galleryButtonText: {
+    color: "rgba(255, 255, 255, 0.9)",
+    fontSize: 15,
+    fontWeight: "500",
   },
   instructionBlur: {
     flexDirection: "row",

@@ -1,9 +1,16 @@
+import { useSearch } from "@/hooks/useSearch";
+import { useStorage } from "@/hooks/useStorage";
+import {
+  clearScanHistory,
+  deleteScanFromHistory,
+  getScanHistory,
+  type ScanHistoryItem,
+} from "@/utils/scanHistory";
 import { useFocusEffect } from "@react-navigation/native";
-import * as Burnt from "burnt";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import { SymbolView } from "expo-symbols";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -22,12 +29,6 @@ import Animated, {
   FadeOut,
   LinearTransition,
 } from "react-native-reanimated";
-import {
-  clearScanHistory,
-  deleteScanFromHistory,
-  getScanHistory,
-  type ScanHistoryItem,
-} from "@/utils/scanHistory";
 
 // Static colors for Reanimated (PlatformColor not supported)
 const colors = {
@@ -58,6 +59,25 @@ export default function ScanHistoryScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
+  const [saveHistory, setSaveHistory] = useStorage("saveHistory", true);
+
+  // Native search bar
+  const search = useSearch({
+    placeholder: "Search scans...",
+    autoCapitalize: "none",
+  });
+
+  // Filter history based on search
+  const filteredHistory = useMemo(() => {
+    if (!search) return history;
+    const query = search.toLowerCase();
+    return history.filter(
+      (item) =>
+        item.data.toLowerCase().includes(query) ||
+        item.type.toLowerCase().includes(query) ||
+        item.formattedDate.toLowerCase().includes(query),
+    );
+  }, [history, search]);
 
   const loadHistory = useCallback(async () => {
     const scanHistory = await getScanHistory();
@@ -79,11 +99,7 @@ export default function ScanHistoryScreen() {
   const handleCopyItem = async (data: string) => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     await Clipboard.setStringAsync(data);
-    Burnt.toast({
-      title: "Copied",
-      preset: "done",
-      haptic: "success",
-    });
+    Alert.alert("Copied", "Text copied to clipboard");
   };
 
   const handleShareItem = async (data: string) => {
@@ -93,24 +109,20 @@ export default function ScanHistoryScreen() {
 
   const handleDeleteItem = async (id: string) => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    Alert.alert(
-      "Delete Scan",
-      "Are you sure you want to delete this scan?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            await Haptics.notificationAsync(
-              Haptics.NotificationFeedbackType.Success,
-            );
-            await deleteScanFromHistory(id);
-            await loadHistory();
-          },
+    Alert.alert("Delete Scan", "Are you sure you want to delete this scan?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          await Haptics.notificationAsync(
+            Haptics.NotificationFeedbackType.Success,
+          );
+          await deleteScanFromHistory(id);
+          await loadHistory();
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const handleClearAll = () => {
@@ -137,7 +149,10 @@ export default function ScanHistoryScreen() {
   const renderScanItem = ({
     item,
     index,
-  }: { item: ScanHistoryItem; index: number }) => (
+  }: {
+    item: ScanHistoryItem;
+    index: number;
+  }) => (
     <Animated.View
       entering={FadeInDown.delay(index * 50).duration(300)}
       exiting={FadeOut.duration(200)}
@@ -150,7 +165,9 @@ export default function ScanHistoryScreen() {
         ]}
       >
         <View style={styles.cardHeader}>
-          <View style={[styles.typeBadge, { backgroundColor: theme.blue + "20" }]}>
+          <View
+            style={[styles.typeBadge, { backgroundColor: theme.blue + "20" }]}
+          >
             <SymbolView
               name="qrcode"
               tintColor={theme.blue}
@@ -187,7 +204,9 @@ export default function ScanHistoryScreen() {
               tintColor={theme.blue}
               style={{ width: 16, height: 16 }}
             />
-            <Text style={[styles.cardButtonText, { color: theme.blue }]}>Copy</Text>
+            <Text style={[styles.cardButtonText, { color: theme.blue }]}>
+              Copy
+            </Text>
           </Pressable>
 
           <Pressable
@@ -203,7 +222,9 @@ export default function ScanHistoryScreen() {
               tintColor={theme.blue}
               style={{ width: 16, height: 16 }}
             />
-            <Text style={[styles.cardButtonText, { color: theme.blue }]}>Share</Text>
+            <Text style={[styles.cardButtonText, { color: theme.blue }]}>
+              Share
+            </Text>
           </Pressable>
 
           <Pressable
@@ -226,61 +247,205 @@ export default function ScanHistoryScreen() {
     </Animated.View>
   );
 
-  const renderEmptyState = () => (
+  const handleEnableHistory = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSaveHistory(true);
+  };
+
+  const renderDisabledState = () => (
     <Animated.View
       entering={FadeIn.duration(400)}
       style={styles.emptyContainer}
     >
-      <View style={styles.emptyIconContainer}>
+      <View
+        style={[
+          styles.disabledIconContainer,
+          { backgroundColor: theme.tertiaryBackground },
+        ]}
+      >
         <SymbolView
-          name="qrcode.viewfinder"
+          name="clock.badge.xmark"
           tintColor={theme.tertiaryLabel}
-          style={{ width: 80, height: 80 }}
+          style={{ width: 56, height: 56 }}
         />
       </View>
-      <Text style={[styles.emptyTitle, { color: theme.label }]}>No Scans Yet</Text>
-      <Text style={[styles.emptyDescription, { color: theme.secondaryLabel }]}>
-        Scanned barcodes and QR codes will appear here
+      <Text style={[styles.emptyTitle, { color: theme.label }]}>
+        History Disabled
       </Text>
+      <Text style={[styles.emptyDescription, { color: theme.secondaryLabel }]}>
+        Scan history is turned off. Enable it to keep a record of your scans.
+      </Text>
+      <Pressable
+        style={({ pressed }) => [
+          styles.enableButton,
+          { backgroundColor: theme.blue },
+          pressed && styles.enableButtonPressed,
+        ]}
+        onPress={handleEnableHistory}
+      >
+        <SymbolView
+          name="clock.arrow.circlepath"
+          tintColor="#FFFFFF"
+          style={{ width: 18, height: 18 }}
+        />
+        <Text style={styles.enableButtonText}>Enable History</Text>
+      </Pressable>
     </Animated.View>
   );
 
-  const renderHeader = () => {
-    if (history.length === 0) return null;
+  const renderEmptyState = () => {
+    // Show no results state when searching
+    if (search && history.length > 0) {
+      return (
+        <Animated.View
+          entering={FadeIn.duration(400)}
+          style={styles.emptyContainer}
+        >
+          <View style={styles.emptyIconContainer}>
+            <SymbolView
+              name="magnifyingglass"
+              tintColor={theme.tertiaryLabel}
+              style={{ width: 60, height: 60 }}
+            />
+          </View>
+          <Text style={[styles.emptyTitle, { color: theme.label }]}>
+            No Results
+          </Text>
+          <Text
+            style={[styles.emptyDescription, { color: theme.secondaryLabel }]}
+          >
+            No scans found for "{search}"
+          </Text>
+        </Animated.View>
+      );
+    }
+
+    if (!saveHistory) {
+      return renderDisabledState();
+    }
+
+    return (
+      <Animated.View
+        entering={FadeIn.duration(400)}
+        style={styles.emptyContainer}
+      >
+        <View style={styles.emptyIconContainer}>
+          <SymbolView
+            name="qrcode.viewfinder"
+            tintColor={theme.tertiaryLabel}
+            style={{ width: 80, height: 80 }}
+          />
+        </View>
+        <Text style={[styles.emptyTitle, { color: theme.label }]}>
+          No Scans Yet
+        </Text>
+        <Text
+          style={[styles.emptyDescription, { color: theme.secondaryLabel }]}
+        >
+          Scanned barcodes and QR codes will appear here
+        </Text>
+      </Animated.View>
+    );
+  };
+
+  const renderDisabledBanner = () => {
+    if (saveHistory) return null;
     return (
       <Animated.View
         entering={FadeIn}
-        style={styles.listHeader}
+        style={[
+          styles.disabledBanner,
+          { backgroundColor: theme.secondaryBackground },
+        ]}
       >
-        <Text style={[styles.listHeaderText, { color: theme.secondaryLabel }]}>
-          {history.length} {history.length === 1 ? "scan" : "scans"}
-        </Text>
+        <View style={styles.disabledBannerContent}>
+          <SymbolView
+            name="exclamationmark.circle.fill"
+            tintColor="#FF9500"
+            style={{ width: 24, height: 24 }}
+          />
+          <View style={styles.disabledBannerText}>
+            <Text style={[styles.disabledBannerTitle, { color: theme.label }]}>
+              History Paused
+            </Text>
+            <Text
+              style={[
+                styles.disabledBannerDescription,
+                { color: theme.secondaryLabel },
+              ]}
+            >
+              New scans won't be saved
+            </Text>
+          </View>
+        </View>
         <Pressable
           style={({ pressed }) => [
-            styles.clearAllButton,
-            { backgroundColor: theme.red + "20" },
+            styles.enableBannerButton,
+            { backgroundColor: theme.blue },
             pressed && styles.buttonPressed,
           ]}
-          onPress={handleClearAll}
+          onPress={handleEnableHistory}
         >
-          <SymbolView
-            name="trash"
-            tintColor={theme.red}
-            style={{ width: 14, height: 14 }}
-          />
-          <Text style={[styles.clearAllText, { color: theme.red }]}>Clear All</Text>
+          <Text style={styles.enableBannerButtonText}>Enable</Text>
         </Pressable>
       </Animated.View>
+    );
+  };
+
+  const renderHeader = () => {
+    const banner = renderDisabledBanner();
+    const hasItems = history.length > 0;
+    const isSearching = search.length > 0;
+
+    if (!banner && !hasItems) return null;
+
+    return (
+      <View>
+        {banner}
+        {hasItems && (
+          <Animated.View entering={FadeIn} style={styles.listHeader}>
+            <Text
+              style={[styles.listHeaderText, { color: theme.secondaryLabel }]}
+            >
+              {isSearching
+                ? `${filteredHistory.length} of ${history.length} scans`
+                : `${history.length} ${history.length === 1 ? "scan" : "scans"}`}
+            </Text>
+            {!isSearching && (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.clearAllButton,
+                  { backgroundColor: theme.red + "20" },
+                  pressed && styles.buttonPressed,
+                ]}
+                onPress={handleClearAll}
+              >
+                <SymbolView
+                  name="trash"
+                  tintColor={theme.red}
+                  style={{ width: 14, height: 14 }}
+                />
+                <Text style={[styles.clearAllText, { color: theme.red }]}>
+                  Clear All
+                </Text>
+              </Pressable>
+            )}
+          </Animated.View>
+        )}
+      </View>
     );
   };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <FlatList
-        data={history}
+        data={filteredHistory}
         renderItem={renderScanItem}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[
+          styles.listContent,
+          filteredHistory.length === 0 && styles.listContentEmpty,
+        ]}
         contentInsetAdjustmentBehavior="automatic"
         ListHeaderComponent={renderHeader}
         ListEmptyComponent={renderEmptyState}
@@ -292,6 +457,7 @@ export default function ScanHistoryScreen() {
           />
         }
         showsVerticalScrollIndicator={false}
+        bounces={filteredHistory.length > 3}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
       />
     </View>
@@ -304,8 +470,46 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 20,
-    paddingBottom: 120,
+  },
+  listContentEmpty: {
     flexGrow: 1,
+  },
+  disabledBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 14,
+    borderRadius: 12,
+    borderCurve: "continuous",
+    marginBottom: 16,
+  },
+  disabledBannerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    flex: 1,
+  },
+  disabledBannerText: {
+    flex: 1,
+  },
+  disabledBannerTitle: {
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  disabledBannerDescription: {
+    fontSize: 13,
+    marginTop: 2,
+  },
+  enableBannerButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    borderCurve: "continuous",
+  },
+  enableBannerButtonText: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "600",
   },
   listHeader: {
     flexDirection: "row",
@@ -401,11 +605,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 40,
-    paddingBottom: 100,
   },
   emptyIconContainer: {
     marginBottom: 24,
     opacity: 0.6,
+  },
+  disabledIconContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 24,
   },
   emptyTitle: {
     fontSize: 22,
@@ -416,5 +627,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     lineHeight: 22,
+  },
+  enableButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 24,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 14,
+    borderCurve: "continuous",
+  },
+  enableButtonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
+  },
+  enableButtonText: {
+    color: "#FFFFFF",
+    fontSize: 17,
+    fontWeight: "600",
   },
 });

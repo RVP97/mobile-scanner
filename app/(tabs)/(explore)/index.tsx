@@ -59,8 +59,8 @@ export default function ScanHistoryScreen() {
   const [history, setHistory] = useState<ScanHistoryItem[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [hasAttemptedAuth, setHasAttemptedAuth] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const hasAttemptedAuthRef = useRef(false);
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
   const [saveHistory, setSaveHistory] = useStorage("saveHistory", true);
@@ -91,10 +91,8 @@ export default function ScanHistoryScreen() {
     setRefreshing(false);
   };
 
-  const authenticate = useCallback(async () => {
-    if (isAuthenticating) return;
+  const performAuth = useCallback(async () => {
     setIsAuthenticating(true);
-    setHasAttemptedAuth(true);
 
     try {
       const result = await LocalAuthentication.authenticateAsync({
@@ -105,33 +103,44 @@ export default function ScanHistoryScreen() {
 
       if (result.success) {
         setIsAuthenticated(true);
-        await loadHistory();
+        const scanHistory = await getScanHistory();
+        setHistory(scanHistory);
       }
     } finally {
       setIsAuthenticating(false);
     }
-  }, [isAuthenticating, loadHistory]);
+  }, []);
 
+  // Auto-authenticate on focus (only once)
+  const autoAuthenticate = useCallback(async () => {
+    if (hasAttemptedAuthRef.current) return;
+    hasAttemptedAuthRef.current = true;
+    await performAuth();
+  }, [performAuth]);
+
+  // Manual unlock button handler
+  const handleUnlock = useCallback(async () => {
+    if (isAuthenticating) return;
+    await performAuth();
+  }, [isAuthenticating, performAuth]);
+
+  // Handle focus - load history or authenticate
   useFocusEffect(
     useCallback(() => {
-      if (requireAuth && !isAuthenticated && !hasAttemptedAuth) {
-        authenticate();
-      } else if (!requireAuth || isAuthenticated) {
+      if (requireAuth) {
+        autoAuthenticate();
+      } else {
         loadHistory();
       }
-    }, [requireAuth, isAuthenticated, hasAttemptedAuth, authenticate, loadHistory]),
-  );
 
-  // Reset authentication when leaving the tab (for security)
-  useFocusEffect(
-    useCallback(() => {
+      // Cleanup when leaving tab
       return () => {
         if (requireAuth) {
           setIsAuthenticated(false);
-          setHasAttemptedAuth(false);
+          hasAttemptedAuthRef.current = false;
         }
       };
-    }, [requireAuth]),
+    }, [requireAuth, loadHistory, autoAuthenticate]),
   );
 
   const handleCopyItem = async (data: string) => {
@@ -557,7 +566,7 @@ export default function ScanHistoryScreen() {
               { backgroundColor: theme.blue },
               pressed && styles.buttonPressed,
             ]}
-            onPress={authenticate}
+            onPress={handleUnlock}
             disabled={isAuthenticating}
           >
             <SymbolView

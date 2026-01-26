@@ -9,6 +9,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
+import * as LocalAuthentication from "expo-local-authentication";
 import { SymbolView } from "expo-symbols";
 import { useCallback, useMemo, useState } from "react";
 import {
@@ -57,9 +58,13 @@ const colors = {
 export default function ScanHistoryScreen() {
   const [history, setHistory] = useState<ScanHistoryItem[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasAttemptedAuth, setHasAttemptedAuth] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
   const [saveHistory, setSaveHistory] = useStorage("saveHistory", true);
+  const [requireAuth] = useStorage("requireAuthForHistory", false);
 
   // Native search bar
   const search = useSearch({
@@ -90,10 +95,47 @@ export default function ScanHistoryScreen() {
     setRefreshing(false);
   };
 
+  const authenticate = useCallback(async () => {
+    if (isAuthenticating) return;
+    setIsAuthenticating(true);
+    setHasAttemptedAuth(true);
+
+    try {
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: "Authenticate to view history",
+        cancelLabel: "Cancel",
+        fallbackLabel: "Use Passcode",
+      });
+
+      if (result.success) {
+        setIsAuthenticated(true);
+        await loadHistory();
+      }
+    } finally {
+      setIsAuthenticating(false);
+    }
+  }, [isAuthenticating, loadHistory]);
+
   useFocusEffect(
     useCallback(() => {
-      loadHistory();
-    }, [loadHistory]),
+      if (requireAuth && !isAuthenticated && !hasAttemptedAuth) {
+        authenticate();
+      } else if (!requireAuth || isAuthenticated) {
+        loadHistory();
+      }
+    }, [requireAuth, isAuthenticated, hasAttemptedAuth, authenticate, loadHistory]),
+  );
+
+  // Reset authentication when leaving the tab (for security)
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (requireAuth) {
+          setIsAuthenticated(false);
+          setHasAttemptedAuth(false);
+        }
+      };
+    }, [requireAuth]),
   );
 
   const handleCopyItem = async (data: string) => {
@@ -436,6 +478,55 @@ export default function ScanHistoryScreen() {
     );
   };
 
+  // Show locked screen when authentication is required but not authenticated
+  if (requireAuth && !isAuthenticated) {
+    return (
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
+        <Animated.View
+          entering={FadeIn.duration(400)}
+          style={styles.lockedContainer}
+        >
+          <View
+            style={[
+              styles.lockedIconContainer,
+              { backgroundColor: theme.blue + "15" },
+            ]}
+          >
+            <SymbolView
+              name="lock.fill"
+              tintColor={theme.blue}
+              style={{ width: 48, height: 48 }}
+            />
+          </View>
+          <Text style={[styles.lockedTitle, { color: theme.label }]}>
+            History Locked
+          </Text>
+          <Text style={[styles.lockedSubtitle, { color: theme.secondaryLabel }]}>
+            Authenticate to view your scan history
+          </Text>
+          <Pressable
+            style={({ pressed }) => [
+              styles.unlockButton,
+              { backgroundColor: theme.blue },
+              pressed && styles.buttonPressed,
+            ]}
+            onPress={authenticate}
+            disabled={isAuthenticating}
+          >
+            <SymbolView
+              name="faceid"
+              tintColor="#FFFFFF"
+              style={{ width: 22, height: 22 }}
+            />
+            <Text style={styles.unlockButtonText}>
+              {isAuthenticating ? "Authenticating..." : "Unlock"}
+            </Text>
+          </Pressable>
+        </Animated.View>
+      </View>
+    );
+  }
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <FlatList
@@ -643,6 +734,44 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.98 }],
   },
   enableButtonText: {
+    color: "#FFFFFF",
+    fontSize: 17,
+    fontWeight: "600",
+  },
+  lockedContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 40,
+  },
+  lockedIconContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  lockedTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+  lockedSubtitle: {
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 32,
+  },
+  unlockButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    borderRadius: 14,
+    borderCurve: "continuous",
+  },
+  unlockButtonText: {
     color: "#FFFFFF",
     fontSize: 17,
     fontWeight: "600",

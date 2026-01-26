@@ -7,8 +7,10 @@ import {
 import * as Application from "expo-application";
 import { File, Paths } from "expo-file-system";
 import * as Haptics from "expo-haptics";
+import * as LocalAuthentication from "expo-local-authentication";
 import * as Sharing from "expo-sharing";
 import { SymbolView } from "expo-symbols";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Pressable,
@@ -142,6 +144,54 @@ export default function SettingsScreen() {
   const [autoCopy, setAutoCopy] = useStorage("autoCopy", false);
   const [autoOpenUrl, setAutoOpenUrl] = useStorage("autoOpenUrl", false);
   const [scanOnLaunch, setScanOnLaunch] = useStorage("scanOnLaunch", false);
+  const [requireAuth, setRequireAuth] = useStorage("requireAuthForHistory", false);
+  const [biometricType, setBiometricType] = useState<string>("Face ID");
+
+  // Check available biometric type
+  useEffect(() => {
+    async function checkBiometrics() {
+      const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
+      if (types.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
+        setBiometricType("Face ID");
+      } else if (types.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
+        setBiometricType("Touch ID");
+      } else {
+        setBiometricType("Passcode");
+      }
+    }
+    checkBiometrics();
+  }, []);
+
+  const handleRequireAuthChange = async (value: boolean) => {
+    if (value) {
+      // Verify biometrics work before enabling
+      const hasHardware = await LocalAuthentication.hasHardwareAsync();
+      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+
+      if (!hasHardware || !isEnrolled) {
+        Alert.alert(
+          "Not Available",
+          `${biometricType} is not set up on this device. Please enable it in Settings.`
+        );
+        return;
+      }
+
+      // Authenticate to enable
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: `Authenticate to enable ${biometricType}`,
+        cancelLabel: "Cancel",
+      });
+
+      if (result.success) {
+        if (hapticEnabled) {
+          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }
+        setRequireAuth(true);
+      }
+    } else {
+      setRequireAuth(false);
+    }
+  };
 
   const handleHapticChange = async (value: boolean) => {
     if (value) {
@@ -330,6 +380,18 @@ export default function SettingsScreen() {
             subtitle="Keep a record of scanned items"
             value={saveHistory}
             onValueChange={setSaveHistory}
+            theme={theme}
+          />
+          <View
+            style={[styles.separator, { backgroundColor: theme.separator }]}
+          />
+          <SettingsRow
+            icon="faceid"
+            iconColor={theme.green}
+            title={`Require ${biometricType}`}
+            subtitle="Protect history with authentication"
+            value={requireAuth}
+            onValueChange={handleRequireAuthChange}
             theme={theme}
           />
           <View

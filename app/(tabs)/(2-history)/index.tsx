@@ -11,8 +11,8 @@ import {
   getScanHistory,
   type ScanHistoryItem,
 } from "@/utils/scanHistory";
-import { useFocusEffect } from "@react-navigation/native";
-import { BlurView } from "expo-blur";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useLayoutEffect } from "react";
 // @ts-expect-error - no types available
 import { Barcode } from "expo-barcode-generator";
 import * as Clipboard from "expo-clipboard";
@@ -128,6 +128,7 @@ const colors = {
 };
 
 export default function ScanHistoryScreen() {
+  const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState(0);
   const [history, setHistory] = useState<ScanHistoryItem[]>([]);
   const [generations, setGenerations] = useState<GenerationHistoryItem[]>([]);
@@ -141,7 +142,6 @@ export default function ScanHistoryScreen() {
   const [saveHistory, setSaveHistory] = useStorage("saveHistory", true);
   const [requireAuth] = useStorage("requireAuthForHistory", false);
   const [search, setSearch] = useState("");
-  const searchInputRef = useRef<TextInput>(null);
   const [previewItem, setPreviewItem] = useState<GenerationHistoryItem | null>(
     null,
   );
@@ -156,6 +156,22 @@ export default function ScanHistoryScreen() {
   const captureItemRef = useRef<GenerationHistoryItem | null>(null);
   const captureActionRef = useRef<"copy" | "share" | null>(null);
   const hiddenCaptureRef = useRef<View>(null);
+
+  // Configure native search bar
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerSearchBarOptions: {
+        placeholder: selectedTab === 0 ? "Search scans..." : "Search generations...",
+        hideWhenScrolling: false,
+        onChangeText: (event: { nativeEvent: { text: string } }) => {
+          setSearch(event.nativeEvent.text);
+        },
+        onCancelButtonPress: () => {
+          setSearch("");
+        },
+      },
+    });
+  }, [navigation, selectedTab]);
 
   // Handlers for preview modal image actions
   const handlePreviewCopy = useCallback(async () => {
@@ -938,60 +954,6 @@ export default function ScanHistoryScreen() {
     );
   };
 
-  const handleClearSearch = () => {
-    setSearch("");
-    searchInputRef.current?.blur();
-  };
-
-  const renderSearchBar = () => {
-    const isScansTab = selectedTab === 0;
-    const currentList = isScansTab ? history : generations;
-    if (currentList.length === 0) return null;
-
-    return (
-      <View style={styles.searchContainer}>
-        <BlurView
-          tint={colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial"}
-          intensity={80}
-          style={styles.searchBlur}
-        >
-          <SymbolView
-            name="magnifyingglass"
-            tintColor={theme.tertiaryLabel}
-            style={styles.searchIcon}
-          />
-          <TextInput
-            ref={searchInputRef}
-            style={[styles.searchInput, { color: theme.label }]}
-            placeholder={isScansTab ? "Search scans..." : "Search generations..."}
-            placeholderTextColor={theme.tertiaryLabel}
-            value={search}
-            onChangeText={setSearch}
-            autoCapitalize="none"
-            autoCorrect={false}
-            returnKeyType="search"
-            clearButtonMode="never"
-          />
-          {search.length > 0 && (
-            <Animated.View entering={FadeIn.duration(150)} exiting={FadeOut.duration(150)}>
-              <Pressable
-                onPress={handleClearSearch}
-                style={styles.clearSearchButton}
-                hitSlop={8}
-              >
-                <SymbolView
-                  name="xmark.circle.fill"
-                  tintColor={theme.tertiaryLabel}
-                  style={styles.clearSearchIcon}
-                />
-              </Pressable>
-            </Animated.View>
-          )}
-        </BlurView>
-      </View>
-    );
-  };
-
   const renderHeader = () => {
     const banner = renderDisabledBanner();
     const isScans = selectedTab === 0;
@@ -1062,7 +1024,6 @@ export default function ScanHistoryScreen() {
             </Text>
           </Pressable>
         </View>
-        {renderSearchBar()}
         {banner}
         {hasItems && (
           <View style={styles.listHeader}>
@@ -1182,6 +1143,8 @@ export default function ScanHistoryScreen() {
         }
         showsVerticalScrollIndicator={false}
         keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        removeClippedSubviews={false}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         bounces={!isEmpty}
         scrollEnabled={!isEmpty || refreshing}
@@ -1471,35 +1434,6 @@ const styles = StyleSheet.create({
   segmentedButtonText: {
     fontSize: 13,
     fontWeight: "600",
-  },
-  searchContainer: {
-    marginBottom: 16,
-  },
-  searchBlur: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 12,
-    borderCurve: "continuous",
-    overflow: "hidden",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    gap: 8,
-  },
-  searchIcon: {
-    width: 18,
-    height: 18,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 17,
-    padding: 0,
-  },
-  clearSearchButton: {
-    padding: 2,
-  },
-  clearSearchIcon: {
-    width: 18,
-    height: 18,
   },
   disabledBanner: {
     flexDirection: "row",

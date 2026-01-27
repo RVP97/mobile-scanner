@@ -143,6 +143,7 @@ export default function SettingsScreen() {
   const [saveHistory, setSaveHistory] = useStorage("saveHistory", true);
   const [autoCopy, setAutoCopy] = useStorage("autoCopy", false);
   const [autoOpenUrl, setAutoOpenUrl] = useStorage("autoOpenUrl", false);
+  const [multiScan, setMultiScan] = useStorage("multiScan", false);
   const [requireAuth, setRequireAuth] = useStorage("requireAuthForHistory", false);
   const [biometricType, setBiometricType] = useState<string>("Face ID");
 
@@ -344,6 +345,18 @@ export default function SettingsScreen() {
             subtitle="Open URLs automatically after scanning"
             value={autoOpenUrl}
             onValueChange={setAutoOpenUrl}
+            theme={theme}
+          />
+          <View
+            style={[styles.separator, { backgroundColor: theme.separator }]}
+          />
+          <SettingsRow
+            icon="square.stack.3d.up.fill"
+            iconColor="#5856D6"
+            title="Multi-Code Scanning"
+            subtitle="Scan multiple codes before viewing results"
+            value={multiScan}
+            onValueChange={setMultiScan}
             theme={theme}
           />
         </View>

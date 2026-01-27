@@ -161,6 +161,13 @@ const barcodeFormatToString: Record<BarcodeFormat, string> = {
   [BarcodeFormat.AZTEC]: "aztec",
 };
 
+interface ScannedItem {
+  id: string;
+  data: string;
+  type: string;
+  timestamp: number;
+}
+
 export default function ScannerScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
@@ -174,12 +181,19 @@ export default function ScannerScreen() {
   const theme = colors[colorScheme ?? "light"];
   const previewCodeRef = useRef<View>(null);
 
+  // Multi-scan state
+  const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
+  const [showMultiResults, setShowMultiResults] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ScannedItem | null>(null);
+  const scannedDataSetRef = useRef<Set<string>>(new Set());
+
   // Settings
   const [hapticEnabled] = useStorage("hapticEnabled", true);
   const [soundEnabled] = useStorage("soundEnabled", true);
   const [saveHistory] = useStorage("saveHistory", true);
   const [autoCopy] = useStorage("autoCopy", false);
   const [autoOpenUrl] = useStorage("autoOpenUrl", false);
+  const [multiScan] = useStorage("multiScan", false);
 
   // Audio player for scan sound
   const player = useAudioPlayer(scanSound);
@@ -192,20 +206,33 @@ export default function ScannerScreen() {
   }, [player.playing, player.currentTime, player.seekTo]);
 
   const isValidUrl = (string: string): boolean => {
+    // First, check if it's already a valid URL with protocol
     try {
       const url = new URL(string);
       return url.protocol === "http:" || url.protocol === "https:";
     } catch {
-      return false;
+      // Check if it looks like a domain without protocol
+      // Must have at least one dot, no spaces, and a valid TLD pattern
+      const domainPattern = /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)+(\/.*)?\s*$/;
+      return domainPattern.test(string.trim());
     }
   };
 
-  const handleOpenUrl = async () => {
+  const normalizeUrl = (string: string): string => {
+    // If already has protocol, return as-is
+    if (string.startsWith("http://") || string.startsWith("https://")) {
+      return string;
+    }
+    // Otherwise, prepend https://
+    return `https://${string.trim()}`;
+  };
+
+  const handleOpenUrl = () => {
     if (isValidUrl(scannedData)) {
       if (hapticEnabled) {
-        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
-      Linking.openURL(scannedData).catch(() => {
+      Linking.openURL(normalizeUrl(scannedData)).catch(() => {
         Alert.alert("Error", "Unable to open this URL");
       });
     }
@@ -215,6 +242,43 @@ export default function ScannerScreen() {
     type,
     data,
   }: BarcodeScanningResult) => {
+    // Multi-scan mode
+    if (multiScan) {
+      // Check if already scanned - prevent duplicates using Set (synchronous, no race condition)
+      if (scannedDataSetRef.current.has(data)) return;
+      
+      // Add to Set immediately to prevent rapid-fire duplicates
+      scannedDataSetRef.current.add(data);
+
+      // Play sound if enabled
+      if (soundEnabled) {
+        player.seekTo(0);
+        player.play();
+      }
+
+      // Haptic feedback if enabled
+      if (hapticEnabled) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
+
+      const newItem: ScannedItem = {
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        data,
+        type,
+        timestamp: Date.now(),
+      };
+
+      setScannedItems((prev) => [...prev, newItem]);
+
+      // Save to history if enabled
+      if (saveHistory) {
+        saveScanToHistory(data, type);
+      }
+
+      return;
+    }
+
+    // Single scan mode (original behavior)
     if (!scanned) {
       // Play sound if enabled
       if (soundEnabled) {
@@ -245,7 +309,7 @@ export default function ScannerScreen() {
 
       // Auto-open URL if enabled (Scan and Go)
       if (autoOpenUrl && isValidUrl(data)) {
-        Linking.openURL(data).catch(() => {
+        Linking.openURL(normalizeUrl(data)).catch(() => {
           // Silently fail if URL can't be opened
         });
       }
@@ -274,6 +338,10 @@ export default function ScannerScreen() {
     setScanned(false);
     setScannedData("");
     setScannedType("");
+    setScannedItems([]);
+    setShowMultiResults(false);
+    setSelectedItem(null);
+    scannedDataSetRef.current.clear();
   };
 
   const handleOpenPreview = async () => {
@@ -281,6 +349,55 @@ export default function ScannerScreen() {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
     setShowPreview(true);
+  };
+
+  // Multi-scan handlers
+  const handleFinishMultiScan = () => {
+    if (hapticEnabled) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    if (scannedItems.length > 0) {
+      setShowMultiResults(true);
+    }
+  };
+
+  const handleCopyItem = async (data: string) => {
+    if (hapticEnabled) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    await Clipboard.setStringAsync(data);
+    Alert.alert("Copied", "Text copied to clipboard");
+  };
+
+  const handleShareItem = async (data: string) => {
+    if (hapticEnabled) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    await Share.share({ message: data });
+  };
+
+  const handleOpenItemUrl = (data: string) => {
+    if (isValidUrl(data)) {
+      if (hapticEnabled) {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+      Linking.openURL(normalizeUrl(data)).catch(() => {
+        Alert.alert("Error", "Unable to open this URL");
+      });
+    }
+  };
+
+  const handleRemoveItem = (id: string) => {
+    if (hapticEnabled) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setScannedItems((prev) => {
+      const item = prev.find((i) => i.id === id);
+      if (item) {
+        scannedDataSetRef.current.delete(item.data);
+      }
+      return prev.filter((i) => i.id !== id);
+    });
   };
 
   const handlePreviewCopy = async () => {
@@ -411,7 +528,7 @@ export default function ScannerScreen() {
 
           // Auto-open URL if enabled (Scan and Go)
           if (autoOpenUrl && isValidUrl(barcode.value)) {
-            Linking.openURL(barcode.value).catch(() => {
+            Linking.openURL(normalizeUrl(barcode.value)).catch(() => {
               // Silently fail if URL can't be opened
             });
           }
@@ -472,6 +589,325 @@ export default function ScannerScreen() {
           </Pressable>
         </Animated.View>
       </View>
+    );
+  }
+
+  // Multi-scan results view
+  if (showMultiResults && scannedItems.length > 0) {
+    return (
+      <ScrollView
+        style={[styles.container, { backgroundColor: theme.background }]}
+        contentContainerStyle={[
+          styles.resultContent,
+          { paddingBottom: insets.bottom + 100 },
+        ]}
+        contentInsetAdjustmentBehavior="automatic"
+      >
+        {/* Success Header */}
+        <Animated.View
+          entering={FadeInDown.duration(500).springify()}
+          style={styles.successHeader}
+        >
+          <View
+            style={[
+              styles.successIconRing,
+              { borderColor: theme.green + "30" },
+            ]}
+          >
+            <View
+              style={[
+                styles.successIconInner,
+                { backgroundColor: theme.green + "15" },
+              ]}
+            >
+              <SymbolView
+                name="checkmark.circle.fill"
+                tintColor={theme.green}
+                style={{ width: 64, height: 64 }}
+                animationSpec={{
+                  effect: { type: "bounce", direction: "up" },
+                }}
+              />
+            </View>
+          </View>
+          <Text style={[styles.successTitle, { color: theme.label }]}>
+            {scannedItems.length} {scannedItems.length === 1 ? "Code" : "Codes"} Scanned
+          </Text>
+          <Text
+            style={[styles.successSubtitle, { color: theme.secondaryLabel }]}
+          >
+            Tap any item for more options
+          </Text>
+        </Animated.View>
+
+        {/* Scan Again Button */}
+        <Animated.View entering={FadeInDown.delay(100).duration(400)}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.scanAgainTopButton,
+              { backgroundColor: theme.blue },
+              pressed && { opacity: 0.85, transform: [{ scale: 0.98 }] },
+            ]}
+            onPress={resetScanner}
+          >
+            <SymbolView
+              name="camera.fill"
+              tintColor="#fff"
+              style={{ width: 20, height: 20 }}
+            />
+            <Text style={styles.scanAgainTopText}>Scan Again</Text>
+          </Pressable>
+        </Animated.View>
+
+        {/* Section Header */}
+        <Animated.View entering={FadeInDown.delay(140).duration(400)}>
+          <Text style={[styles.sectionLabel, { color: theme.secondaryLabel }]}>
+            SCANNED ITEMS
+          </Text>
+        </Animated.View>
+
+        {/* Scanned Items List - Grouped */}
+        <Animated.View
+          entering={FadeInDown.delay(150).duration(400)}
+          style={[styles.itemsGroup, { backgroundColor: theme.secondaryBackground }]}
+        >
+          {scannedItems.map((item, index) => (
+            <View key={item.id}>
+              {index > 0 && (
+                <View style={[styles.itemSeparator, { backgroundColor: theme.tertiaryBackground }]} />
+              )}
+              <Pressable
+                style={({ pressed }) => [
+                  styles.multiItemRow,
+                  pressed && { backgroundColor: theme.tertiaryBackground },
+                ]}
+                onPress={() => setSelectedItem(item)}
+              >
+                <View style={styles.multiItemContent}>
+                  <View style={styles.multiItemHeader}>
+                    <View
+                      style={[
+                        styles.multiItemBadge,
+                        { backgroundColor: theme.blue + "15" },
+                      ]}
+                    >
+                      <SymbolView
+                        name={item.type === "qr" ? "qrcode" : "barcode"}
+                        tintColor={theme.blue}
+                        style={{ width: 12, height: 12 }}
+                      />
+                      <Text style={[styles.multiItemType, { color: theme.blue }]}>
+                        {getCodeTypeName(item.type)}
+                      </Text>
+                    </View>
+                    {isValidUrl(item.data) && (
+                      <SymbolView
+                        name="link"
+                        tintColor={theme.indigo}
+                        style={{ width: 12, height: 12 }}
+                      />
+                    )}
+                  </View>
+                  <Text
+                    style={[
+                      styles.multiItemData,
+                      { color: theme.label },
+                      isValidUrl(item.data) && { color: theme.blue },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {item.data}
+                  </Text>
+                </View>
+                <View style={styles.multiItemActions}>
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.multiItemButton,
+                      pressed && { opacity: 0.5 },
+                    ]}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      handleCopyItem(item.data);
+                    }}
+                    hitSlop={8}
+                  >
+                    <SymbolView
+                      name="doc.on.doc"
+                      tintColor={theme.blue}
+                      style={{ width: 18, height: 18 }}
+                    />
+                  </Pressable>
+                  {isValidUrl(item.data) && (
+                    <Pressable
+                      style={({ pressed }) => [
+                        styles.multiItemButton,
+                        pressed && { opacity: 0.5 },
+                      ]}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        handleOpenItemUrl(item.data);
+                      }}
+                      hitSlop={8}
+                    >
+                      <SymbolView
+                        name="safari"
+                        tintColor={theme.indigo}
+                        style={{ width: 18, height: 18 }}
+                      />
+                    </Pressable>
+                  )}
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.multiItemButton,
+                      pressed && { opacity: 0.5 },
+                    ]}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      handleRemoveItem(item.id);
+                    }}
+                    hitSlop={8}
+                  >
+                    <SymbolView
+                      name="xmark.circle.fill"
+                      tintColor={theme.secondaryLabel + "80"}
+                      style={{ width: 20, height: 20 }}
+                    />
+                  </Pressable>
+                </View>
+              </Pressable>
+            </View>
+          ))}
+        </Animated.View>
+
+        {/* Continue Scanning Button */}
+        <Animated.View
+          entering={FadeInDown.delay(200 + scannedItems.length * 50).duration(400)}
+        >
+          <Pressable
+            style={({ pressed }) => [
+              styles.continueButton,
+              { borderColor: theme.blue },
+              pressed && { opacity: 0.7 },
+            ]}
+            onPress={() => setShowMultiResults(false)}
+          >
+            <SymbolView
+              name="plus.circle.fill"
+              tintColor={theme.blue}
+              style={{ width: 20, height: 20 }}
+            />
+            <Text style={[styles.continueButtonText, { color: theme.blue }]}>
+              Add More Codes
+            </Text>
+          </Pressable>
+        </Animated.View>
+
+        {/* Item Detail Modal */}
+        <Modal
+          visible={selectedItem !== null}
+          animationType="fade"
+          transparent
+          onRequestClose={() => setSelectedItem(null)}
+        >
+          <Pressable
+            style={styles.previewModalOverlay}
+            onPress={() => setSelectedItem(null)}
+          >
+            <Pressable
+              style={[
+                styles.previewModalContent,
+                { backgroundColor: theme.secondaryBackground },
+              ]}
+              onPress={(e) => e.stopPropagation()}
+            >
+              {selectedItem && (
+                <>
+                  <View style={styles.previewHeader}>
+                    <Text style={[styles.previewTitle, { color: theme.label }]}>
+                      {getCodeTypeName(selectedItem.type)}
+                    </Text>
+                    <Pressable
+                      onPress={() => setSelectedItem(null)}
+                      hitSlop={10}
+                      style={({ pressed }) => pressed && { opacity: 0.6 }}
+                    >
+                      <SymbolView
+                        name="xmark.circle.fill"
+                        tintColor={theme.secondaryLabel}
+                        style={{ width: 28, height: 28 }}
+                      />
+                    </Pressable>
+                  </View>
+
+                  <TextInput
+                    style={[
+                      styles.selectedItemData,
+                      { color: theme.label, backgroundColor: theme.tertiaryBackground },
+                      isValidUrl(selectedItem.data) && { color: theme.blue },
+                    ]}
+                    value={selectedItem.data}
+                    editable={false}
+                    multiline
+                    scrollEnabled={false}
+                  />
+
+                  <View style={styles.previewActions}>
+                    <Pressable
+                      style={[
+                        styles.previewButton,
+                        { backgroundColor: theme.blue },
+                      ]}
+                      onPress={() => handleCopyItem(selectedItem.data)}
+                    >
+                      <SymbolView
+                        name="doc.on.doc"
+                        tintColor="#FFFFFF"
+                        style={{ width: 18, height: 18 }}
+                      />
+                      <Text style={styles.previewButtonText}>Copy</Text>
+                    </Pressable>
+
+                    <Pressable
+                      style={[
+                        styles.previewButton,
+                        { backgroundColor: theme.green },
+                      ]}
+                      onPress={() => handleShareItem(selectedItem.data)}
+                    >
+                      <SymbolView
+                        name="square.and.arrow.up"
+                        tintColor="#FFFFFF"
+                        style={{ width: 18, height: 18 }}
+                      />
+                      <Text style={styles.previewButtonText}>Share</Text>
+                    </Pressable>
+
+                    {isValidUrl(selectedItem.data) && (
+                      <Pressable
+                        style={[
+                          styles.previewButton,
+                          { backgroundColor: theme.indigo },
+                        ]}
+                        onPress={() => {
+                          handleOpenItemUrl(selectedItem.data);
+                          setSelectedItem(null);
+                        }}
+                      >
+                        <SymbolView
+                          name="safari"
+                          tintColor="#FFFFFF"
+                          style={{ width: 18, height: 18 }}
+                        />
+                        <Text style={styles.previewButtonText}>Open</Text>
+                      </Pressable>
+                    )}
+                  </View>
+                </>
+              )}
+            </Pressable>
+          </Pressable>
+        </Modal>
+      </ScrollView>
     );
   }
 
@@ -860,6 +1296,29 @@ export default function ScannerScreen() {
           <View style={[styles.corner, styles.bottomRight]} />
         </Animated.View>
 
+        {/* Multi-scan counter badge */}
+        {multiScan && scannedItems.length > 0 && (
+          <Animated.View
+            entering={FadeIn.duration(200)}
+            style={[styles.multiScanBadge, { top: insets.top + 80 }]}
+          >
+            <BlurView
+              tint="systemMaterialDark"
+              intensity={80}
+              style={styles.multiScanBadgeInner}
+            >
+              <SymbolView
+                name="checkmark.circle.fill"
+                tintColor={theme.green}
+                style={{ width: 20, height: 20 }}
+              />
+              <Text style={styles.multiScanBadgeText}>
+                {scannedItems.length} {scannedItems.length === 1 ? "code" : "codes"} scanned
+              </Text>
+            </BlurView>
+          </Animated.View>
+        )}
+
         {/* Bottom Area */}
         <View style={[styles.bottomArea, { bottom: insets.bottom + 100 }]}>
           <BlurView
@@ -873,9 +1332,40 @@ export default function ScannerScreen() {
               style={{ width: 20, height: 20 }}
             />
             <Text style={styles.instructionText}>
-              Point at a barcode or QR code
+              {multiScan
+                ? "Scan multiple codes, tap Done when finished"
+                : "Point at a barcode or QR code"}
             </Text>
           </BlurView>
+
+          {/* Multi-scan Done button */}
+          {multiScan && scannedItems.length > 0 && (
+            <Pressable
+              style={({ pressed }) => [
+                styles.doneButton,
+                pressed && styles.controlButtonPressed,
+              ]}
+              onPress={handleFinishMultiScan}
+            >
+              <BlurView
+                tint="light"
+                intensity={90}
+                style={styles.doneButtonInner}
+              >
+                <SymbolView
+                  name="checkmark.circle.fill"
+                  tintColor={theme.blue}
+                  style={{ width: 20, height: 20 }}
+                />
+                <Text style={[styles.doneButtonText, { color: theme.blue }]}>
+                  Done
+                </Text>
+                <View style={[styles.doneButtonBadge, { backgroundColor: theme.blue }]}>
+                  <Text style={styles.doneButtonBadgeText}>{scannedItems.length}</Text>
+                </View>
+              </BlurView>
+            </Pressable>
+          )}
 
           {/* Gallery Button */}
           <Pressable
@@ -1238,5 +1728,153 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
+  },
+  // Multi-scan styles
+  multiScanBadge: {
+    position: "absolute",
+    alignSelf: "center",
+  },
+  multiScanBadgeInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    borderCurve: "continuous",
+    overflow: "hidden",
+  },
+  multiScanBadgeText: {
+    color: "rgba(255, 255, 255, 0.9)",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  doneButton: {
+    alignSelf: "center",
+    borderRadius: 14,
+    borderCurve: "continuous",
+    overflow: "hidden",
+  },
+  doneButtonInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+  },
+  doneButtonText: {
+    fontSize: 17,
+    fontWeight: "600",
+  },
+  doneButtonBadge: {
+    minWidth: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 8,
+  },
+  doneButtonBadgeText: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  scanAgainTopButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    paddingVertical: 16,
+    borderRadius: 14,
+    borderCurve: "continuous",
+    marginBottom: 24,
+  },
+  scanAgainTopText: {
+    color: "#FFFFFF",
+    fontSize: 17,
+    fontWeight: "600",
+  },
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    letterSpacing: 0.5,
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  itemsGroup: {
+    borderRadius: 12,
+    borderCurve: "continuous",
+    overflow: "hidden",
+    marginBottom: 24,
+  },
+  itemSeparator: {
+    height: StyleSheet.hairlineWidth,
+    marginLeft: 16,
+  },
+  multiItemRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    gap: 12,
+  },
+  multiItemContent: {
+    flex: 1,
+    gap: 4,
+  },
+  multiItemHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  multiItemBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+    borderRadius: 4,
+    borderCurve: "continuous",
+  },
+  multiItemType: {
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+  },
+  multiItemData: {
+    fontSize: 15,
+    fontFamily: "Menlo",
+  },
+  multiItemActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  multiItemButton: {
+    padding: 6,
+  },
+  continueButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 14,
+    borderRadius: 12,
+    borderCurve: "continuous",
+    borderWidth: 1.5,
+  },
+  continueButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  selectedItemData: {
+    width: "100%",
+    fontSize: 15,
+    lineHeight: 22,
+    fontFamily: "Menlo",
+    padding: 16,
+    borderRadius: 12,
+    borderCurve: "continuous",
+    marginBottom: 20,
   },
 });

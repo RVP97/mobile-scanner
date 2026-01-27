@@ -1,5 +1,11 @@
 import { useStorage } from "@/hooks/useStorage";
 import {
+  clearGenerationHistory,
+  deleteGenerationFromHistory,
+  getGenerationHistory,
+  type GenerationHistoryItem,
+} from "@/utils/generationHistory";
+import {
   clearScanHistory,
   deleteScanFromHistory,
   getScanHistory,
@@ -7,14 +13,19 @@ import {
 } from "@/utils/scanHistory";
 import { useFocusEffect } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
+// @ts-expect-error - no types available
+import { Barcode } from "expo-barcode-generator";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import * as LocalAuthentication from "expo-local-authentication";
+import * as Sharing from "expo-sharing";
 import { SymbolView } from "expo-symbols";
+import QRCodeUtil from "qrcode";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
   Alert,
   FlatList,
+  Modal,
   Pressable,
   RefreshControl,
   Share,
@@ -31,6 +42,66 @@ import Animated, {
   FadeOut,
   LinearTransition,
 } from "react-native-reanimated";
+import { captureRef } from "react-native-view-shot";
+
+// QR Code component for preview
+function QRCode({ value, size = 200 }: { value: string; size?: number }) {
+  const modules = useMemo(() => {
+    try {
+      const qr = QRCodeUtil.create(value, { errorCorrectionLevel: "M" });
+      const data = qr.modules.data;
+      const moduleSize = qr.modules.size;
+
+      const matrix: boolean[][] = [];
+      for (let row = 0; row < moduleSize; row++) {
+        const rowData: boolean[] = [];
+        for (let col = 0; col < moduleSize; col++) {
+          rowData.push(data[row * moduleSize + col] === 1);
+        }
+        matrix.push(rowData);
+      }
+      return matrix;
+    } catch {
+      return null;
+    }
+  }, [value]);
+
+  if (!modules) return null;
+
+  const moduleCount = modules.length;
+  // Use floor to avoid sub-pixel gaps, add 1 to cell height to eliminate row gaps
+  const cellSize = Math.floor(size / moduleCount);
+  const actualSize = cellSize * moduleCount;
+
+  return (
+    <View
+      style={{
+        width: actualSize,
+        height: actualSize,
+        backgroundColor: "#fff",
+        overflow: "hidden",
+      }}
+    >
+      {modules.map((row, rowIndex) => (
+        <View
+          key={`qr-row-${rowIndex * moduleCount}`}
+          style={{ flexDirection: "row", height: cellSize }}
+        >
+          {row.map((cell, colIndex) => (
+            <View
+              key={`qr-${rowIndex * moduleCount + colIndex}`}
+              style={{
+                width: cellSize,
+                height: cellSize + 1,
+                backgroundColor: cell ? "#000" : "#fff",
+              }}
+            />
+          ))}
+        </View>
+      ))}
+    </View>
+  );
+}
 
 // Static colors for Reanimated (PlatformColor not supported)
 const colors = {
@@ -57,7 +128,9 @@ const colors = {
 };
 
 export default function ScanHistoryScreen() {
+  const [selectedTab, setSelectedTab] = useState(0);
   const [history, setHistory] = useState<ScanHistoryItem[]>([]);
+  const [generations, setGenerations] = useState<GenerationHistoryItem[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -69,6 +142,122 @@ export default function ScanHistoryScreen() {
   const [requireAuth] = useStorage("requireAuthForHistory", false);
   const [search, setSearch] = useState("");
   const searchInputRef = useRef<TextInput>(null);
+  const [previewItem, setPreviewItem] = useState<GenerationHistoryItem | null>(
+    null,
+  );
+  const previewCodeRef = useRef<View>(null);
+
+  // Hidden capture refs for copy/share without modal (using refs to avoid re-renders)
+  const [, forceRenderCapture] = useState(0);
+  const captureItemRef = useRef<GenerationHistoryItem | null>(null);
+  const captureActionRef = useRef<"copy" | "share" | null>(null);
+  const hiddenCaptureRef = useRef<View>(null);
+
+  // Handlers for preview modal image actions
+  const handlePreviewCopy = useCallback(async () => {
+    if (!previewCodeRef.current || !previewItem) return;
+    try {
+      const uri = await captureRef(previewCodeRef, {
+        format: "png",
+        quality: 1,
+      });
+      await Clipboard.setImageAsync(uri);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert("Copied", "Image copied to clipboard");
+    } catch {
+      if (previewItem) {
+        await Clipboard.setStringAsync(previewItem.data);
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        Alert.alert("Copied", "Text copied to clipboard");
+      }
+    }
+  }, [previewItem]);
+
+  const handlePreviewShare = useCallback(async () => {
+    if (!previewCodeRef.current || !previewItem) return;
+    try {
+      const uri = await captureRef(previewCodeRef, {
+        format: "png",
+        quality: 1,
+      });
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+      } else {
+        Alert.alert("Error", "Sharing is not available on this device");
+      }
+    } catch {
+      Alert.alert("Error", "Failed to share the image");
+    }
+  }, [previewItem]);
+
+  // Copy/Share from list (hidden capture)
+  const handleGenerationCopy = (item: GenerationHistoryItem) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    captureItemRef.current = item;
+    captureActionRef.current = "copy";
+    forceRenderCapture((n) => n + 1);
+
+    // Use requestAnimationFrame for minimal delay
+    requestAnimationFrame(() => {
+      requestAnimationFrame(async () => {
+        if (!hiddenCaptureRef.current || !captureItemRef.current) return;
+        const itemData = captureItemRef.current.data;
+        try {
+          const uri = await captureRef(hiddenCaptureRef, {
+            format: "png",
+            quality: 1,
+          });
+          captureItemRef.current = null;
+          captureActionRef.current = null;
+          try {
+            await Clipboard.setImageAsync(uri);
+            await Haptics.notificationAsync(
+              Haptics.NotificationFeedbackType.Success,
+            );
+            Alert.alert("Copied", "Image copied to clipboard");
+          } catch {
+            await Clipboard.setStringAsync(itemData);
+            Alert.alert("Copied", "Text copied to clipboard");
+          }
+        } catch {
+          captureItemRef.current = null;
+          captureActionRef.current = null;
+          Alert.alert("Error", "Failed to capture the code");
+        }
+      });
+    });
+  };
+
+  const handleGenerationShare = (item: GenerationHistoryItem) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    captureItemRef.current = item;
+    captureActionRef.current = "share";
+    forceRenderCapture((n) => n + 1);
+
+    // Use requestAnimationFrame for minimal delay
+    requestAnimationFrame(() => {
+      requestAnimationFrame(async () => {
+        if (!hiddenCaptureRef.current || !captureItemRef.current) return;
+        try {
+          const uri = await captureRef(hiddenCaptureRef, {
+            format: "png",
+            quality: 1,
+          });
+          captureItemRef.current = null;
+          captureActionRef.current = null;
+          if (await Sharing.isAvailableAsync()) {
+            await Sharing.shareAsync(uri);
+          } else {
+            Alert.alert("Error", "Sharing is not available on this device");
+          }
+        } catch {
+          captureItemRef.current = null;
+          captureActionRef.current = null;
+          Alert.alert("Error", "Failed to capture the code");
+        }
+      });
+    });
+  };
 
   // Filter history based on search
   const filteredHistory = useMemo(() => {
@@ -82,9 +271,25 @@ export default function ScanHistoryScreen() {
     );
   }, [history, search]);
 
+  // Filter generations based on search
+  const filteredGenerations = useMemo(() => {
+    if (!search) return generations;
+    const query = search.toLowerCase();
+    return generations.filter(
+      (item) =>
+        item.data.toLowerCase().includes(query) ||
+        item.formatName.toLowerCase().includes(query) ||
+        item.formattedDate.toLowerCase().includes(query),
+    );
+  }, [generations, search]);
+
   const loadHistory = useCallback(async () => {
-    const scanHistory = await getScanHistory();
+    const [scanHistory, genHistory] = await Promise.all([
+      getScanHistory(),
+      getGenerationHistory(),
+    ]);
     setHistory(scanHistory);
+    setGenerations(genHistory);
   }, []);
 
   const onRefresh = async () => {
@@ -175,9 +380,12 @@ export default function ScanHistoryScreen() {
   };
 
   const handleClearAll = () => {
+    const isScans = selectedTab === 0;
     Alert.alert(
-      "Clear History",
-      "Delete all scan history? This cannot be undone.",
+      isScans ? "Clear Scan History" : "Clear Generation History",
+      isScans
+        ? "Delete all scan history? This cannot be undone."
+        : "Delete all generation history? This cannot be undone.",
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -187,7 +395,33 @@ export default function ScanHistoryScreen() {
             await Haptics.notificationAsync(
               Haptics.NotificationFeedbackType.Warning,
             );
-            await clearScanHistory();
+            if (isScans) {
+              await clearScanHistory();
+            } else {
+              await clearGenerationHistory();
+            }
+            await loadHistory();
+          },
+        },
+      ],
+    );
+  };
+
+  const handleDeleteGeneration = async (id: string) => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    Alert.alert(
+      "Delete Generation",
+      "Are you sure you want to delete this generation?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            await Haptics.notificationAsync(
+              Haptics.NotificationFeedbackType.Success,
+            );
+            await deleteGenerationFromHistory(id);
             await loadHistory();
           },
         },
@@ -296,6 +530,128 @@ export default function ScanHistoryScreen() {
     </Animated.View>
   );
 
+  const renderGenerationItem = ({
+    item,
+    index,
+  }: {
+    item: GenerationHistoryItem;
+    index: number;
+  }) => (
+    <Animated.View
+      entering={FadeInDown.delay(index * 50).duration(300)}
+      exiting={FadeOut.duration(200)}
+      layout={LinearTransition}
+    >
+      <View
+        style={[
+          styles.scanCard,
+          { backgroundColor: theme.secondaryBackground },
+        ]}
+      >
+        <View style={styles.cardHeader}>
+          <View
+            style={[styles.typeBadge, { backgroundColor: theme.blue + "20" }]}
+          >
+            <SymbolView
+              name="barcode"
+              tintColor={theme.blue}
+              style={{ width: 14, height: 14 }}
+            />
+            <Text style={[styles.typeText, { color: theme.blue }]}>
+              {item.formatName}
+            </Text>
+          </View>
+          <Text style={[styles.dateText, { color: theme.tertiaryLabel }]}>
+            {item.formattedDate}
+          </Text>
+        </View>
+
+        <TextInput
+          style={[styles.dataText, { color: theme.label }]}
+          value={item.data}
+          editable={false}
+          multiline
+          scrollEnabled={false}
+        />
+
+        <View style={styles.cardActions}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.cardButton,
+              { backgroundColor: theme.tertiaryBackground },
+              pressed && styles.buttonPressed,
+            ]}
+            onPress={() => handleGenerationCopy(item)}
+          >
+            <SymbolView
+              name="photo.on.rectangle"
+              tintColor={theme.blue}
+              style={{ width: 16, height: 16 }}
+            />
+            <Text style={[styles.cardButtonText, { color: theme.blue }]}>
+              Copy
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.cardButton,
+              { backgroundColor: theme.tertiaryBackground },
+              pressed && styles.buttonPressed,
+            ]}
+            onPress={() => handleGenerationShare(item)}
+          >
+            <SymbolView
+              name="square.and.arrow.up"
+              tintColor={theme.blue}
+              style={{ width: 16, height: 16 }}
+            />
+            <Text style={[styles.cardButtonText, { color: theme.blue }]}>
+              Share
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.cardButton,
+              { backgroundColor: theme.tertiaryBackground },
+              pressed && styles.buttonPressed,
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setPreviewItem(item);
+            }}
+          >
+            <SymbolView
+              name="eye"
+              tintColor={theme.blue}
+              style={{ width: 16, height: 16 }}
+            />
+            <Text style={[styles.cardButtonText, { color: theme.blue }]}>
+              Preview
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.cardButton,
+              styles.deleteButton,
+              { backgroundColor: theme.tertiaryBackground },
+              pressed && styles.buttonPressed,
+            ]}
+            onPress={() => handleDeleteGeneration(item.id)}
+          >
+            <SymbolView
+              name="trash"
+              tintColor={theme.red}
+              style={{ width: 16, height: 16 }}
+            />
+          </Pressable>
+        </View>
+      </View>
+    </Animated.View>
+  );
+
   const handleEnableHistory = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setSaveHistory(true);
@@ -346,8 +702,11 @@ export default function ScanHistoryScreen() {
   );
 
   const renderEmptyState = () => {
+    const isScansTab = selectedTab === 0;
+    const currentList = isScansTab ? history : generations;
+
     // Show no results state when searching
-    if (search && history.length > 0) {
+    if (search && currentList.length > 0) {
       return (
         <Animated.View
           entering={FadeIn.duration(400)}
@@ -366,16 +725,44 @@ export default function ScanHistoryScreen() {
           <Text
             style={[styles.emptyDescription, { color: theme.secondaryLabel }]}
           >
-            No scans found for "{search}"
+            No {isScansTab ? "scans" : "generations"} found for "{search}"
           </Text>
         </Animated.View>
       );
     }
 
-    if (!saveHistory) {
+    // For scans tab, show disabled state if history is turned off
+    if (isScansTab && !saveHistory) {
       return renderDisabledState();
     }
 
+    // Empty state for scans
+    if (isScansTab) {
+      return (
+        <Animated.View
+          entering={FadeIn.duration(400)}
+          style={[styles.emptyContainer, { height: emptyStateHeight }]}
+        >
+          <View style={styles.emptyIconContainer}>
+            <SymbolView
+              name="qrcode.viewfinder"
+              tintColor={theme.tertiaryLabel}
+              style={{ width: 80, height: 80 }}
+            />
+          </View>
+          <Text style={[styles.emptyTitle, { color: theme.label }]}>
+            No Scans Yet
+          </Text>
+          <Text
+            style={[styles.emptyDescription, { color: theme.secondaryLabel }]}
+          >
+            Scanned barcodes and QR codes will appear here
+          </Text>
+        </Animated.View>
+      );
+    }
+
+    // Empty state for generations
     return (
       <Animated.View
         entering={FadeIn.duration(400)}
@@ -383,18 +770,18 @@ export default function ScanHistoryScreen() {
       >
         <View style={styles.emptyIconContainer}>
           <SymbolView
-            name="qrcode.viewfinder"
+            name="barcode"
             tintColor={theme.tertiaryLabel}
             style={{ width: 80, height: 80 }}
           />
         </View>
         <Text style={[styles.emptyTitle, { color: theme.label }]}>
-          No Scans Yet
+          No Generations Yet
         </Text>
         <Text
           style={[styles.emptyDescription, { color: theme.secondaryLabel }]}
         >
-          Scanned barcodes and QR codes will appear here
+          Generated QR codes and barcodes will appear here
         </Text>
       </Animated.View>
     );
@@ -450,7 +837,9 @@ export default function ScanHistoryScreen() {
   };
 
   const renderSearchBar = () => {
-    if (history.length === 0) return null;
+    const isScansTab = selectedTab === 0;
+    const currentList = isScansTab ? history : generations;
+    if (currentList.length === 0) return null;
 
     return (
       <View style={styles.searchContainer}>
@@ -467,7 +856,7 @@ export default function ScanHistoryScreen() {
           <TextInput
             ref={searchInputRef}
             style={[styles.searchInput, { color: theme.label }]}
-            placeholder="Search scans..."
+            placeholder={isScansTab ? "Search scans..." : "Search generations..."}
             placeholderTextColor={theme.tertiaryLabel}
             value={search}
             onChangeText={setSearch}
@@ -498,21 +887,84 @@ export default function ScanHistoryScreen() {
 
   const renderHeader = () => {
     const banner = renderDisabledBanner();
-    const hasItems = history.length > 0;
+    const isScans = selectedTab === 0;
+    const currentList = isScans ? history : generations;
+    const currentFiltered = isScans ? filteredHistory : filteredGenerations;
+    const hasItems = currentList.length > 0;
     const isSearching = search.length > 0;
+    const itemName = isScans ? "scan" : "generation";
+    const itemNamePlural = isScans ? "scans" : "generations";
 
     return (
       <View>
+        {/* Segmented Control */}
+        <View
+          style={[
+            styles.segmentedControlContainer,
+            { backgroundColor: theme.tertiaryBackground },
+          ]}
+        >
+          <Pressable
+            style={[
+              styles.segmentedButton,
+              selectedTab === 0 && [
+                styles.segmentedButtonActive,
+                { backgroundColor: theme.secondaryBackground },
+              ],
+            ]}
+            onPress={() => {
+              if (selectedTab !== 0) {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setSelectedTab(0);
+                setSearch("");
+              }
+            }}
+          >
+            <Text
+              style={[
+                styles.segmentedButtonText,
+                { color: selectedTab === 0 ? theme.label : theme.secondaryLabel },
+              ]}
+            >
+              Scans
+            </Text>
+          </Pressable>
+          <Pressable
+            style={[
+              styles.segmentedButton,
+              selectedTab === 1 && [
+                styles.segmentedButtonActive,
+                { backgroundColor: theme.secondaryBackground },
+              ],
+            ]}
+            onPress={() => {
+              if (selectedTab !== 1) {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setSelectedTab(1);
+                setSearch("");
+              }
+            }}
+          >
+            <Text
+              style={[
+                styles.segmentedButtonText,
+                { color: selectedTab === 1 ? theme.label : theme.secondaryLabel },
+              ]}
+            >
+              Generations
+            </Text>
+          </Pressable>
+        </View>
         {renderSearchBar()}
         {banner}
         {hasItems && (
-          <Animated.View entering={FadeIn} style={styles.listHeader}>
+          <View style={styles.listHeader}>
             <Text
               style={[styles.listHeaderText, { color: theme.secondaryLabel }]}
             >
               {isSearching
-                ? `${filteredHistory.length} of ${history.length} scans`
-                : `${history.length} ${history.length === 1 ? "scan" : "scans"}`}
+                ? `${currentFiltered.length} of ${currentList.length} ${itemNamePlural}`
+                : `${currentList.length} ${currentList.length === 1 ? itemName : itemNamePlural}`}
             </Text>
             {!isSearching && (
               <Pressable
@@ -533,7 +985,7 @@ export default function ScanHistoryScreen() {
                 </Text>
               </Pressable>
             )}
-          </Animated.View>
+          </View>
         )}
       </View>
     );
@@ -588,34 +1040,188 @@ export default function ScanHistoryScreen() {
     );
   }
 
-  const isEmpty = history.length === 0;
+  const isScans = selectedTab === 0;
+  const currentList = isScans ? history : generations;
+  const currentFilteredList = isScans ? filteredHistory : filteredGenerations;
+  const isEmpty = currentList.length === 0;
 
   return (
-    <FlatList
-      style={[styles.container, { backgroundColor: theme.background }]}
-      data={filteredHistory}
-      renderItem={renderScanItem}
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={[
-        styles.listContent,
-        isEmpty && styles.listContentEmpty,
-      ]}
-      contentInsetAdjustmentBehavior="automatic"
-      ListHeaderComponent={isEmpty ? undefined : renderHeader}
-      ListEmptyComponent={renderEmptyState}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          tintColor={theme.blue}
-        />
-      }
-      showsVerticalScrollIndicator={false}
-      keyboardDismissMode="on-drag"
-      ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-      bounces={!isEmpty}
-      scrollEnabled={!isEmpty || refreshing}
-    />
+    <>
+      <FlatList<ScanHistoryItem | GenerationHistoryItem>
+        style={[styles.container, { backgroundColor: theme.background }]}
+        data={currentFilteredList}
+        renderItem={({ item, index }) =>
+          isScans
+            ? renderScanItem({ item: item as ScanHistoryItem, index })
+            : renderGenerationItem({
+                item: item as GenerationHistoryItem,
+                index,
+              })
+        }
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={[
+          styles.listContent,
+          isEmpty && styles.listContentEmpty,
+        ]}
+        contentInsetAdjustmentBehavior="automatic"
+        ListHeaderComponent={renderHeader}
+        ListEmptyComponent={renderEmptyState}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={theme.blue}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+        keyboardDismissMode="on-drag"
+        ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+        bounces={!isEmpty}
+        scrollEnabled={!isEmpty || refreshing}
+      />
+
+      {/* Preview Modal */}
+      <Modal
+        visible={previewItem !== null}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setPreviewItem(null)}
+      >
+        <Pressable
+          style={styles.previewModalOverlay}
+          onPress={() => setPreviewItem(null)}
+        >
+          <Pressable
+            style={[
+              styles.previewModalContent,
+              { backgroundColor: theme.secondaryBackground },
+            ]}
+            onPress={(e) => e.stopPropagation()}
+          >
+            {previewItem && (
+              <>
+                <View style={styles.previewHeader}>
+                  <Text style={[styles.previewTitle, { color: theme.label }]}>
+                    {previewItem.formatName}
+                  </Text>
+                  <Pressable
+                    onPress={() => setPreviewItem(null)}
+                    hitSlop={10}
+                    style={({ pressed }) => pressed && { opacity: 0.6 }}
+                  >
+                    <SymbolView
+                      name="xmark.circle.fill"
+                      tintColor={theme.tertiaryLabel}
+                      style={{ width: 28, height: 28 }}
+                    />
+                  </Pressable>
+                </View>
+
+                <View
+                  ref={previewCodeRef}
+                  style={styles.previewCodeContainer}
+                  collapsable={false}
+                >
+                  {previewItem.format === "qr" ? (
+                    <QRCode value={previewItem.data} size={200} />
+                  ) : (
+                    <Barcode
+                      value={previewItem.data}
+                      options={{
+                        format: previewItem.format.toUpperCase(),
+                        background: "#fff",
+                        lineColor: "#000",
+                        width: 1.5,
+                        height: 80,
+                        displayValue: true,
+                        fontSize: 12,
+                      }}
+                    />
+                  )}
+                </View>
+
+                <Text
+                  style={[styles.previewData, { color: theme.secondaryLabel }]}
+                  numberOfLines={3}
+                  selectable
+                >
+                  {previewItem.data}
+                </Text>
+
+                <View style={styles.previewActions}>
+                  <Pressable
+                    style={[
+                      styles.previewButton,
+                      { backgroundColor: theme.blue },
+                    ]}
+                    onPress={handlePreviewCopy}
+                  >
+                    <SymbolView
+                      name="photo.on.rectangle"
+                      tintColor="#FFFFFF"
+                      style={{ width: 18, height: 18 }}
+                    />
+                    <Text style={styles.previewButtonText}>Copy</Text>
+                  </Pressable>
+
+                  <Pressable
+                    style={[
+                      styles.previewButton,
+                      { backgroundColor: theme.blue },
+                    ]}
+                    onPress={handlePreviewShare}
+                  >
+                    <SymbolView
+                      name="square.and.arrow.up"
+                      tintColor="#FFFFFF"
+                      style={{ width: 18, height: 18 }}
+                    />
+                    <Text style={styles.previewButtonText}>Share</Text>
+                  </Pressable>
+                </View>
+              </>
+            )}
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Hidden view for capturing codes without showing modal */}
+      {captureItemRef.current && (
+        <View
+          style={{
+            position: "absolute",
+            left: -9999,
+            top: -9999,
+          }}
+        >
+          <View
+            ref={hiddenCaptureRef}
+            style={{
+              padding: 16,
+              backgroundColor: "#FFFFFF",
+            }}
+            collapsable={false}
+          >
+            {captureItemRef.current.format === "qr" ? (
+              <QRCode value={captureItemRef.current.data} size={220} />
+            ) : (
+              <Barcode
+                value={captureItemRef.current.data}
+                options={{
+                  format: captureItemRef.current.format.toUpperCase(),
+                  background: "#fff",
+                  lineColor: "#000",
+                  width: 2,
+                  height: 100,
+                  displayValue: true,
+                  fontSize: 16,
+                }}
+              />
+            )}
+          </View>
+        </View>
+      )}
+    </>
   );
 }
 
@@ -632,6 +1238,27 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingTop: 0,
     paddingBottom: 0,
+  },
+  segmentedControlContainer: {
+    flexDirection: "row",
+    padding: 3,
+    borderRadius: 10,
+    borderCurve: "continuous",
+    marginBottom: 16,
+  },
+  segmentedButton: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: "center",
+    borderRadius: 8,
+    borderCurve: "continuous",
+  },
+  segmentedButtonActive: {
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+  },
+  segmentedButtonText: {
+    fontSize: 13,
+    fontWeight: "600",
   },
   searchContainer: {
     marginBottom: 16,
@@ -870,6 +1497,64 @@ const styles = StyleSheet.create({
   unlockButtonText: {
     color: "#FFFFFF",
     fontSize: 17,
+    fontWeight: "600",
+  },
+  previewModalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  previewModalContent: {
+    width: "90%",
+    maxWidth: 360,
+    borderRadius: 20,
+    borderCurve: "continuous",
+    padding: 20,
+    alignItems: "center",
+  },
+  previewHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 20,
+  },
+  previewTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  previewCodeContainer: {
+    padding: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    borderCurve: "continuous",
+    marginBottom: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  previewData: {
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  previewActions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  previewButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    borderCurve: "continuous",
+  },
+  previewButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
     fontWeight: "600",
   },
 });

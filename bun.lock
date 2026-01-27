@@ -8,6 +8,7 @@
         "@expo/vector-icons": "^15.0.3",
         "@react-native-async-storage/async-storage": "^2.2.0",
         "@react-native-picker/picker": "^2.11.4",
+        "@react-native-segmented-control/segmented-control": "^2.5.7",
         "@react-navigation/bottom-tabs": "^7.3.10",
         "@react-navigation/elements": "^2.3.8",
         "@react-navigation/native": "^7.1.6",
@@ -402,6 +403,8 @@
     "@react-native-async-storage/async-storage": ["@react-native-async-storage/async-storage@2.2.0", "", { "dependencies": { "merge-options": "^3.0.4" }, "peerDependencies": { "react-native": "^0.0.0-0 || >=0.65 <1.0" } }, "sha512-gvRvjR5JAaUZF8tv2Kcq/Gbt3JHwbKFYfmb445rhOj6NUMx3qPLixmDx5pZAyb9at1bYvJ4/eTUipU5aki45xw=="],
 
     "@react-native-picker/picker": ["@react-native-picker/picker@2.11.4", "", { "peerDependencies": { "react": "*", "react-native": "*" } }, "sha512-Kf8h1AMnBo54b1fdiVylP2P/iFcZqzpMYcglC28EEFB1DEnOjsNr6Ucqc+3R9e91vHxEDnhZFbYDmAe79P2gjA=="],
+
+    "@react-native-segmented-control/segmented-control": ["@react-native-segmented-control/segmented-control@2.5.7", "", { "peerDependencies": { "react": ">=16.0", "react-native": ">=0.62" } }, "sha512-l84YeVX8xAU3lvOJSvV4nK/NbGhIm2gBfveYolwaoCbRp+/SLXtc6mYrQmM9ScXNwU14mnzjQTpTHWl5YPnkzQ=="],
 
     "@react-native/assets-registry": ["@react-native/assets-registry@0.81.5", "", {}, "sha512-705B6x/5Kxm1RKRvSv0ADYWm5JOnoiQ1ufW7h8uu2E6G9Of/eE6hP/Ivw3U5jI16ERqZxiKQwk34VJbB0niX9w=="],
 

@@ -1,6 +1,8 @@
+import { saveGenerationToHistory } from "@/utils/generationHistory";
 import { Picker } from "@react-native-picker/picker";
 // @ts-expect-error - no types available
 import { Barcode } from "expo-barcode-generator";
+import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import { SymbolView } from "expo-symbols";
 import { Component, useMemo, useRef, useState, type ReactNode } from "react";
@@ -66,20 +68,31 @@ function QRCode({ value, size = 200 }: { value: string; size?: number }) {
 
   if (!modules) return null;
 
-  const cellSize = size / modules.length;
-
   const moduleCount = modules.length;
-  
+  // Use floor to avoid sub-pixel gaps, add 1 to cell height to eliminate row gaps
+  const cellSize = Math.floor(size / moduleCount);
+  const actualSize = cellSize * moduleCount;
+
   return (
-    <View style={{ width: size, height: size, backgroundColor: "#fff" }}>
+    <View
+      style={{
+        width: actualSize,
+        height: actualSize,
+        backgroundColor: "#fff",
+        overflow: "hidden",
+      }}
+    >
       {modules.map((row, rowIndex) => (
-        <View key={`qr-row-${rowIndex * moduleCount}`} style={{ flexDirection: "row" }}>
+        <View
+          key={`qr-row-${rowIndex * moduleCount}`}
+          style={{ flexDirection: "row", height: cellSize }}
+        >
           {row.map((cell, colIndex) => (
             <View
               key={`qr-${rowIndex * moduleCount + colIndex}`}
               style={{
                 width: cellSize,
-                height: cellSize,
+                height: cellSize + 1,
                 backgroundColor: cell ? "#000" : "#fff",
               }}
             />
@@ -379,6 +392,32 @@ export default function GeneratorScreen() {
     Keyboard.dismiss();
     setBarcodeError(false);
     setGeneratedValue(inputValue);
+
+    // Save to generation history (use format for barcodes, id for QR)
+    saveGenerationToHistory(
+      inputValue,
+      selectedFormat.format || selectedFormat.id,
+      selectedFormat.name,
+    );
+  };
+
+  const handleCopy = async () => {
+    if (!codeRef.current || !generatedValue) return;
+
+    try {
+      const uri = await captureRef(codeRef, {
+        format: "png",
+        quality: 1,
+      });
+      await Clipboard.setImageAsync(uri);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert("Copied", "Image copied to clipboard");
+    } catch {
+      // Fallback to copying text
+      await Clipboard.setStringAsync(generatedValue);
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      Alert.alert("Copied", "Text copied to clipboard");
+    }
   };
 
   const handleShare = async () => {
@@ -557,20 +596,35 @@ export default function GeneratorScreen() {
             )}
           </View>
 
-          {/* Share Button */}
-          <Pressable
-            style={[styles.shareButton, { backgroundColor: theme.secondaryBackground }]}
-            onPress={handleShare}
-          >
-            <SymbolView
-              name="square.and.arrow.up"
-              size={20}
-              tintColor={theme.blue}
-            />
-            <Text style={[styles.shareButtonText, { color: theme.blue }]}>
-              Share
-            </Text>
-          </Pressable>
+          {/* Action Buttons */}
+          <View style={styles.actionButtons}>
+            <Pressable
+              style={[styles.actionButton, { backgroundColor: theme.secondaryBackground }]}
+              onPress={handleCopy}
+            >
+              <SymbolView
+                name="photo.on.rectangle"
+                size={20}
+                tintColor={theme.blue}
+              />
+              <Text style={[styles.actionButtonText, { color: theme.blue }]}>
+                Copy
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[styles.actionButton, { backgroundColor: theme.secondaryBackground }]}
+              onPress={handleShare}
+            >
+              <SymbolView
+                name="square.and.arrow.up"
+                size={20}
+                tintColor={theme.blue}
+              />
+              <Text style={[styles.actionButtonText, { color: theme.blue }]}>
+                Share
+              </Text>
+            </Pressable>
+          </View>
         </View>
       )}
     </ScrollView>
@@ -644,7 +698,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     minHeight: 200,
   },
-  shareButton: {
+  actionButtons: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 12,
+  },
+  actionButton: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -652,9 +712,8 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 10,
     borderCurve: "continuous",
-    marginTop: 12,
   },
-  shareButtonText: {
+  actionButtonText: {
     fontSize: 17,
     fontWeight: "600",
   },

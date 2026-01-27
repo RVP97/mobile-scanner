@@ -1,15 +1,12 @@
 import { Stack } from "expo-router";
-import { PlatformColor } from "react-native";
 
-export default function SettingsLayout() {
+export default function ExploreLayout() {
   return (
     <Stack
       screenOptions={{
         headerTransparent: true,
         headerBlurEffect: "systemMaterial",
         headerShadowVisible: false,
-        headerLargeTitleShadowVisible: false,
-        headerTitleStyle: { color: PlatformColor("label") },
         headerLargeTitle: true,
         headerLargeStyle: { backgroundColor: "transparent" },
       }}
@@ -17,7 +14,8 @@ export default function SettingsLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Settings",
+          title: "History",
+          headerLargeTitle: true,
         }}
       />
     </Stack>

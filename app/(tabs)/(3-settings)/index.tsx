@@ -143,7 +143,6 @@ export default function SettingsScreen() {
   const [saveHistory, setSaveHistory] = useStorage("saveHistory", true);
   const [autoCopy, setAutoCopy] = useStorage("autoCopy", false);
   const [autoOpenUrl, setAutoOpenUrl] = useStorage("autoOpenUrl", false);
-  const [scanOnLaunch, setScanOnLaunch] = useStorage("scanOnLaunch", false);
   const [requireAuth, setRequireAuth] = useStorage("requireAuthForHistory", false);
   const [biometricType, setBiometricType] = useState<string>("Face ID");
 
@@ -345,18 +344,6 @@ export default function SettingsScreen() {
             subtitle="Open URLs automatically after scanning"
             value={autoOpenUrl}
             onValueChange={setAutoOpenUrl}
-            theme={theme}
-          />
-          <View
-            style={[styles.separator, { backgroundColor: theme.separator }]}
-          />
-          <SettingsRow
-            icon="camera.viewfinder"
-            iconColor="#5856D6"
-            title="Scan on Launch"
-            subtitle="Open scanner when app starts"
-            value={scanOnLaunch}
-            onValueChange={setScanOnLaunch}
             theme={theme}
           />
         </View>

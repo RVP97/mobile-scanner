@@ -4,6 +4,8 @@ import BarcodeScanning, {
   BarcodeFormat,
 } from "@react-native-ml-kit/barcode-scanning";
 import { useAudioPlayer } from "expo-audio";
+// @ts-expect-error - no types available
+import { Barcode } from "expo-barcode-generator";
 import { BlurView } from "expo-blur";
 import {
   type BarcodeScanningResult,
@@ -14,11 +16,14 @@ import {
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
+import * as Sharing from "expo-sharing";
 import { SymbolView } from "expo-symbols";
-import { useEffect, useState } from "react";
+import QRCodeUtil from "qrcode";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Linking,
+  Modal,
   PlatformColor,
   Pressable,
   ScrollView,
@@ -31,6 +36,82 @@ import {
 } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { captureRef } from "react-native-view-shot";
+
+// QR Code component for preview
+function QRCode({ value, size = 200 }: { value: string; size?: number }) {
+  const modules = useMemo(() => {
+    try {
+      const qr = QRCodeUtil.create(value, { errorCorrectionLevel: "M" });
+      const data = qr.modules.data;
+      const moduleSize = qr.modules.size;
+
+      const matrix: boolean[][] = [];
+      for (let row = 0; row < moduleSize; row++) {
+        const rowData: boolean[] = [];
+        for (let col = 0; col < moduleSize; col++) {
+          rowData.push(data[row * moduleSize + col] === 1);
+        }
+        matrix.push(rowData);
+      }
+      return matrix;
+    } catch {
+      return null;
+    }
+  }, [value]);
+
+  if (!modules) return null;
+
+  const moduleCount = modules.length;
+  const cellSize = Math.floor(size / moduleCount);
+  const actualSize = cellSize * moduleCount;
+
+  return (
+    <View
+      style={{
+        width: actualSize,
+        height: actualSize,
+        backgroundColor: "#fff",
+        overflow: "hidden",
+      }}
+    >
+      {modules.map((row, rowIndex) => (
+        <View
+          key={`qr-row-${rowIndex * moduleCount}`}
+          style={{ flexDirection: "row", height: cellSize }}
+        >
+          {row.map((cell, colIndex) => (
+            <View
+              key={`qr-${rowIndex * moduleCount + colIndex}`}
+              style={{
+                width: cellSize,
+                height: cellSize + 1,
+                backgroundColor: cell ? "#000" : "#fff",
+              }}
+            />
+          ))}
+        </View>
+      ))}
+    </View>
+  );
+}
+
+// Map scan type to barcode format for rendering
+function getBarcodeFormat(type: string): string | null {
+  const formatMap: Record<string, string> = {
+    code128: "CODE128",
+    code39: "CODE39",
+    code93: "CODE93",
+    ean13: "EAN13",
+    ean8: "EAN8",
+    upc_a: "UPC",
+    upc_e: "UPCE",
+    itf14: "ITF14",
+    itf: "ITF",
+    codabar: "codabar",
+  };
+  return formatMap[type.toLowerCase()] || null;
+}
 
 // Static colors for Reanimated (PlatformColor not supported)
 const colors = {
@@ -84,11 +165,14 @@ export default function ScannerScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [scannedData, setScannedData] = useState<string>("");
+  const [scannedType, setScannedType] = useState<string>("");
   const [cameraType, setCameraType] = useState<CameraType>("back");
   const [flashOn, setFlashOn] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
+  const previewCodeRef = useRef<View>(null);
 
   // Settings
   const [hapticEnabled] = useStorage("hapticEnabled", true);
@@ -147,6 +231,7 @@ export default function ScannerScreen() {
 
       setScanned(true);
       setScannedData(data);
+      setScannedType(type);
 
       // Save to history if enabled
       if (saveHistory) {
@@ -188,6 +273,76 @@ export default function ScannerScreen() {
     }
     setScanned(false);
     setScannedData("");
+    setScannedType("");
+  };
+
+  const handleOpenPreview = async () => {
+    if (hapticEnabled) {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setShowPreview(true);
+  };
+
+  const handlePreviewCopy = async () => {
+    if (!previewCodeRef.current || !scannedData) return;
+    try {
+      const uri = await captureRef(previewCodeRef, {
+        format: "png",
+        quality: 1,
+      });
+      await Clipboard.setImageAsync(uri);
+      if (hapticEnabled) {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
+      Alert.alert("Copied", "Image copied to clipboard");
+    } catch {
+      await Clipboard.setStringAsync(scannedData);
+      if (hapticEnabled) {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+      Alert.alert("Copied", "Text copied to clipboard");
+    }
+  };
+
+  const handlePreviewShare = async () => {
+    if (!previewCodeRef.current || !scannedData) return;
+    try {
+      const uri = await captureRef(previewCodeRef, {
+        format: "png",
+        quality: 1,
+      });
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+      } else {
+        Alert.alert("Error", "Sharing is not available on this device");
+      }
+    } catch {
+      Alert.alert("Error", "Failed to share the image");
+    }
+  };
+
+  // Determine if we can render a preview for this barcode type
+  const canRenderPreview = scannedType === "qr" || getBarcodeFormat(scannedType) !== null;
+
+  // Get display name for the code type
+  const getCodeTypeName = (type: string): string => {
+    const nameMap: Record<string, string> = {
+      qr: "QR Code",
+      code128: "CODE 128",
+      code39: "CODE 39",
+      code93: "CODE 93",
+      ean13: "EAN-13",
+      ean8: "EAN-8",
+      upc_a: "UPC-A",
+      upc_e: "UPC-E",
+      itf14: "ITF-14",
+      itf: "ITF",
+      codabar: "Codabar",
+      pdf417: "PDF417",
+      aztec: "Aztec",
+      datamatrix: "Data Matrix",
+    };
+    return nameMap[type.toLowerCase()] || type.toUpperCase();
   };
 
   const toggleFlash = async () => {
@@ -224,6 +379,9 @@ export default function ScannerScreen() {
 
         if (barcodes.length > 0) {
           const barcode = barcodes[0];
+          const formatString =
+            barcodeFormatToString[barcode.format] || "unknown";
+          
           // Play sound if enabled
           if (soundEnabled) {
             player.seekTo(0);
@@ -239,11 +397,10 @@ export default function ScannerScreen() {
 
           setScanned(true);
           setScannedData(barcode.value);
+          setScannedType(formatString);
 
           // Save to history if enabled
           if (saveHistory) {
-            const formatString =
-              barcodeFormatToString[barcode.format] || "unknown";
             await saveScanToHistory(barcode.value, formatString);
           }
 
@@ -483,6 +640,34 @@ export default function ScannerScreen() {
               </Pressable>
             )}
           </View>
+
+          {/* Preview Button - separate row */}
+          {canRenderPreview && (
+            <Pressable
+              style={({ pressed }) => [
+                styles.previewButtonRow,
+                { backgroundColor: theme.secondaryBackground },
+                pressed && styles.gridButtonPressed,
+              ]}
+              onPress={handleOpenPreview}
+            >
+              <View
+                style={[
+                  styles.gridIconWrap,
+                  { backgroundColor: theme.orange + "15" },
+                ]}
+              >
+                <SymbolView
+                  name="eye.fill"
+                  tintColor={theme.orange}
+                  style={{ width: 24, height: 24 }}
+                />
+              </View>
+              <Text style={[styles.gridButtonLabel, { color: theme.label }]}>
+                Preview Code
+              </Text>
+            </Pressable>
+          )}
         </Animated.View>
 
         {/* Scan Again Button */}
@@ -503,6 +688,107 @@ export default function ScannerScreen() {
             <Text style={styles.scanAgainText}>Scan Another</Text>
           </Pressable>
         </Animated.View>
+
+        {/* Preview Modal */}
+        <Modal
+          visible={showPreview}
+          animationType="fade"
+          transparent
+          onRequestClose={() => setShowPreview(false)}
+        >
+          <Pressable
+            style={styles.previewModalOverlay}
+            onPress={() => setShowPreview(false)}
+          >
+            <Pressable
+              style={[
+                styles.previewModalContent,
+                { backgroundColor: theme.secondaryBackground },
+              ]}
+              onPress={(e) => e.stopPropagation()}
+            >
+              <View style={styles.previewHeader}>
+                <Text style={[styles.previewTitle, { color: theme.label }]}>
+                  {getCodeTypeName(scannedType)}
+                </Text>
+                <Pressable
+                  onPress={() => setShowPreview(false)}
+                  hitSlop={10}
+                  style={({ pressed }) => pressed && { opacity: 0.6 }}
+                >
+                  <SymbolView
+                    name="xmark.circle.fill"
+                    tintColor={theme.secondaryLabel}
+                    style={{ width: 28, height: 28 }}
+                  />
+                </Pressable>
+              </View>
+
+              <View
+                ref={previewCodeRef}
+                style={styles.previewCodeContainer}
+                collapsable={false}
+              >
+                {scannedType === "qr" ? (
+                  <QRCode value={scannedData} size={200} />
+                ) : getBarcodeFormat(scannedType) ? (
+                  <Barcode
+                    value={scannedData}
+                    options={{
+                      format: getBarcodeFormat(scannedType),
+                      background: "#fff",
+                      lineColor: "#000",
+                      width: 1.5,
+                      height: 80,
+                      displayValue: true,
+                      fontSize: 12,
+                    }}
+                  />
+                ) : null}
+              </View>
+
+              <Text
+                style={[styles.previewData, { color: theme.secondaryLabel }]}
+                numberOfLines={3}
+                selectable
+              >
+                {scannedData}
+              </Text>
+
+              <View style={styles.previewActions}>
+                <Pressable
+                  style={[
+                    styles.previewButton,
+                    { backgroundColor: theme.blue },
+                  ]}
+                  onPress={handlePreviewCopy}
+                >
+                  <SymbolView
+                    name="photo.on.rectangle"
+                    tintColor="#FFFFFF"
+                    style={{ width: 18, height: 18 }}
+                  />
+                  <Text style={styles.previewButtonText}>Copy</Text>
+                </Pressable>
+
+                <Pressable
+                  style={[
+                    styles.previewButton,
+                    { backgroundColor: theme.blue },
+                  ]}
+                  onPress={handlePreviewShare}
+                >
+                  <SymbolView
+                    name="square.and.arrow.up"
+                    tintColor="#FFFFFF"
+                    style={{ width: 18, height: 18 }}
+                  />
+                  <Text style={styles.previewButtonText}>Share</Text>
+                </Pressable>
+              </View>
+            </Pressable>
+          </Pressable>
+        </Modal>
       </ScrollView>
     );
   }
@@ -883,5 +1169,74 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "700",
+  },
+  previewButtonRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    borderCurve: "continuous",
+    marginTop: 12,
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+  },
+  previewModalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  previewModalContent: {
+    width: "90%",
+    maxWidth: 360,
+    borderRadius: 20,
+    borderCurve: "continuous",
+    padding: 20,
+    alignItems: "center",
+  },
+  previewHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 20,
+  },
+  previewTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  previewCodeContainer: {
+    padding: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    borderCurve: "continuous",
+    marginBottom: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  previewData: {
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  previewActions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  previewButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    borderCurve: "continuous",
+  },
+  previewButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

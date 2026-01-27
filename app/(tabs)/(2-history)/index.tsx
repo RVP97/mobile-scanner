@@ -145,7 +145,11 @@ export default function ScanHistoryScreen() {
   const [previewItem, setPreviewItem] = useState<GenerationHistoryItem | null>(
     null,
   );
+  const [previewScanItem, setPreviewScanItem] = useState<ScanHistoryItem | null>(
+    null,
+  );
   const previewCodeRef = useRef<View>(null);
+  const previewScanCodeRef = useRef<View>(null);
 
   // Hidden capture refs for copy/share without modal (using refs to avoid re-renders)
   const [, forceRenderCapture] = useState(0);
@@ -189,6 +193,86 @@ export default function ScanHistoryScreen() {
       Alert.alert("Error", "Failed to share the image");
     }
   }, [previewItem]);
+
+  // Handlers for scan preview modal
+  const handleScanPreviewCopy = useCallback(async () => {
+    if (!previewScanCodeRef.current || !previewScanItem) return;
+    try {
+      const uri = await captureRef(previewScanCodeRef, {
+        format: "png",
+        quality: 1,
+      });
+      await Clipboard.setImageAsync(uri);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert("Copied", "Image copied to clipboard");
+    } catch {
+      if (previewScanItem) {
+        await Clipboard.setStringAsync(previewScanItem.data);
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        Alert.alert("Copied", "Text copied to clipboard");
+      }
+    }
+  }, [previewScanItem]);
+
+  const handleScanPreviewShare = useCallback(async () => {
+    if (!previewScanCodeRef.current || !previewScanItem) return;
+    try {
+      const uri = await captureRef(previewScanCodeRef, {
+        format: "png",
+        quality: 1,
+      });
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+      } else {
+        Alert.alert("Error", "Sharing is not available on this device");
+      }
+    } catch {
+      Alert.alert("Error", "Failed to share the image");
+    }
+  }, [previewScanItem]);
+
+  // Map scan type to barcode format for rendering
+  const getBarcodeFormat = (type: string): string | null => {
+    const formatMap: Record<string, string> = {
+      code128: "CODE128",
+      code39: "CODE39",
+      code93: "CODE93",
+      ean13: "EAN13",
+      ean8: "EAN8",
+      upc_a: "UPC",
+      upc_e: "UPCE",
+      itf14: "ITF14",
+      itf: "ITF",
+      codabar: "codabar",
+    };
+    return formatMap[type.toLowerCase()] || null;
+  };
+
+  // Check if we can render a preview for this barcode type
+  const canRenderScanPreview = (type: string): boolean => {
+    return type === "qr" || getBarcodeFormat(type) !== null;
+  };
+
+  // Get display name for the code type
+  const getCodeTypeName = (type: string): string => {
+    const nameMap: Record<string, string> = {
+      qr: "QR Code",
+      code128: "CODE 128",
+      code39: "CODE 39",
+      code93: "CODE 93",
+      ean13: "EAN-13",
+      ean8: "EAN-8",
+      upc_a: "UPC-A",
+      upc_e: "UPC-E",
+      itf14: "ITF-14",
+      itf: "ITF",
+      codabar: "Codabar",
+      pdf417: "PDF417",
+      aztec: "Aztec",
+      datamatrix: "Data Matrix",
+    };
+    return nameMap[type.toLowerCase()] || type.toUpperCase();
+  };
 
   // Copy/Share from list (hidden capture)
   const handleGenerationCopy = (item: GenerationHistoryItem) => {
@@ -509,6 +593,29 @@ export default function ScanHistoryScreen() {
               Share
             </Text>
           </Pressable>
+
+          {canRenderScanPreview(item.type) && (
+            <Pressable
+              style={({ pressed }) => [
+                styles.cardButton,
+                { backgroundColor: theme.tertiaryBackground },
+                pressed && styles.buttonPressed,
+              ]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setPreviewScanItem(item);
+              }}
+            >
+              <SymbolView
+                name="eye"
+                tintColor={theme.blue}
+                style={{ width: 16, height: 16 }}
+              />
+              <Text style={[styles.cardButtonText, { color: theme.blue }]}>
+                Preview
+              </Text>
+            </Pressable>
+          )}
 
           <Pressable
             style={({ pressed }) => [
@@ -1170,6 +1277,111 @@ export default function ScanHistoryScreen() {
                       { backgroundColor: theme.blue },
                     ]}
                     onPress={handlePreviewShare}
+                  >
+                    <SymbolView
+                      name="square.and.arrow.up"
+                      tintColor="#FFFFFF"
+                      style={{ width: 18, height: 18 }}
+                    />
+                    <Text style={styles.previewButtonText}>Share</Text>
+                  </Pressable>
+                </View>
+              </>
+            )}
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Scan Preview Modal */}
+      <Modal
+        visible={previewScanItem !== null}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setPreviewScanItem(null)}
+      >
+        <Pressable
+          style={styles.previewModalOverlay}
+          onPress={() => setPreviewScanItem(null)}
+        >
+          <Pressable
+            style={[
+              styles.previewModalContent,
+              { backgroundColor: theme.secondaryBackground },
+            ]}
+            onPress={(e) => e.stopPropagation()}
+          >
+            {previewScanItem && (
+              <>
+                <View style={styles.previewHeader}>
+                  <Text style={[styles.previewTitle, { color: theme.label }]}>
+                    {getCodeTypeName(previewScanItem.type)}
+                  </Text>
+                  <Pressable
+                    onPress={() => setPreviewScanItem(null)}
+                    hitSlop={10}
+                    style={({ pressed }) => pressed && { opacity: 0.6 }}
+                  >
+                    <SymbolView
+                      name="xmark.circle.fill"
+                      tintColor={theme.tertiaryLabel}
+                      style={{ width: 28, height: 28 }}
+                    />
+                  </Pressable>
+                </View>
+
+                <View
+                  ref={previewScanCodeRef}
+                  style={styles.previewCodeContainer}
+                  collapsable={false}
+                >
+                  {previewScanItem.type === "qr" ? (
+                    <QRCode value={previewScanItem.data} size={200} />
+                  ) : getBarcodeFormat(previewScanItem.type) ? (
+                    <Barcode
+                      value={previewScanItem.data}
+                      options={{
+                        format: getBarcodeFormat(previewScanItem.type),
+                        background: "#fff",
+                        lineColor: "#000",
+                        width: 1.5,
+                        height: 80,
+                        displayValue: true,
+                        fontSize: 12,
+                      }}
+                    />
+                  ) : null}
+                </View>
+
+                <Text
+                  style={[styles.previewData, { color: theme.secondaryLabel }]}
+                  numberOfLines={3}
+                  selectable
+                >
+                  {previewScanItem.data}
+                </Text>
+
+                <View style={styles.previewActions}>
+                  <Pressable
+                    style={[
+                      styles.previewButton,
+                      { backgroundColor: theme.blue },
+                    ]}
+                    onPress={handleScanPreviewCopy}
+                  >
+                    <SymbolView
+                      name="photo.on.rectangle"
+                      tintColor="#FFFFFF"
+                      style={{ width: 18, height: 18 }}
+                    />
+                    <Text style={styles.previewButtonText}>Copy</Text>
+                  </Pressable>
+
+                  <Pressable
+                    style={[
+                      styles.previewButton,
+                      { backgroundColor: theme.blue },
+                    ]}
+                    onPress={handleScanPreviewShare}
                   >
                     <SymbolView
                       name="square.and.arrow.up"

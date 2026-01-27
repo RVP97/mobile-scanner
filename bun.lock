@@ -14,6 +14,7 @@
         "@react-navigation/native": "^7.1.6",
         "@types/qrcode": "^1.5.6",
         "burnt": "^0.13.0",
+        "bwip-js": "^4.8.0",
         "expo": "^54.0.0",
         "expo-application": "~7.0.8",
         "expo-asset": "~12.0.12",
@@ -580,6 +581,8 @@
     "buffer-from": ["buffer-from@1.1.2", "", {}, "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ=="],
 
     "burnt": ["burnt@0.13.0", "", { "dependencies": { "sf-symbols-typescript": "^1.0.0", "sonner": "^2.0.1" }, "peerDependencies": { "expo": "*", "react": "*", "react-native": "*" } }, "sha512-LjlQa7CLkGWUdz08YUIaGCJ8BLXib31/ztKqowgwqd7UH283A/kmdCj+1PYAQwDQEMPNmvSUfFHrjXbcwZibFQ=="],
+
+    "bwip-js": ["bwip-js@4.8.0", "", { "bin": { "bwip-js": "bin/bwip-js.js" } }, "sha512-gUDkDHSTv8/DJhomSIbO0fX/Dx0MO/sgllLxJyJfu4WixCQe9nfGJzmHm64ZCbxo+gUYQEsQcRmqcwcwPRwUkg=="],
 
     "bytes": ["bytes@3.1.2", "", {}, "sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg=="],
 

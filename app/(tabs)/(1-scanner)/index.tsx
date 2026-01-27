@@ -3,6 +3,7 @@ import { saveScanToHistory } from "@/utils/scanHistory";
 import BarcodeScanning, {
   BarcodeFormat,
 } from "@react-native-ml-kit/barcode-scanning";
+import bwipjs from "bwip-js";
 import { useAudioPlayer } from "expo-audio";
 // @ts-expect-error - no types available
 import { Barcode } from "expo-barcode-generator";
@@ -35,6 +36,7 @@ import {
   View,
 } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
+import { SvgXml } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { captureRef } from "react-native-view-shot";
 
@@ -94,6 +96,93 @@ function QRCode({ value, size = 200 }: { value: string; size?: number }) {
       ))}
     </View>
   );
+}
+
+// 2D Barcode component for Data Matrix, Aztec, PDF417 using bwip-js
+function Barcode2D({
+  value,
+  type,
+  size = 200,
+}: {
+  value: string;
+  type: "datamatrix" | "aztec" | "pdf417";
+  size?: number;
+}) {
+  const [svgData, setSvgData] = useState<string | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const generateBarcode = () => {
+      try {
+        const bcidMap: Record<string, string> = {
+          datamatrix: "datamatrix",
+          aztec: "azteccode",
+          pdf417: "pdf417",
+        };
+
+        const svg = bwipjs.toSVG({
+          bcid: bcidMap[type],
+          text: value,
+          scale: 3,
+          paddingwidth: 5,
+          paddingheight: 5,
+          backgroundcolor: "ffffff",
+        });
+
+        setSvgData(svg);
+        setError(false);
+      } catch (e) {
+        console.log("Barcode generation error:", e);
+        setError(true);
+      }
+    };
+
+    generateBarcode();
+  }, [value, type]);
+
+  if (error) {
+    return (
+      <View
+        style={{
+          width: size,
+          height: type === "pdf417" ? size * 0.5 : size,
+          backgroundColor: "#F5F5F5",
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 8,
+        }}
+      >
+        <Text style={{ color: "#999", fontSize: 12 }}>Unable to generate preview</Text>
+      </View>
+    );
+  }
+
+  if (!svgData) {
+    return (
+      <View
+        style={{
+          width: size,
+          height: type === "pdf417" ? size * 0.5 : size,
+          backgroundColor: "#fff",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: "#999", fontSize: 12 }}>Generating...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={{ width: size, height: type === "pdf417" ? size * 0.5 : size, backgroundColor: "#fff" }}>
+      <SvgXml xml={svgData} width="100%" height="100%" />
+    </View>
+  );
+}
+
+// Check if type is a 2D barcode that needs special handling
+function is2DBarcode(type: string): type is "datamatrix" | "aztec" | "pdf417" {
+  return ["datamatrix", "aztec", "pdf417"].includes(type.toLowerCase());
 }
 
 // Map scan type to barcode format for rendering
@@ -439,7 +528,7 @@ export default function ScannerScreen() {
   };
 
   // Determine if we can render a preview for this barcode type
-  const canRenderPreview = scannedType === "qr" || getBarcodeFormat(scannedType) !== null;
+  const canRenderPreview = scannedType === "qr" || is2DBarcode(scannedType) || getBarcodeFormat(scannedType) !== null;
 
   // Get display name for the code type
   const getCodeTypeName = (type: string): string => {
@@ -1167,6 +1256,12 @@ export default function ScannerScreen() {
               >
                 {scannedType === "qr" ? (
                   <QRCode value={scannedData} size={200} />
+                ) : is2DBarcode(scannedType) ? (
+                  <Barcode2D
+                    value={scannedData}
+                    type={scannedType.toLowerCase() as "datamatrix" | "aztec" | "pdf417"}
+                    size={200}
+                  />
                 ) : getBarcodeFormat(scannedType) ? (
                   <Barcode
                     value={scannedData}

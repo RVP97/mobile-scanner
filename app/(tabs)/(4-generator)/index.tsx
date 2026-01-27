@@ -500,7 +500,8 @@ export default function GeneratorScreen() {
             <Picker
               selectedValue={tempSelectedId}
               onValueChange={(value) => setTempSelectedId(value)}
-              itemStyle={{ color: theme.label }}
+              itemStyle={{ color: theme.label, fontSize: 24 }}
+              style={{ height: 280 }}
             >
               {CODE_FORMATS.map((format) => (
                 <Picker.Item

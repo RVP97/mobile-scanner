@@ -3,7 +3,7 @@
   "main": "expo-router/entry",
   "version": "1.0.2",
   "scripts": {
-    "start": "expo start",
+    "start": "expo start --clear",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -26,6 +26,7 @@
     "@react-navigation/native": "^7.1.6",
     "@types/qrcode": "^1.5.6",
     "burnt": "^0.13.0",
+    "bwip-js": "^4.8.0",
     "expo": "^54.0.0",
     "expo-application": "~7.0.8",
     "expo-asset": "~12.0.12",

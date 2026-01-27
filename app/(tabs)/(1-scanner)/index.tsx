@@ -1,10 +1,12 @@
 import { useStorage } from "@/hooks/useStorage";
 import { saveScanToHistory } from "@/utils/scanHistory";
+import BarcodeScanning, {
+  BarcodeFormat,
+} from "@react-native-ml-kit/barcode-scanning";
 import { useAudioPlayer } from "expo-audio";
 import { BlurView } from "expo-blur";
 import {
   type BarcodeScanningResult,
-  Camera,
   type CameraType,
   CameraView,
   useCameraPermissions,
@@ -58,6 +60,25 @@ const colors = {
 
 // Local scan sound asset
 const scanSound = require("@/assets/sounds/scan.m4a");
+
+// Map ML Kit BarcodeFormat enum to readable strings
+const barcodeFormatToString: Record<BarcodeFormat, string> = {
+  [BarcodeFormat.UNKNOWN]: "unknown",
+  [BarcodeFormat.ALL_FORMATS]: "all",
+  [BarcodeFormat.CODE_128]: "code128",
+  [BarcodeFormat.CODE_39]: "code39",
+  [BarcodeFormat.CODE_93]: "code93",
+  [BarcodeFormat.CODABAR]: "codabar",
+  [BarcodeFormat.DATA_MATRIX]: "datamatrix",
+  [BarcodeFormat.EAN_13]: "ean13",
+  [BarcodeFormat.EAN_8]: "ean8",
+  [BarcodeFormat.ITF]: "itf14",
+  [BarcodeFormat.QR_CODE]: "qr",
+  [BarcodeFormat.UPC_A]: "upc_a",
+  [BarcodeFormat.UPC_E]: "upc_e",
+  [BarcodeFormat.PDF417]: "pdf417",
+  [BarcodeFormat.AZTEC]: "aztec",
+};
 
 export default function ScannerScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -198,21 +219,8 @@ export default function ScannerScreen() {
       const imageUri = result.assets[0].uri;
 
       try {
-        const barcodes = await Camera.scanFromURLAsync(imageUri, [
-          "qr",
-          "pdf417",
-          "aztec",
-          "ean13",
-          "ean8",
-          "upc_e",
-          "datamatrix",
-          "code128",
-          "code39",
-          "code93",
-          "itf14",
-          "codabar",
-          "upc_a",
-        ]);
+        // Use ML Kit for scanning barcodes from images (works on both iOS and Android)
+        const barcodes = await BarcodeScanning.scan(imageUri);
 
         if (barcodes.length > 0) {
           const barcode = barcodes[0];
@@ -230,21 +238,23 @@ export default function ScannerScreen() {
           }
 
           setScanned(true);
-          setScannedData(barcode.data);
+          setScannedData(barcode.value);
 
           // Save to history if enabled
           if (saveHistory) {
-            await saveScanToHistory(barcode.data, barcode.type);
+            const formatString =
+              barcodeFormatToString[barcode.format] || "unknown";
+            await saveScanToHistory(barcode.value, formatString);
           }
 
           // Auto-copy if enabled
           if (autoCopy) {
-            await Clipboard.setStringAsync(barcode.data);
+            await Clipboard.setStringAsync(barcode.value);
           }
 
           // Auto-open URL if enabled (Scan and Go)
-          if (autoOpenUrl && isValidUrl(barcode.data)) {
-            Linking.openURL(barcode.data).catch(() => {
+          if (autoOpenUrl && isValidUrl(barcode.value)) {
+            Linking.openURL(barcode.value).catch(() => {
               // Silently fail if URL can't be opened
             });
           }
@@ -254,8 +264,13 @@ export default function ScannerScreen() {
             "No barcode or QR code was found in the selected image.",
           );
         }
-      } catch {
-        Alert.alert("Error", "Failed to scan the image. Please try another.");
+      } catch (error) {
+        // ML Kit requires a development build, not Expo Go
+        const errorMessage =
+          error instanceof Error && error.message.includes("linked")
+            ? "Image scanning requires a development build. Please run 'npx expo run:ios' or 'npx expo run:android'."
+            : "Failed to scan the image. Please try another.";
+        Alert.alert("Error", errorMessage);
       }
     }
   };

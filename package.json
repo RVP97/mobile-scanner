@@ -12,11 +12,14 @@
     "lint:fix": "biome check --write",
     "format": "biome format --write",
     "build:prod": "eas build --platform ios --profile production",
-    "build:local": "eas build --platform ios --profile production --local"
+    "build:local": "eas build --platform ios --profile production --local",
+    "submit:prod": "eas submit --platform ios",
+    "prebuild:prod": "expo prebuild --clean --platform ios 2>&1"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
     "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-ml-kit/barcode-scanning": "^2.0.0",
     "@react-native-picker/picker": "2.11.1",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
@@ -29,6 +32,7 @@
     "expo-audio": "~1.1.1",
     "expo-barcode-generator": "^4.0.0",
     "expo-blur": "~15.0.8",
+    "expo-build-properties": "^1.0.10",
     "expo-camera": "~17.0.10",
     "expo-clipboard": "~8.0.8",
     "expo-constants": "~18.0.13",

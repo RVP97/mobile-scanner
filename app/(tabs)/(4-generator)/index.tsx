@@ -1,3 +1,4 @@
+import { useStorage } from "@/hooks/useStorage";
 import { saveGenerationToHistory } from "@/utils/generationHistory";
 import { Picker } from "@react-native-picker/picker";
 // @ts-expect-error - no types available
@@ -348,6 +349,7 @@ const CODE_FORMATS: CodeFormat[] = [
 export default function GeneratorScreen() {
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
+  const [saveHistory] = useStorage("saveHistory", true);
 
   const [selectedFormat, setSelectedFormat] = useState<CodeFormat>(CODE_FORMATS[0]);
   const [inputValue, setInputValue] = useState("");
@@ -393,12 +395,14 @@ export default function GeneratorScreen() {
     setBarcodeError(false);
     setGeneratedValue(inputValue);
 
-    // Save to generation history (use format for barcodes, id for QR)
-    saveGenerationToHistory(
-      inputValue,
-      selectedFormat.format || selectedFormat.id,
-      selectedFormat.name,
-    );
+    // Save to generation history if history is enabled
+    if (saveHistory) {
+      saveGenerationToHistory(
+        inputValue,
+        selectedFormat.format || selectedFormat.id,
+        selectedFormat.name,
+      );
+    }
   };
 
   const handleCopy = async () => {

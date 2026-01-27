@@ -14,7 +14,7 @@
     "build:prod": "eas build --platform ios --profile production",
     "build:local": "eas build --platform ios --profile production --local",
     "submit:prod": "eas submit --platform ios",
-    "prebuild:prod": "expo prebuild --clean --platform ios 2>&1"
+    "prebuild:prod": "expo prebuild --clean --platform ios"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",

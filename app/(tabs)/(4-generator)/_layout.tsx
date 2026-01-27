@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 
-export default function SettingsLayout() {
+export default function GeneratorLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -20,7 +20,7 @@ export default function SettingsLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Settings",
+          title: "Generator",
         }}
       />
     </Stack>

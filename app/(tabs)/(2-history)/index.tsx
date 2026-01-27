@@ -22,6 +22,7 @@ import {
   Text,
   TextInput,
   useColorScheme,
+  useWindowDimensions,
   View,
 } from "react-native";
 import Animated, {
@@ -63,6 +64,7 @@ export default function ScanHistoryScreen() {
   const hasAttemptedAuthRef = useRef(false);
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
+  const { height: windowHeight } = useWindowDimensions();
   const [saveHistory, setSaveHistory] = useStorage("saveHistory", true);
   const [requireAuth] = useStorage("requireAuthForHistory", false);
   const [search, setSearch] = useState("");
@@ -299,10 +301,13 @@ export default function ScanHistoryScreen() {
     setSaveHistory(true);
   };
 
+  // Calculate height for empty state (account for header ~140pt and tab bar ~83pt)
+  const emptyStateHeight = windowHeight - 223;
+
   const renderDisabledState = () => (
     <Animated.View
       entering={FadeIn.duration(400)}
-      style={styles.emptyContainer}
+      style={[styles.emptyContainer, { height: emptyStateHeight }]}
     >
       <View
         style={[
@@ -346,7 +351,7 @@ export default function ScanHistoryScreen() {
       return (
         <Animated.View
           entering={FadeIn.duration(400)}
-          style={styles.emptyContainer}
+          style={[styles.emptyContainer, { height: emptyStateHeight }]}
         >
           <View style={styles.emptyIconContainer}>
             <SymbolView
@@ -374,7 +379,7 @@ export default function ScanHistoryScreen() {
     return (
       <Animated.View
         entering={FadeIn.duration(400)}
-        style={styles.emptyContainer}
+        style={[styles.emptyContainer, { height: emptyStateHeight }]}
       >
         <View style={styles.emptyIconContainer}>
           <SymbolView
@@ -583,6 +588,8 @@ export default function ScanHistoryScreen() {
     );
   }
 
+  const isEmpty = history.length === 0;
+
   return (
     <FlatList
       style={[styles.container, { backgroundColor: theme.background }]}
@@ -591,10 +598,10 @@ export default function ScanHistoryScreen() {
       keyExtractor={(item) => item.id}
       contentContainerStyle={[
         styles.listContent,
-        filteredHistory.length === 0 && styles.listContentEmpty,
+        isEmpty && styles.listContentEmpty,
       ]}
       contentInsetAdjustmentBehavior="automatic"
-      ListHeaderComponent={renderHeader}
+      ListHeaderComponent={isEmpty ? undefined : renderHeader}
       ListEmptyComponent={renderEmptyState}
       refreshControl={
         <RefreshControl
@@ -606,6 +613,8 @@ export default function ScanHistoryScreen() {
       showsVerticalScrollIndicator={false}
       keyboardDismissMode="on-drag"
       ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+      bounces={!isEmpty}
+      scrollEnabled={!isEmpty || refreshing}
     />
   );
 }
@@ -615,10 +624,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContent: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   listContentEmpty: {
     flexGrow: 1,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   searchContainer: {
     marginBottom: 16,
@@ -776,7 +789,6 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.96 }],
   },
   emptyContainer: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 40,

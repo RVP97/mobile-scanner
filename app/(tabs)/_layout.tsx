@@ -11,6 +11,10 @@ export default function TabLayout() {
         <Icon sf={{ default: "clock", selected: "clock.fill" }} />
         <Label>History</Label>
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="(4-generator)">
+        <Icon sf={{ default: "qrcode", selected: "qrcode" }} />
+        <Label>Generator</Label>
+      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="(3-settings)">
         <Icon sf={{ default: "gearshape", selected: "gearshape.fill" }} />
         <Label>Settings</Label>

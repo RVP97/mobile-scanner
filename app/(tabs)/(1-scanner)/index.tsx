@@ -1,11 +1,10 @@
 import { useStorage } from "@/hooks/useStorage";
+import { useTranslations } from "@/hooks/useTranslations";
 import { saveScanToHistory } from "@/utils/scanHistory";
 import BarcodeScanning, {
   BarcodeFormat,
 } from "@react-native-ml-kit/barcode-scanning";
-import bwipjs from "bwip-js";
 import { useAudioPlayer } from "expo-audio";
-// @ts-expect-error - no types available
 import { Barcode } from "expo-barcode-generator";
 import { BlurView } from "expo-blur";
 import {
@@ -18,6 +17,7 @@ import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
+import * as StoreReview from "expo-store-review";
 import { SymbolView } from "expo-symbols";
 import QRCodeUtil from "qrcode";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -36,7 +36,6 @@ import {
   View,
 } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
-import { SvgXml } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { captureRef } from "react-native-view-shot";
 
@@ -98,7 +97,7 @@ function QRCode({ value, size = 200 }: { value: string; size?: number }) {
   );
 }
 
-// 2D Barcode component for Data Matrix, Aztec, PDF417 using bwip-js
+// 2D Barcode placeholder for Data Matrix, Aztec, PDF417
 function Barcode2D({
   value,
   type,
@@ -108,74 +107,40 @@ function Barcode2D({
   type: "datamatrix" | "aztec" | "pdf417";
   size?: number;
 }) {
-  const [svgData, setSvgData] = useState<string | null>(null);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const generateBarcode = () => {
-      try {
-        const bcidMap: Record<string, string> = {
-          datamatrix: "datamatrix",
-          aztec: "azteccode",
-          pdf417: "pdf417",
-        };
-
-        const svg = bwipjs.toSVG({
-          bcid: bcidMap[type],
-          text: value,
-          scale: 3,
-          paddingwidth: 5,
-          paddingheight: 5,
-          backgroundcolor: "ffffff",
-        });
-
-        setSvgData(svg);
-        setError(false);
-      } catch (e) {
-        console.log("Barcode generation error:", e);
-        setError(true);
-      }
-    };
-
-    generateBarcode();
-  }, [value, type]);
-
-  if (error) {
-    return (
-      <View
-        style={{
-          width: size,
-          height: type === "pdf417" ? size * 0.5 : size,
-          backgroundColor: "#F5F5F5",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 8,
-        }}
-      >
-        <Text style={{ color: "#999", fontSize: 12 }}>Unable to generate preview</Text>
-      </View>
-    );
-  }
-
-  if (!svgData) {
-    return (
-      <View
-        style={{
-          width: size,
-          height: type === "pdf417" ? size * 0.5 : size,
-          backgroundColor: "#fff",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ color: "#999", fontSize: 12 }}>Generating...</Text>
-      </View>
-    );
-  }
+  const typeLabels: Record<string, string> = {
+    datamatrix: "Data Matrix",
+    aztec: "Aztec",
+    pdf417: "PDF417",
+  };
 
   return (
-    <View style={{ width: size, height: type === "pdf417" ? size * 0.5 : size, backgroundColor: "#fff" }}>
-      <SvgXml xml={svgData} width="100%" height="100%" />
+    <View
+      style={{
+        width: size,
+        height: type === "pdf417" ? size * 0.5 : size,
+        backgroundColor: "#F5F5F5",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 8,
+        padding: 12,
+      }}
+    >
+      <Text
+        style={{
+          color: "#666",
+          fontSize: 14,
+          fontWeight: "600",
+          marginBottom: 4,
+        }}
+      >
+        {typeLabels[type]}
+      </Text>
+      <Text
+        style={{ color: "#999", fontSize: 11, textAlign: "center" }}
+        numberOfLines={2}
+      >
+        {value.length > 50 ? `${value.substring(0, 50)}...` : value}
+      </Text>
     </View>
   );
 }
@@ -269,6 +234,7 @@ export default function ScannerScreen() {
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
   const previewCodeRef = useRef<View>(null);
+  const t = useTranslations();
 
   // Multi-scan state
   const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
@@ -283,6 +249,10 @@ export default function ScannerScreen() {
   const [autoCopy] = useStorage("autoCopy", false);
   const [autoOpenUrl] = useStorage("autoOpenUrl", false);
   const [multiScan] = useStorage("multiScan", false);
+  const [hasPromptedReview, setHasPromptedReview] = useStorage(
+    "hasPromptedReview",
+    false,
+  );
 
   // Audio player for scan sound
   const player = useAudioPlayer(scanSound);
@@ -302,7 +272,8 @@ export default function ScannerScreen() {
     } catch {
       // Check if it looks like a domain without protocol
       // Must have at least one dot, no spaces, and a valid TLD pattern
-      const domainPattern = /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)+(\/.*)?\s*$/;
+      const domainPattern =
+        /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)+(\/.*)?\s*$/;
       return domainPattern.test(string.trim());
     }
   };
@@ -322,7 +293,7 @@ export default function ScannerScreen() {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
       Linking.openURL(normalizeUrl(scannedData)).catch(() => {
-        Alert.alert("Error", "Unable to open this URL");
+        Alert.alert(t.common.error, t.scanner.unableToOpenUrl);
       });
     }
   };
@@ -335,7 +306,7 @@ export default function ScannerScreen() {
     if (multiScan) {
       // Check if already scanned - prevent duplicates using Set (synchronous, no race condition)
       if (scannedDataSetRef.current.has(data)) return;
-      
+
       // Add to Set immediately to prevent rapid-fire duplicates
       scannedDataSetRef.current.add(data);
 
@@ -402,6 +373,21 @@ export default function ScannerScreen() {
           // Silently fail if URL can't be opened
         });
       }
+
+      // Prompt for review after first scan (follows Apple guidelines - after meaningful interaction)
+      if (!hasPromptedReview) {
+        // Small delay to let the user see the result first
+        setTimeout(async () => {
+          try {
+            if (await StoreReview.isAvailableAsync()) {
+              await StoreReview.requestReview();
+              setHasPromptedReview(true);
+            }
+          } catch {
+            // Silently fail if review request fails
+          }
+        }, 1500);
+      }
     }
   };
 
@@ -410,7 +396,7 @@ export default function ScannerScreen() {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
     await Clipboard.setStringAsync(scannedData);
-    Alert.alert("Copied", "Text copied to clipboard");
+    Alert.alert(t.alerts.copied, t.alerts.textCopiedToClipboard);
   };
 
   const shareData = async () => {
@@ -455,7 +441,7 @@ export default function ScannerScreen() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
     await Clipboard.setStringAsync(data);
-    Alert.alert("Copied", "Text copied to clipboard");
+    Alert.alert(t.alerts.copied, t.alerts.textCopiedToClipboard);
   };
 
   const handleShareItem = async (data: string) => {
@@ -471,7 +457,7 @@ export default function ScannerScreen() {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
       Linking.openURL(normalizeUrl(data)).catch(() => {
-        Alert.alert("Error", "Unable to open this URL");
+        Alert.alert(t.common.error, t.scanner.unableToOpenUrl);
       });
     }
   };
@@ -498,15 +484,17 @@ export default function ScannerScreen() {
       });
       await Clipboard.setImageAsync(uri);
       if (hapticEnabled) {
-        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success,
+        );
       }
-      Alert.alert("Copied", "Image copied to clipboard");
+      Alert.alert(t.alerts.copied, t.scanner.imageCopied);
     } catch {
       await Clipboard.setStringAsync(scannedData);
       if (hapticEnabled) {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
-      Alert.alert("Copied", "Text copied to clipboard");
+      Alert.alert(t.alerts.copied, t.alerts.textCopiedToClipboard);
     }
   };
 
@@ -520,15 +508,18 @@ export default function ScannerScreen() {
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri);
       } else {
-        Alert.alert("Error", "Sharing is not available on this device");
+        Alert.alert(t.common.error, t.scanner.sharingNotAvailable);
       }
     } catch {
-      Alert.alert("Error", "Failed to share the image");
+      Alert.alert(t.common.error, t.scanner.failedToShare);
     }
   };
 
   // Determine if we can render a preview for this barcode type
-  const canRenderPreview = scannedType === "qr" || is2DBarcode(scannedType) || getBarcodeFormat(scannedType) !== null;
+  const canRenderPreview =
+    scannedType === "qr" ||
+    is2DBarcode(scannedType) ||
+    getBarcodeFormat(scannedType) !== null;
 
   // Get display name for the code type
   const getCodeTypeName = (type: string): string => {
@@ -587,7 +578,7 @@ export default function ScannerScreen() {
           const barcode = barcodes[0];
           const formatString =
             barcodeFormatToString[barcode.format] || "unknown";
-          
+
           // Play sound if enabled
           if (soundEnabled) {
             player.seekTo(0);
@@ -621,11 +612,22 @@ export default function ScannerScreen() {
               // Silently fail if URL can't be opened
             });
           }
+
+          // Prompt for review after first scan (follows Apple guidelines - after meaningful interaction)
+          if (!hasPromptedReview) {
+            setTimeout(async () => {
+              try {
+                if (await StoreReview.isAvailableAsync()) {
+                  await StoreReview.requestReview();
+                  setHasPromptedReview(true);
+                }
+              } catch {
+                // Silently fail if review request fails
+              }
+            }, 1500);
+          }
         } else {
-          Alert.alert(
-            "No Code Found",
-            "No barcode or QR code was found in the selected image.",
-          );
+          Alert.alert(t.scanner.noCodeFound, t.scanner.noCodeFoundMessage);
         }
       } catch (error) {
         // ML Kit requires a development build, not Expo Go
@@ -646,7 +648,7 @@ export default function ScannerScreen() {
           tintColor={PlatformColor("secondaryLabel")}
           style={{ width: 48, height: 48 }}
         />
-        <Text style={styles.loadingText}>Requesting camera permission...</Text>
+        <Text style={styles.loadingText}>{t.scanner.requestingPermission}</Text>
       </View>
     );
   }
@@ -663,9 +665,9 @@ export default function ScannerScreen() {
             tintColor={PlatformColor("systemBlue")}
             style={{ width: 64, height: 64, marginBottom: 20 }}
           />
-          <Text style={styles.permissionTitle}>Camera Access</Text>
+          <Text style={styles.permissionTitle}>{t.scanner.cameraAccess}</Text>
           <Text style={styles.permissionText}>
-            We need camera access to scan barcodes and QR codes
+            {t.scanner.cameraPermissionText}
           </Text>
           <Pressable
             style={({ pressed }) => [
@@ -674,7 +676,9 @@ export default function ScannerScreen() {
             ]}
             onPress={requestPermission}
           >
-            <Text style={styles.permissionButtonText}>Grant Permission</Text>
+            <Text style={styles.permissionButtonText}>
+              {t.scanner.grantPermission}
+            </Text>
           </Pressable>
         </Animated.View>
       </View>
@@ -720,12 +724,15 @@ export default function ScannerScreen() {
             </View>
           </View>
           <Text style={[styles.successTitle, { color: theme.label }]}>
-            {scannedItems.length} {scannedItems.length === 1 ? "Code" : "Codes"} Scanned
+            {scannedItems.length}{" "}
+            {scannedItems.length === 1
+              ? t.scanner.codeScanned
+              : t.scanner.codesScanned}
           </Text>
           <Text
             style={[styles.successSubtitle, { color: theme.secondaryLabel }]}
           >
-            Tap any item for more options
+            {t.scanner.tapForOptions}
           </Text>
         </Animated.View>
 
@@ -744,26 +751,34 @@ export default function ScannerScreen() {
               tintColor="#fff"
               style={{ width: 20, height: 20 }}
             />
-            <Text style={styles.scanAgainTopText}>Scan Again</Text>
+            <Text style={styles.scanAgainTopText}>{t.scanner.scanAgain}</Text>
           </Pressable>
         </Animated.View>
 
         {/* Section Header */}
         <Animated.View entering={FadeInDown.delay(140).duration(400)}>
           <Text style={[styles.sectionLabel, { color: theme.secondaryLabel }]}>
-            SCANNED ITEMS
+            {t.scanner.scannedItems}
           </Text>
         </Animated.View>
 
         {/* Scanned Items List - Grouped */}
         <Animated.View
           entering={FadeInDown.delay(150).duration(400)}
-          style={[styles.itemsGroup, { backgroundColor: theme.secondaryBackground }]}
+          style={[
+            styles.itemsGroup,
+            { backgroundColor: theme.secondaryBackground },
+          ]}
         >
           {scannedItems.map((item, index) => (
             <View key={item.id}>
               {index > 0 && (
-                <View style={[styles.itemSeparator, { backgroundColor: theme.tertiaryBackground }]} />
+                <View
+                  style={[
+                    styles.itemSeparator,
+                    { backgroundColor: theme.tertiaryBackground },
+                  ]}
+                />
               )}
               <Pressable
                 style={({ pressed }) => [
@@ -785,7 +800,9 @@ export default function ScannerScreen() {
                         tintColor={theme.blue}
                         style={{ width: 12, height: 12 }}
                       />
-                      <Text style={[styles.multiItemType, { color: theme.blue }]}>
+                      <Text
+                        style={[styles.multiItemType, { color: theme.blue }]}
+                      >
                         {getCodeTypeName(item.type)}
                       </Text>
                     </View>
@@ -870,7 +887,9 @@ export default function ScannerScreen() {
 
         {/* Continue Scanning Button */}
         <Animated.View
-          entering={FadeInDown.delay(200 + scannedItems.length * 50).duration(400)}
+          entering={FadeInDown.delay(200 + scannedItems.length * 50).duration(
+            400,
+          )}
         >
           <Pressable
             style={({ pressed }) => [
@@ -886,7 +905,7 @@ export default function ScannerScreen() {
               style={{ width: 20, height: 20 }}
             />
             <Text style={[styles.continueButtonText, { color: theme.blue }]}>
-              Add More Codes
+              {t.scanner.addMoreCodes}
             </Text>
           </Pressable>
         </Animated.View>
@@ -931,7 +950,10 @@ export default function ScannerScreen() {
                   <TextInput
                     style={[
                       styles.selectedItemData,
-                      { color: theme.label, backgroundColor: theme.tertiaryBackground },
+                      {
+                        color: theme.label,
+                        backgroundColor: theme.tertiaryBackground,
+                      },
                       isValidUrl(selectedItem.data) && { color: theme.blue },
                     ]}
                     value={selectedItem.data}
@@ -953,7 +975,9 @@ export default function ScannerScreen() {
                         tintColor="#FFFFFF"
                         style={{ width: 18, height: 18 }}
                       />
-                      <Text style={styles.previewButtonText}>Copy</Text>
+                      <Text style={styles.previewButtonText}>
+                        {t.common.copy}
+                      </Text>
                     </Pressable>
 
                     <Pressable
@@ -968,7 +992,9 @@ export default function ScannerScreen() {
                         tintColor="#FFFFFF"
                         style={{ width: 18, height: 18 }}
                       />
-                      <Text style={styles.previewButtonText}>Share</Text>
+                      <Text style={styles.previewButtonText}>
+                        {t.common.share}
+                      </Text>
                     </Pressable>
 
                     {isValidUrl(selectedItem.data) && (
@@ -987,7 +1013,9 @@ export default function ScannerScreen() {
                           tintColor="#FFFFFF"
                           style={{ width: 18, height: 18 }}
                         />
-                        <Text style={styles.previewButtonText}>Open</Text>
+                        <Text style={styles.previewButtonText}>
+                          {t.common.open}
+                        </Text>
                       </Pressable>
                     )}
                   </View>
@@ -1038,14 +1066,14 @@ export default function ScannerScreen() {
             </View>
           </View>
           <Text style={[styles.successTitle, { color: theme.label }]}>
-            Scan Complete
+            {t.scanner.scanComplete}
           </Text>
           <Text
             style={[styles.successSubtitle, { color: theme.secondaryLabel }]}
           >
             {isValidUrl(scannedData)
-              ? "Website URL detected"
-              : "Content captured"}
+              ? t.scanner.urlDetected
+              : t.scanner.contentCaptured}
           </Text>
         </Animated.View>
 
@@ -1066,7 +1094,7 @@ export default function ScannerScreen() {
             <Text
               style={[styles.contentLabel, { color: theme.secondaryLabel }]}
             >
-              {isValidUrl(scannedData) ? "URL" : "Content"}
+              {isValidUrl(scannedData) ? t.scanner.url : t.scanner.content}
             </Text>
           </View>
           <TextInput
@@ -1109,7 +1137,7 @@ export default function ScannerScreen() {
                 />
               </View>
               <Text style={[styles.gridButtonLabel, { color: theme.label }]}>
-                Copy
+                {t.common.copy}
               </Text>
             </Pressable>
 
@@ -1134,7 +1162,7 @@ export default function ScannerScreen() {
                 />
               </View>
               <Text style={[styles.gridButtonLabel, { color: theme.label }]}>
-                Share
+                {t.common.share}
               </Text>
             </Pressable>
 
@@ -1160,7 +1188,7 @@ export default function ScannerScreen() {
                   />
                 </View>
                 <Text style={[styles.gridButtonLabel, { color: theme.label }]}>
-                  Open URL
+                  {t.scanner.openUrl}
                 </Text>
               </Pressable>
             )}
@@ -1189,7 +1217,7 @@ export default function ScannerScreen() {
                 />
               </View>
               <Text style={[styles.gridButtonLabel, { color: theme.label }]}>
-                Preview Code
+                {t.scanner.previewCode}
               </Text>
             </Pressable>
           )}
@@ -1210,7 +1238,7 @@ export default function ScannerScreen() {
               tintColor="#fff"
               style={{ width: 22, height: 22 }}
             />
-            <Text style={styles.scanAgainText}>Scan Another</Text>
+            <Text style={styles.scanAgainText}>{t.scanner.scanAnother}</Text>
           </Pressable>
         </Animated.View>
 
@@ -1259,7 +1287,12 @@ export default function ScannerScreen() {
                 ) : is2DBarcode(scannedType) ? (
                   <Barcode2D
                     value={scannedData}
-                    type={scannedType.toLowerCase() as "datamatrix" | "aztec" | "pdf417"}
+                    type={
+                      scannedType.toLowerCase() as
+                        | "datamatrix"
+                        | "aztec"
+                        | "pdf417"
+                    }
                     size={200}
                   />
                 ) : getBarcodeFormat(scannedType) ? (
@@ -1299,7 +1332,7 @@ export default function ScannerScreen() {
                     tintColor="#FFFFFF"
                     style={{ width: 18, height: 18 }}
                   />
-                  <Text style={styles.previewButtonText}>Copy</Text>
+                  <Text style={styles.previewButtonText}>{t.common.copy}</Text>
                 </Pressable>
 
                 <Pressable
@@ -1314,7 +1347,7 @@ export default function ScannerScreen() {
                     tintColor="#FFFFFF"
                     style={{ width: 18, height: 18 }}
                   />
-                  <Text style={styles.previewButtonText}>Share</Text>
+                  <Text style={styles.previewButtonText}>{t.common.share}</Text>
                 </Pressable>
               </View>
             </Pressable>
@@ -1408,7 +1441,10 @@ export default function ScannerScreen() {
                 style={{ width: 20, height: 20 }}
               />
               <Text style={styles.multiScanBadgeText}>
-                {scannedItems.length} {scannedItems.length === 1 ? "code" : "codes"} scanned
+                {scannedItems.length}{" "}
+                {scannedItems.length === 1
+                  ? t.scanner.codeScanned.toLowerCase()
+                  : t.scanner.codesScanned.toLowerCase()}
               </Text>
             </BlurView>
           </Animated.View>
@@ -1427,9 +1463,7 @@ export default function ScannerScreen() {
               style={{ width: 20, height: 20 }}
             />
             <Text style={styles.instructionText}>
-              {multiScan
-                ? "Scan multiple codes, tap Done when finished"
-                : "Point at a barcode or QR code"}
+              {multiScan ? t.scanner.scanMultipleCodes : t.scanner.pointAtCode}
             </Text>
           </BlurView>
 
@@ -1453,10 +1487,17 @@ export default function ScannerScreen() {
                   style={{ width: 20, height: 20 }}
                 />
                 <Text style={[styles.doneButtonText, { color: theme.blue }]}>
-                  Done
+                  {t.common.done}
                 </Text>
-                <View style={[styles.doneButtonBadge, { backgroundColor: theme.blue }]}>
-                  <Text style={styles.doneButtonBadgeText}>{scannedItems.length}</Text>
+                <View
+                  style={[
+                    styles.doneButtonBadge,
+                    { backgroundColor: theme.blue },
+                  ]}
+                >
+                  <Text style={styles.doneButtonBadgeText}>
+                    {scannedItems.length}
+                  </Text>
                 </View>
               </BlurView>
             </Pressable>
@@ -1480,7 +1521,9 @@ export default function ScannerScreen() {
                 tintColor="rgba(255,255,255,0.9)"
                 style={{ width: 22, height: 22 }}
               />
-              <Text style={styles.galleryButtonText}>From Gallery</Text>
+              <Text style={styles.galleryButtonText}>
+                {t.scanner.fromGallery}
+              </Text>
             </BlurView>
           </Pressable>
         </View>

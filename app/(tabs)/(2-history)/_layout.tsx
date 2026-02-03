@@ -1,9 +1,11 @@
+import { useTranslations } from "@/hooks/useTranslations";
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 
-export default function ExploreLayout() {
+export default function HistoryLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const t = useTranslations();
 
   return (
     <Stack
@@ -20,7 +22,7 @@ export default function ExploreLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "History",
+          title: t.tabs.history,
         }}
       />
     </Stack>

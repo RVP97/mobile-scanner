@@ -2,7 +2,7 @@
   "expo": {
     "name": "QR & Barcode Scanner",
     "slug": "scanner",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "scanner",
@@ -11,6 +11,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.rvp97.scanner",
+      "appStoreUrl": "https://apps.apple.com/us/app/fast-qr-barcode/id6758315540",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }

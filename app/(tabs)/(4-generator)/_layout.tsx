@@ -1,9 +1,11 @@
+import { useTranslations } from "@/hooks/useTranslations";
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 
 export default function GeneratorLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const t = useTranslations();
 
   return (
     <Stack
@@ -20,7 +22,7 @@ export default function GeneratorLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Generator",
+          title: t.tabs.generator,
         }}
       />
     </Stack>

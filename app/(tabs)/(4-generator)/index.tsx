@@ -1,12 +1,11 @@
-import { useStorage } from "@/hooks/useStorage";
-import { saveGenerationToHistory } from "@/utils/generationHistory";
 import { Picker } from "@react-native-picker/picker";
-// @ts-expect-error - no types available
 import { Barcode } from "expo-barcode-generator";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
+import * as Sharing from "expo-sharing";
 import { SymbolView } from "expo-symbols";
-import { Component, useMemo, useRef, useState, type ReactNode } from "react";
+import QRCodeUtil from "qrcode";
+import { Component, type ReactNode, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Keyboard,
@@ -21,8 +20,10 @@ import {
   View,
 } from "react-native";
 import { captureRef } from "react-native-view-shot";
-import * as Sharing from "expo-sharing";
-import QRCodeUtil from "qrcode";
+// @ts-expect-error - no types available
+import { useStorage } from "@/hooks/useStorage";
+import { useTranslations } from "@/hooks/useTranslations";
+import { saveGenerationToHistory } from "@/utils/generationHistory";
 
 const colors = {
   light: {
@@ -148,15 +149,15 @@ function isValidUPCE(value: string): boolean {
   // 7 digits: with number system (0 or 1)
   // 8 digits: with number system and check digit
   if (!/^\d{6,8}$/.test(value)) return false;
-  
+
   // Basic format validation - UPC-E has specific patterns
   if (value.length === 8) {
     // Must start with 0 or 1
-    if (value[0] !== '0' && value[0] !== '1') return false;
+    if (value[0] !== "0" && value[0] !== "1") return false;
   }
   if (value.length === 7) {
     // Must start with 0 or 1
-    if (value[0] !== '0' && value[0] !== '1') return false;
+    if (value[0] !== "0" && value[0] !== "1") return false;
   }
   return true;
 }
@@ -184,7 +185,10 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-class BarcodeErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+class BarcodeErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
@@ -223,7 +227,7 @@ const CODE_FORMATS: CodeFormat[] = [
     id: "qr",
     name: "QR Code",
     type: "qr",
-    placeholder: "Enter any text or URL",
+    placeholder: "enterAnyTextOrUrl",
     keyboardType: "default",
   },
   {
@@ -231,7 +235,7 @@ const CODE_FORMATS: CodeFormat[] = [
     name: "CODE 128",
     type: "barcode",
     format: "CODE128",
-    placeholder: "Enter any text",
+    placeholder: "enterAnyText",
     keyboardType: "ascii-capable",
     validation: (v) => v.length > 0 && v.length <= 80,
     validationMessage: "CODE 128 requires 1-80 characters",
@@ -241,51 +245,58 @@ const CODE_FORMATS: CodeFormat[] = [
     name: "EAN-13",
     type: "barcode",
     format: "EAN13",
-    placeholder: "Enter 13 digits (with valid checksum)",
+    placeholder: "enter13Digits",
     maxLength: 13,
     keyboardType: "numeric",
-    validation: (v) => /^\d{12,13}$/.test(v) && (v.length === 12 || isValidEAN13(v)),
-    validationMessage: "EAN-13 requires 12 digits (auto checksum) or 13 with valid checksum",
+    validation: (v) =>
+      /^\d{12,13}$/.test(v) && (v.length === 12 || isValidEAN13(v)),
+    validationMessage:
+      "EAN-13 requires 12 digits (auto checksum) or 13 with valid checksum",
   },
   {
     id: "ean8",
     name: "EAN-8",
     type: "barcode",
     format: "EAN8",
-    placeholder: "Enter 8 digits (with valid checksum)",
+    placeholder: "enter8Digits",
     maxLength: 8,
     keyboardType: "numeric",
-    validation: (v) => /^\d{7,8}$/.test(v) && (v.length === 7 || isValidEAN8(v)),
-    validationMessage: "EAN-8 requires 7 digits (auto checksum) or 8 with valid checksum",
+    validation: (v) =>
+      /^\d{7,8}$/.test(v) && (v.length === 7 || isValidEAN8(v)),
+    validationMessage:
+      "EAN-8 requires 7 digits (auto checksum) or 8 with valid checksum",
   },
   {
     id: "upca",
     name: "UPC-A",
     type: "barcode",
     format: "UPC",
-    placeholder: "Enter 12 digits (with valid checksum)",
+    placeholder: "enter12Digits",
     maxLength: 12,
     keyboardType: "numeric",
-    validation: (v) => /^\d{11,12}$/.test(v) && (v.length === 11 || isValidUPCA(v)),
-    validationMessage: "UPC-A requires 11 digits (auto checksum) or 12 with valid checksum",
+    validation: (v) =>
+      /^\d{11,12}$/.test(v) && (v.length === 11 || isValidUPCA(v)),
+    validationMessage:
+      "UPC-A requires 11 digits (auto checksum) or 12 with valid checksum",
   },
   {
     id: "upce",
     name: "UPC-E",
     type: "barcode",
     format: "UPCE",
-    placeholder: "Enter 6-8 digits (start with 0)",
+    placeholder: "enter6to8Digits",
     maxLength: 8,
     keyboardType: "numeric",
     validation: isValidUPCE,
-    validationMessage: "UPC-E requires 6-8 digits, must start with 0 or 1 if 7-8 digits",
+    validationMessage:
+      "UPC-E requires 6-8 digits, must start with 0 or 1 if 7-8 digits",
   },
   {
     id: "code39",
     name: "CODE 39",
     type: "barcode",
     format: "CODE39",
-    placeholder: "Enter alphanumeric text",
+    placeholder: "enterAlphanumeric",
     keyboardType: "ascii-capable",
     validation: (v) => /^[A-Z0-9\-. $/+%]+$/i.test(v),
     validationMessage: "CODE 39 supports A-Z, 0-9, and -. $/+%",
@@ -295,18 +306,20 @@ const CODE_FORMATS: CodeFormat[] = [
     name: "ITF-14",
     type: "barcode",
     format: "ITF14",
-    placeholder: "Enter 13-14 digits",
+    placeholder: "enter13to14Digits",
     maxLength: 14,
     keyboardType: "numeric",
-    validation: (v) => /^\d{13,14}$/.test(v) && (v.length === 13 || isValidITF14(v)),
-    validationMessage: "ITF-14 requires 13 digits (auto checksum) or 14 with valid checksum",
+    validation: (v) =>
+      /^\d{13,14}$/.test(v) && (v.length === 13 || isValidITF14(v)),
+    validationMessage:
+      "ITF-14 requires 13 digits (auto checksum) or 14 with valid checksum",
   },
   {
     id: "itf",
     name: "ITF",
     type: "barcode",
     format: "ITF",
-    placeholder: "Enter even number of digits",
+    placeholder: "enterEvenDigits",
     keyboardType: "numeric",
     validation: (v) => /^\d+$/.test(v) && v.length % 2 === 0,
     validationMessage: "ITF requires an even number of digits",
@@ -316,7 +329,7 @@ const CODE_FORMATS: CodeFormat[] = [
     name: "MSI",
     type: "barcode",
     format: "MSI",
-    placeholder: "Enter digits",
+    placeholder: "enterDigits",
     keyboardType: "numeric",
     validation: (v) => /^\d+$/.test(v),
     validationMessage: "MSI requires only digits",
@@ -326,7 +339,7 @@ const CODE_FORMATS: CodeFormat[] = [
     name: "Pharmacode",
     type: "barcode",
     format: "pharmacode",
-    placeholder: "Enter number 3-131070",
+    placeholder: "enterNumber3to131070",
     keyboardType: "numeric",
     validation: (v) => {
       const num = Number.parseInt(v, 10);
@@ -339,19 +352,55 @@ const CODE_FORMATS: CodeFormat[] = [
     name: "Codabar",
     type: "barcode",
     format: "codabar",
-    placeholder: "A1234B (start/end with A-D)",
+    placeholder: "codabarPlaceholder",
     keyboardType: "ascii-capable",
     validation: (v) => /^[A-Da-d][0-9\-$:/.+]+[A-Da-d]$/.test(v),
     validationMessage: "Codabar must start/end with A-D",
   },
 ];
 
+// Helper to get translated placeholder
+type PlaceholderKey =
+  | "enterAnyTextOrUrl"
+  | "enterAnyText"
+  | "enterDigits"
+  | "enterAlphanumeric"
+  | "enter13Digits"
+  | "enter8Digits"
+  | "enter12Digits"
+  | "enter6to8Digits"
+  | "enter13to14Digits"
+  | "enterEvenDigits"
+  | "enterNumber3to131070"
+  | "codabarPlaceholder";
+
 export default function GeneratorScreen() {
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
   const [saveHistory] = useStorage("saveHistory", true);
+  const t = useTranslations();
 
-  const [selectedFormat, setSelectedFormat] = useState<CodeFormat>(CODE_FORMATS[0]);
+  const getPlaceholder = (key: string): string => {
+    const placeholders: Record<PlaceholderKey, string> = {
+      enterAnyTextOrUrl: t.generator.enterAnyTextOrUrl,
+      enterAnyText: t.generator.enterAnyText,
+      enterDigits: t.generator.enterDigits,
+      enterAlphanumeric: t.generator.enterAlphanumeric,
+      enter13Digits: t.generator.enter13Digits,
+      enter8Digits: t.generator.enter8Digits,
+      enter12Digits: t.generator.enter12Digits,
+      enter6to8Digits: t.generator.enter6to8Digits,
+      enter13to14Digits: t.generator.enter13to14Digits,
+      enterEvenDigits: t.generator.enterEvenDigits,
+      enterNumber3to131070: t.generator.enterNumber3to131070,
+      codabarPlaceholder: t.generator.codabarPlaceholder,
+    };
+    return placeholders[key as PlaceholderKey] || key;
+  };
+
+  const [selectedFormat, setSelectedFormat] = useState<CodeFormat>(
+    CODE_FORMATS[0],
+  );
   const [inputValue, setInputValue] = useState("");
   const [generatedValue, setGeneratedValue] = useState("");
   const [barcodeError, setBarcodeError] = useState(false);
@@ -378,12 +427,12 @@ export default function GeneratorScreen() {
 
   const handleGenerate = () => {
     if (!inputValue.trim()) {
-      Alert.alert("Error", "Please enter a value to generate");
+      Alert.alert(t.common.error, t.generator.enterValue);
       return;
     }
 
     if (selectedFormat.validation && !selectedFormat.validation(inputValue)) {
-      Alert.alert("Invalid Input", selectedFormat.validationMessage);
+      Alert.alert(t.generator.invalidInput, selectedFormat.validationMessage);
       return;
     }
 
@@ -415,12 +464,12 @@ export default function GeneratorScreen() {
       });
       await Clipboard.setImageAsync(uri);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert("Copied", "Image copied to clipboard");
+      Alert.alert(t.alerts.copied, t.scanner.imageCopied);
     } catch {
       // Fallback to copying text
       await Clipboard.setStringAsync(generatedValue);
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      Alert.alert("Copied", "Text copied to clipboard");
+      Alert.alert(t.alerts.copied, t.alerts.textCopiedToClipboard);
     }
   };
 
@@ -436,10 +485,10 @@ export default function GeneratorScreen() {
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri);
       } else {
-        Alert.alert("Error", "Sharing is not available on this device");
+        Alert.alert(t.common.error, t.scanner.sharingNotAvailable);
       }
     } catch {
-      Alert.alert("Error", "Failed to share the code");
+      Alert.alert(t.common.error, t.scanner.failedToShare);
     }
   };
 
@@ -453,10 +502,13 @@ export default function GeneratorScreen() {
       {/* Format Selector */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: theme.secondaryLabel }]}>
-          CODE TYPE
+          {t.generator.codeType}
         </Text>
         <Pressable
-          style={[styles.selector, { backgroundColor: theme.secondaryBackground }]}
+          style={[
+            styles.selector,
+            { backgroundColor: theme.secondaryBackground },
+          ]}
           onPress={() => {
             setTempSelectedId(selectedFormat.id);
             setShowPicker(true);
@@ -481,20 +533,38 @@ export default function GeneratorScreen() {
       </View>
 
       {/* Native Picker Modal */}
-      <Modal
-        visible={showPicker}
-        transparent
-        animationType="slide"
-      >
+      <Modal visible={showPicker} transparent animationType="slide">
         <View style={styles.pickerModal}>
-          <View style={[styles.pickerContainer, { backgroundColor: theme.secondaryBackground }]}>
-            <View style={[styles.pickerHeader, { borderBottomColor: theme.separator }]}>
+          <View
+            style={[
+              styles.pickerContainer,
+              { backgroundColor: theme.secondaryBackground },
+            ]}
+          >
+            <View
+              style={[
+                styles.pickerHeader,
+                { borderBottomColor: theme.separator },
+              ]}
+            >
               <Pressable onPress={handlePickerCancel} hitSlop={10}>
-                <Text style={[styles.pickerButton, { color: theme.blue }]}>Cancel</Text>
+                <Text style={[styles.pickerButton, { color: theme.blue }]}>
+                  {t.common.cancel}
+                </Text>
               </Pressable>
-              <Text style={[styles.pickerTitle, { color: theme.label }]}>Code Type</Text>
+              <Text style={[styles.pickerTitle, { color: theme.label }]}>
+                {t.generator.codeType}
+              </Text>
               <Pressable onPress={handlePickerDone} hitSlop={10}>
-                <Text style={[styles.pickerButton, styles.pickerButtonDone, { color: theme.blue }]}>Done</Text>
+                <Text
+                  style={[
+                    styles.pickerButton,
+                    styles.pickerButtonDone,
+                    { color: theme.blue },
+                  ]}
+                >
+                  {t.common.done}
+                </Text>
               </Pressable>
             </View>
             <Picker
@@ -518,7 +588,7 @@ export default function GeneratorScreen() {
       {/* Input Section - Native TextInput */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: theme.secondaryLabel }]}>
-          CONTENT
+          {t.generator.content}
         </Text>
         <TextInput
           key={selectedFormat.id}
@@ -530,12 +600,14 @@ export default function GeneratorScreen() {
               backgroundColor: theme.secondaryBackground,
             },
           ]}
-          placeholder={selectedFormat.placeholder}
+          placeholder={getPlaceholder(selectedFormat.placeholder)}
           placeholderTextColor={theme.tertiaryLabel}
           value={inputValue}
           onChangeText={setInputValue}
           maxLength={selectedFormat.maxLength}
-          keyboardType={selectedFormat.keyboardType === "numeric" ? "number-pad" : "default"}
+          keyboardType={
+            selectedFormat.keyboardType === "numeric" ? "number-pad" : "default"
+          }
           autoCapitalize={selectedFormat.type === "qr" ? "none" : "characters"}
           autoCorrect={false}
           returnKeyType="done"
@@ -551,14 +623,14 @@ export default function GeneratorScreen() {
         onPress={handleGenerate}
       >
         <SymbolView name="sparkles" size={20} tintColor="#fff" />
-        <Text style={styles.generateButtonText}>Generate</Text>
+        <Text style={styles.generateButtonText}>{t.generator.generate}</Text>
       </Pressable>
 
       {/* Generated Code Display */}
       {generatedValue && (
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: theme.secondaryLabel }]}>
-            GENERATED CODE
+            {t.generator.generatedCode}
           </Text>
           <View
             ref={codeRef}
@@ -567,9 +639,17 @@ export default function GeneratorScreen() {
           >
             {barcodeError ? (
               <View style={styles.errorContainer}>
-                <SymbolView name="exclamationmark.triangle" size={40} tintColor="#FF3B30" />
-                <Text style={styles.errorText}>Invalid barcode data</Text>
-                <Text style={styles.errorSubtext}>Please check the input format</Text>
+                <SymbolView
+                  name="exclamationmark.triangle"
+                  size={40}
+                  tintColor="#FF3B30"
+                />
+                <Text style={styles.errorText}>
+                  {t.generator.invalidBarcodeData}
+                </Text>
+                <Text style={styles.errorSubtext}>
+                  {t.generator.checkInputFormat}
+                </Text>
               </View>
             ) : selectedFormat.type === "qr" ? (
               <QRCode value={generatedValue} size={200} />
@@ -579,9 +659,17 @@ export default function GeneratorScreen() {
                 onError={() => setBarcodeError(true)}
                 fallback={
                   <View style={styles.errorContainer}>
-                    <SymbolView name="exclamationmark.triangle" size={40} tintColor="#FF3B30" />
-                    <Text style={styles.errorText}>Invalid barcode data</Text>
-                    <Text style={styles.errorSubtext}>Please check the input format</Text>
+                    <SymbolView
+                      name="exclamationmark.triangle"
+                      size={40}
+                      tintColor="#FF3B30"
+                    />
+                    <Text style={styles.errorText}>
+                      {t.generator.invalidBarcodeData}
+                    </Text>
+                    <Text style={styles.errorSubtext}>
+                      {t.generator.checkInputFormat}
+                    </Text>
                   </View>
                 }
               >
@@ -604,7 +692,10 @@ export default function GeneratorScreen() {
           {/* Action Buttons */}
           <View style={styles.actionButtons}>
             <Pressable
-              style={[styles.actionButton, { backgroundColor: theme.secondaryBackground }]}
+              style={[
+                styles.actionButton,
+                { backgroundColor: theme.secondaryBackground },
+              ]}
               onPress={handleCopy}
             >
               <SymbolView
@@ -613,11 +704,14 @@ export default function GeneratorScreen() {
                 tintColor={theme.blue}
               />
               <Text style={[styles.actionButtonText, { color: theme.blue }]}>
-                Copy
+                {t.common.copy}
               </Text>
             </Pressable>
             <Pressable
-              style={[styles.actionButton, { backgroundColor: theme.secondaryBackground }]}
+              style={[
+                styles.actionButton,
+                { backgroundColor: theme.secondaryBackground },
+              ]}
               onPress={handleShare}
             >
               <SymbolView
@@ -626,7 +720,7 @@ export default function GeneratorScreen() {
                 tintColor={theme.blue}
               />
               <Text style={[styles.actionButtonText, { color: theme.blue }]}>
-                Share
+                {t.common.share}
               </Text>
             </Pressable>
           </View>

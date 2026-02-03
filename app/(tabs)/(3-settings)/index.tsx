@@ -1,4 +1,6 @@
 import { useStorage } from "@/hooks/useStorage";
+import { useTranslations } from "@/hooks/useTranslations";
+import { type Language, languageNames } from "@/utils/i18n";
 import {
   clearScanHistory,
   exportHistoryToCSV,
@@ -7,6 +9,7 @@ import {
 import * as Application from "expo-application";
 import { File, Paths } from "expo-file-system";
 import * as Haptics from "expo-haptics";
+import * as Linking from "expo-linking";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Sharing from "expo-sharing";
 import { SymbolView } from "expo-symbols";
@@ -22,6 +25,8 @@ import {
   useColorScheme,
   View,
 } from "react-native";
+
+const ITUNES_ITEM_ID = "6758315540";
 
 const colors = {
   light: {
@@ -137,6 +142,7 @@ function SettingsRow({
 export default function SettingsScreen() {
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
+  const t = useTranslations();
 
   const [hapticEnabled, setHapticEnabled] = useStorage("hapticEnabled", true);
   const [soundEnabled, setSoundEnabled] = useStorage("soundEnabled", true);
@@ -144,16 +150,27 @@ export default function SettingsScreen() {
   const [autoCopy, setAutoCopy] = useStorage("autoCopy", false);
   const [autoOpenUrl, setAutoOpenUrl] = useStorage("autoOpenUrl", false);
   const [multiScan, setMultiScan] = useStorage("multiScan", false);
-  const [requireAuth, setRequireAuth] = useStorage("requireAuthForHistory", false);
+  const [requireAuth, setRequireAuth] = useStorage(
+    "requireAuthForHistory",
+    false,
+  );
+  const [language, setLanguage] = useStorage<Language>("language", "en");
   const [biometricType, setBiometricType] = useState<string>("Face ID");
 
   // Check available biometric type
   useEffect(() => {
     async function checkBiometrics() {
-      const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
-      if (types.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
+      const types =
+        await LocalAuthentication.supportedAuthenticationTypesAsync();
+      if (
+        types.includes(
+          LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION,
+        )
+      ) {
         setBiometricType("Face ID");
-      } else if (types.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
+      } else if (
+        types.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)
+      ) {
         setBiometricType("Touch ID");
       } else {
         setBiometricType("Passcode");
@@ -170,21 +187,23 @@ export default function SettingsScreen() {
 
       if (!hasHardware || !isEnrolled) {
         Alert.alert(
-          "Not Available",
-          `${biometricType} is not set up on this device. Please enable it in Settings.`
+          t.settings.notAvailable,
+          `${biometricType} ${t.settings.authNotSetup}`,
         );
         return;
       }
 
       // Authenticate to enable
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: `Authenticate to enable ${biometricType}`,
-        cancelLabel: "Cancel",
+        promptMessage: `${t.settings.authenticateTo} ${biometricType}`,
+        cancelLabel: t.common.cancel,
       });
 
       if (result.success) {
         if (hapticEnabled) {
-          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          await Haptics.notificationAsync(
+            Haptics.NotificationFeedbackType.Success,
+          );
         }
         setRequireAuth(true);
       }
@@ -214,13 +233,13 @@ export default function SettingsScreen() {
 
     const history = await getScanHistory();
     if (history.length === 0) {
-      Alert.alert("No History", "There is no scan history to export.");
+      Alert.alert(t.settings.noHistory, t.settings.noHistoryToExport);
       return;
     }
 
     const csvContent = await exportHistoryToCSV();
     if (!csvContent) {
-      Alert.alert("Error", "Failed to export history.");
+      Alert.alert(t.common.error, t.settings.exportError);
       return;
     }
 
@@ -233,55 +252,94 @@ export default function SettingsScreen() {
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(file.uri, {
           mimeType: "text/csv",
-          dialogTitle: "Export Scan History",
+          dialogTitle: t.settings.exportCsv,
           UTI: "public.comma-separated-values-text",
         });
       } else {
-        Alert.alert("Error", "Sharing is not available on this device.");
+        Alert.alert(t.common.error, t.alerts.sharingNotAvailable);
       }
     } catch (error) {
       console.error("Error exporting CSV:", error);
-      Alert.alert("Error", "Failed to export history.");
+      Alert.alert(t.common.error, t.settings.exportError);
     }
   };
 
   const handleClearHistory = () => {
-    Alert.alert(
-      "Clear All History",
-      "This will permanently delete all your scan history. This action cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Clear All",
-          style: "destructive",
-          onPress: async () => {
-            if (hapticEnabled) {
-              await Haptics.notificationAsync(
-                Haptics.NotificationFeedbackType.Warning,
-              );
-            }
-            await clearScanHistory();
-            Alert.alert("Done", "All scan history has been cleared");
-          },
+    Alert.alert(t.settings.clearHistoryTitle, t.settings.clearHistoryMessage, [
+      { text: t.common.cancel, style: "cancel" },
+      {
+        text: t.common.clearAll,
+        style: "destructive",
+        onPress: async () => {
+          if (hapticEnabled) {
+            await Haptics.notificationAsync(
+              Haptics.NotificationFeedbackType.Warning,
+            );
+          }
+          await clearScanHistory();
+          Alert.alert(t.settings.cleared, t.settings.allHistoryCleared);
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const handleRateApp = async () => {
     if (hapticEnabled) {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-    Alert.alert("Rate App", "This would open the App Store review page");
+
+    // Note: Don't use StoreReview.requestReview() from a button per Apple guidelines.
+    // Instead, open the App Store "Write a Review" page directly.
+    try {
+      // Open the iOS App Store directly to the "Write a Review" screen
+      await Linking.openURL(
+        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${ITUNES_ITEM_ID}?action=write-review`,
+      );
+    } catch (error) {
+      console.error("Error opening App Store:", error);
+      // Fallback: try opening via HTTPS URL (redirects to App Store on iOS)
+      try {
+        await Linking.openURL(
+          `https://apps.apple.com/app/apple-store/id${ITUNES_ITEM_ID}?action=write-review`,
+        );
+      } catch {
+        Alert.alert(t.common.error, t.common.error);
+      }
+    }
   };
 
   const handleShareApp = async () => {
     if (hapticEnabled) {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
+    const appUrl = `https://apps.apple.com/app/id${ITUNES_ITEM_ID}`;
     await Share.share({
-      message: "Check out this awesome scanner app!",
+      message: `${t.settings.shareAppMessage}\n${appUrl}`,
     });
+  };
+
+  const handleLanguageChange = async () => {
+    if (hapticEnabled) {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    Alert.alert(t.settings.language, t.settings.selectLanguage, [
+      {
+        text: "English",
+        onPress: () => setLanguage("en"),
+      },
+      {
+        text: "Español",
+        onPress: () => setLanguage("es"),
+      },
+      {
+        text: "Français",
+        onPress: () => setLanguage("fr"),
+      },
+      {
+        text: t.common.cancel,
+        style: "cancel",
+      },
+    ]);
   };
 
   return (
@@ -291,10 +349,33 @@ export default function SettingsScreen() {
       contentInsetAdjustmentBehavior="automatic"
       bounces={false}
     >
+      {/* General Settings */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionHeader, { color: theme.secondaryLabel }]}>
+          {t.settings.general}
+        </Text>
+        <View
+          style={[
+            styles.sectionContent,
+            { backgroundColor: theme.secondaryBackground },
+          ]}
+        >
+          <SettingsRow
+            icon="globe"
+            iconColor={theme.blue}
+            title={t.settings.language}
+            subtitle={languageNames[language]}
+            onPress={handleLanguageChange}
+            showChevron
+            theme={theme}
+          />
+        </View>
+      </View>
+
       {/* Scanner Settings */}
       <View style={styles.section}>
         <Text style={[styles.sectionHeader, { color: theme.secondaryLabel }]}>
-          SCANNER
+          {t.settings.scanner}
         </Text>
         <View
           style={[
@@ -305,8 +386,8 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="hand.tap.fill"
             iconColor={theme.blue}
-            title="Haptic Feedback"
-            subtitle="Vibrate when scanning"
+            title={t.settings.hapticFeedback}
+            subtitle={t.settings.vibrateWhenScanning}
             value={hapticEnabled}
             onValueChange={handleHapticChange}
             theme={theme}
@@ -317,8 +398,8 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="speaker.wave.2.fill"
             iconColor={theme.purple}
-            title="Sound"
-            subtitle="Play sound when scanning"
+            title={t.settings.sound}
+            subtitle={t.settings.playSoundWhenScanning}
             value={soundEnabled}
             onValueChange={handleSoundChange}
             theme={theme}
@@ -329,8 +410,8 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="doc.on.doc.fill"
             iconColor={theme.green}
-            title="Auto-Copy"
-            subtitle="Copy scanned content automatically"
+            title={t.settings.autoCopy}
+            subtitle={t.settings.autoCopyDescription}
             value={autoCopy}
             onValueChange={setAutoCopy}
             theme={theme}
@@ -341,8 +422,8 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="arrow.up.forward.app.fill"
             iconColor="#FF9500"
-            title="Scan and Go"
-            subtitle="Open URLs automatically after scanning"
+            title={t.settings.scanAndGo}
+            subtitle={t.settings.scanAndGoDescription}
             value={autoOpenUrl}
             onValueChange={setAutoOpenUrl}
             theme={theme}
@@ -353,8 +434,8 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="square.stack.3d.up.fill"
             iconColor="#5856D6"
-            title="Multi-Code Scanning"
-            subtitle="Scan multiple codes before viewing results"
+            title={t.settings.multiCodeScanning}
+            subtitle={t.settings.multiCodeDescription}
             value={multiScan}
             onValueChange={setMultiScan}
             theme={theme}
@@ -365,7 +446,7 @@ export default function SettingsScreen() {
       {/* History Settings */}
       <View style={styles.section}>
         <Text style={[styles.sectionHeader, { color: theme.secondaryLabel }]}>
-          HISTORY
+          {t.settings.historySection}
         </Text>
         <View
           style={[
@@ -376,8 +457,8 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="clock.fill"
             iconColor="#FF9500"
-            title="Save Scan History"
-            subtitle="Keep a record of scanned items"
+            title={t.settings.saveHistory}
+            subtitle={t.settings.saveHistoryDescription}
             value={saveHistory}
             onValueChange={setSaveHistory}
             theme={theme}
@@ -388,8 +469,8 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="faceid"
             iconColor={theme.green}
-            title={`Require ${biometricType}`}
-            subtitle="Protect history with authentication"
+            title={`${t.settings.requireAuth} ${biometricType}`}
+            subtitle={t.settings.requireAuthDescription}
             value={requireAuth}
             onValueChange={handleRequireAuthChange}
             theme={theme}
@@ -400,8 +481,8 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="square.and.arrow.up"
             iconColor={theme.blue}
-            title="Export to CSV"
-            subtitle="Save history as spreadsheet"
+            title={t.settings.exportCsv}
+            subtitle={t.settings.exportCsvDescription}
             onPress={handleExportCSV}
             showChevron
             theme={theme}
@@ -412,7 +493,7 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="trash.fill"
             iconColor={theme.red}
-            title="Clear All History"
+            title={t.settings.clearAllHistory}
             onPress={handleClearHistory}
             isDestructive
             theme={theme}
@@ -423,7 +504,7 @@ export default function SettingsScreen() {
       {/* About */}
       <View style={styles.section}>
         <Text style={[styles.sectionHeader, { color: theme.secondaryLabel }]}>
-          ABOUT
+          {t.settings.about}
         </Text>
         <View
           style={[
@@ -434,7 +515,7 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="star.fill"
             iconColor="#FFD60A"
-            title="Rate App"
+            title={t.settings.rateApp}
             onPress={handleRateApp}
             showChevron
             theme={theme}
@@ -445,7 +526,7 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="square.and.arrow.up.fill"
             iconColor={theme.blue}
-            title="Share App"
+            title={t.settings.shareApp}
             onPress={handleShareApp}
             showChevron
             theme={theme}
@@ -457,8 +538,8 @@ export default function SettingsScreen() {
       <View style={styles.appInfo}>
         <Text style={[styles.appName, { color: theme.label }]}>Scanner</Text>
         <Text style={[styles.appVersion, { color: theme.tertiaryLabel }]}>
-          Version {Application.nativeApplicationVersion ?? "1.0.0"} (
-          {Application.nativeBuildVersion ?? "1"})
+          {t.settings.version} {Application.nativeApplicationVersion ?? "1.0.0"}{" "}
+          ({Application.nativeBuildVersion ?? "1"})
         </Text>
       </View>
     </ScrollView>

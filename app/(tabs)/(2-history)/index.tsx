@@ -1,9 +1,12 @@
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+// @ts-expect-error - no types available
 import { useStorage } from "@/hooks/useStorage";
+import { useTranslations } from "@/hooks/useTranslations";
 import {
   clearGenerationHistory,
   deleteGenerationFromHistory,
-  getGenerationHistory,
   type GenerationHistoryItem,
+  getGenerationHistory,
 } from "@/utils/generationHistory";
 import {
   clearScanHistory,
@@ -11,10 +14,6 @@ import {
   getScanHistory,
   type ScanHistoryItem,
 } from "@/utils/scanHistory";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import bwipjs from "bwip-js";
-import { useLayoutEffect } from "react";
-// @ts-expect-error - no types available
 import { Barcode } from "expo-barcode-generator";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
@@ -22,7 +21,7 @@ import * as LocalAuthentication from "expo-local-authentication";
 import * as Sharing from "expo-sharing";
 import { SymbolView } from "expo-symbols";
 import QRCodeUtil from "qrcode";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -43,7 +42,6 @@ import Animated, {
   FadeOut,
   LinearTransition,
 } from "react-native-reanimated";
-import { SvgXml } from "react-native-svg";
 import { captureRef } from "react-native-view-shot";
 
 // QR Code component for preview
@@ -105,7 +103,7 @@ function QRCode({ value, size = 200 }: { value: string; size?: number }) {
   );
 }
 
-// 2D Barcode component for Data Matrix, Aztec, PDF417 using bwip-js
+// 2D Barcode placeholder for Data Matrix, Aztec, PDF417
 function Barcode2D({
   value,
   type,
@@ -115,74 +113,40 @@ function Barcode2D({
   type: "datamatrix" | "aztec" | "pdf417";
   size?: number;
 }) {
-  const [svgData, setSvgData] = useState<string | null>(null);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const generateBarcode = () => {
-      try {
-        const bcidMap: Record<string, string> = {
-          datamatrix: "datamatrix",
-          aztec: "azteccode",
-          pdf417: "pdf417",
-        };
-
-        const svg = bwipjs.toSVG({
-          bcid: bcidMap[type],
-          text: value,
-          scale: 3,
-          paddingwidth: 5,
-          paddingheight: 5,
-          backgroundcolor: "ffffff",
-        });
-
-        setSvgData(svg);
-        setError(false);
-      } catch (e) {
-        console.log("Barcode generation error:", e);
-        setError(true);
-      }
-    };
-
-    generateBarcode();
-  }, [value, type]);
-
-  if (error) {
-    return (
-      <View
-        style={{
-          width: size,
-          height: type === "pdf417" ? size * 0.5 : size,
-          backgroundColor: "#F5F5F5",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 8,
-        }}
-      >
-        <Text style={{ color: "#999", fontSize: 12 }}>Unable to generate preview</Text>
-      </View>
-    );
-  }
-
-  if (!svgData) {
-    return (
-      <View
-        style={{
-          width: size,
-          height: type === "pdf417" ? size * 0.5 : size,
-          backgroundColor: "#fff",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ color: "#999", fontSize: 12 }}>Generating...</Text>
-      </View>
-    );
-  }
+  const typeLabels: Record<string, string> = {
+    datamatrix: "Data Matrix",
+    aztec: "Aztec",
+    pdf417: "PDF417",
+  };
 
   return (
-    <View style={{ width: size, height: type === "pdf417" ? size * 0.5 : size, backgroundColor: "#fff" }}>
-      <SvgXml xml={svgData} width="100%" height="100%" />
+    <View
+      style={{
+        width: size,
+        height: type === "pdf417" ? size * 0.5 : size,
+        backgroundColor: "#F5F5F5",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 8,
+        padding: 12,
+      }}
+    >
+      <Text
+        style={{
+          color: "#666",
+          fontSize: 14,
+          fontWeight: "600",
+          marginBottom: 4,
+        }}
+      >
+        {typeLabels[type]}
+      </Text>
+      <Text
+        style={{ color: "#999", fontSize: 11, textAlign: "center" }}
+        numberOfLines={2}
+      >
+        {value.length > 50 ? `${value.substring(0, 50)}...` : value}
+      </Text>
     </View>
   );
 }
@@ -228,15 +192,15 @@ export default function ScanHistoryScreen() {
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
   const { height: windowHeight } = useWindowDimensions();
+  const t = useTranslations();
   const [saveHistory, setSaveHistory] = useStorage("saveHistory", true);
   const [requireAuth] = useStorage("requireAuthForHistory", false);
   const [search, setSearch] = useState("");
   const [previewItem, setPreviewItem] = useState<GenerationHistoryItem | null>(
     null,
   );
-  const [previewScanItem, setPreviewScanItem] = useState<ScanHistoryItem | null>(
-    null,
-  );
+  const [previewScanItem, setPreviewScanItem] =
+    useState<ScanHistoryItem | null>(null);
   const previewCodeRef = useRef<View>(null);
   const previewScanCodeRef = useRef<View>(null);
 
@@ -250,7 +214,10 @@ export default function ScanHistoryScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerSearchBarOptions: {
-        placeholder: selectedTab === 0 ? "Search scans..." : "Search generations...",
+        placeholder:
+          selectedTab === 0
+            ? t.history.searchScans
+            : t.history.searchGenerations,
         hideWhenScrolling: false,
         onChangeText: (event: { nativeEvent: { text: string } }) => {
           setSearch(event.nativeEvent.text);
@@ -260,7 +227,7 @@ export default function ScanHistoryScreen() {
         },
       },
     });
-  }, [navigation, selectedTab]);
+  }, [navigation, selectedTab, t]);
 
   // Handlers for preview modal image actions
   const handlePreviewCopy = useCallback(async () => {
@@ -272,15 +239,15 @@ export default function ScanHistoryScreen() {
       });
       await Clipboard.setImageAsync(uri);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert("Copied", "Image copied to clipboard");
+      Alert.alert(t.alerts.copied, t.scanner.imageCopied);
     } catch {
       if (previewItem) {
         await Clipboard.setStringAsync(previewItem.data);
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        Alert.alert("Copied", "Text copied to clipboard");
+        Alert.alert(t.alerts.copied, t.alerts.textCopiedToClipboard);
       }
     }
-  }, [previewItem]);
+  }, [previewItem, t]);
 
   const handlePreviewShare = useCallback(async () => {
     if (!previewCodeRef.current || !previewItem) return;
@@ -292,12 +259,12 @@ export default function ScanHistoryScreen() {
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri);
       } else {
-        Alert.alert("Error", "Sharing is not available on this device");
+        Alert.alert(t.common.error, t.scanner.sharingNotAvailable);
       }
     } catch {
-      Alert.alert("Error", "Failed to share the image");
+      Alert.alert(t.common.error, t.scanner.failedToShare);
     }
-  }, [previewItem]);
+  }, [previewItem, t]);
 
   // Handlers for scan preview modal
   const handleScanPreviewCopy = useCallback(async () => {
@@ -309,15 +276,15 @@ export default function ScanHistoryScreen() {
       });
       await Clipboard.setImageAsync(uri);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert("Copied", "Image copied to clipboard");
+      Alert.alert(t.alerts.copied, t.scanner.imageCopied);
     } catch {
       if (previewScanItem) {
         await Clipboard.setStringAsync(previewScanItem.data);
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        Alert.alert("Copied", "Text copied to clipboard");
+        Alert.alert(t.alerts.copied, t.alerts.textCopiedToClipboard);
       }
     }
-  }, [previewScanItem]);
+  }, [previewScanItem, t]);
 
   const handleScanPreviewShare = useCallback(async () => {
     if (!previewScanCodeRef.current || !previewScanItem) return;
@@ -329,12 +296,12 @@ export default function ScanHistoryScreen() {
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri);
       } else {
-        Alert.alert("Error", "Sharing is not available on this device");
+        Alert.alert(t.common.error, t.scanner.sharingNotAvailable);
       }
     } catch {
-      Alert.alert("Error", "Failed to share the image");
+      Alert.alert(t.common.error, t.scanner.failedToShare);
     }
-  }, [previewScanItem]);
+  }, [previewScanItem, t]);
 
   // Map scan type to barcode format for rendering
   const getBarcodeFormat = (type: string): string | null => {
@@ -355,7 +322,9 @@ export default function ScanHistoryScreen() {
 
   // Check if we can render a preview for this barcode type
   const canRenderScanPreview = (type: string): boolean => {
-    return type === "qr" || is2DBarcode(type) || getBarcodeFormat(type) !== null;
+    return (
+      type === "qr" || is2DBarcode(type) || getBarcodeFormat(type) !== null
+    );
   };
 
   // Get display name for the code type
@@ -403,15 +372,15 @@ export default function ScanHistoryScreen() {
             await Haptics.notificationAsync(
               Haptics.NotificationFeedbackType.Success,
             );
-            Alert.alert("Copied", "Image copied to clipboard");
+            Alert.alert(t.alerts.copied, t.scanner.imageCopied);
           } catch {
             await Clipboard.setStringAsync(itemData);
-            Alert.alert("Copied", "Text copied to clipboard");
+            Alert.alert(t.alerts.copied, t.alerts.textCopiedToClipboard);
           }
         } catch {
           captureItemRef.current = null;
           captureActionRef.current = null;
-          Alert.alert("Error", "Failed to capture the code");
+          Alert.alert(t.common.error, t.common.error);
         }
       });
     });
@@ -437,12 +406,12 @@ export default function ScanHistoryScreen() {
           if (await Sharing.isAvailableAsync()) {
             await Sharing.shareAsync(uri);
           } else {
-            Alert.alert("Error", "Sharing is not available on this device");
+            Alert.alert(t.common.error, t.scanner.sharingNotAvailable);
           }
         } catch {
           captureItemRef.current = null;
           captureActionRef.current = null;
-          Alert.alert("Error", "Failed to capture the code");
+          Alert.alert(t.common.error, t.common.error);
         }
       });
     });
@@ -492,9 +461,9 @@ export default function ScanHistoryScreen() {
 
     try {
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: "Authenticate to view history",
-        cancelLabel: "Cancel",
-        fallbackLabel: "Use Passcode",
+        promptMessage: t.history.authenticateToView,
+        cancelLabel: t.common.cancel,
+        fallbackLabel: t.common.unlock,
       });
 
       if (result.success) {
@@ -505,7 +474,7 @@ export default function ScanHistoryScreen() {
     } finally {
       setIsAuthenticating(false);
     }
-  }, []);
+  }, [t]);
 
   // Auto-authenticate on focus (only once)
   const autoAuthenticate = useCallback(async () => {
@@ -542,7 +511,7 @@ export default function ScanHistoryScreen() {
   const handleCopyItem = async (data: string) => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     await Clipboard.setStringAsync(data);
-    Alert.alert("Copied", "Text copied to clipboard");
+    Alert.alert(t.alerts.copied, t.alerts.textCopiedToClipboard);
   };
 
   const handleShareItem = async (data: string) => {
@@ -552,10 +521,10 @@ export default function ScanHistoryScreen() {
 
   const handleDeleteItem = async (id: string) => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    Alert.alert("Delete Scan", "Are you sure you want to delete this scan?", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t.history.deleteScan, t.history.deleteScanConfirm, [
+      { text: t.common.cancel, style: "cancel" },
       {
-        text: "Delete",
+        text: t.common.delete,
         style: "destructive",
         onPress: async () => {
           await Haptics.notificationAsync(
@@ -571,14 +540,12 @@ export default function ScanHistoryScreen() {
   const handleClearAll = () => {
     const isScans = selectedTab === 0;
     Alert.alert(
-      isScans ? "Clear Scan History" : "Clear Generation History",
-      isScans
-        ? "Delete all scan history? This cannot be undone."
-        : "Delete all generation history? This cannot be undone.",
+      isScans ? t.history.clearScanHistory : t.history.clearGenerationHistory,
+      t.history.clearConfirm,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t.common.cancel, style: "cancel" },
         {
-          text: "Clear All",
+          text: t.common.clearAll,
           style: "destructive",
           onPress: async () => {
             await Haptics.notificationAsync(
@@ -598,24 +565,20 @@ export default function ScanHistoryScreen() {
 
   const handleDeleteGeneration = async (id: string) => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    Alert.alert(
-      "Delete Generation",
-      "Are you sure you want to delete this generation?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            await Haptics.notificationAsync(
-              Haptics.NotificationFeedbackType.Success,
-            );
-            await deleteGenerationFromHistory(id);
-            await loadHistory();
-          },
+    Alert.alert(t.history.deleteGeneration, t.history.deleteGenerationConfirm, [
+      { text: t.common.cancel, style: "cancel" },
+      {
+        text: t.common.delete,
+        style: "destructive",
+        onPress: async () => {
+          await Haptics.notificationAsync(
+            Haptics.NotificationFeedbackType.Success,
+          );
+          await deleteGenerationFromHistory(id);
+          await loadHistory();
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const renderScanItem = ({
@@ -677,7 +640,7 @@ export default function ScanHistoryScreen() {
               style={{ width: 16, height: 16 }}
             />
             <Text style={[styles.cardButtonText, { color: theme.blue }]}>
-              Copy
+              {t.common.copy}
             </Text>
           </Pressable>
 
@@ -695,7 +658,7 @@ export default function ScanHistoryScreen() {
               style={{ width: 16, height: 16 }}
             />
             <Text style={[styles.cardButtonText, { color: theme.blue }]}>
-              Share
+              {t.common.share}
             </Text>
           </Pressable>
 
@@ -717,7 +680,7 @@ export default function ScanHistoryScreen() {
                 style={{ width: 16, height: 16 }}
               />
               <Text style={[styles.cardButtonText, { color: theme.blue }]}>
-                Preview
+                {t.common.preview}
               </Text>
             </Pressable>
           )}
@@ -801,7 +764,7 @@ export default function ScanHistoryScreen() {
               style={{ width: 16, height: 16 }}
             />
             <Text style={[styles.cardButtonText, { color: theme.blue }]}>
-              Copy
+              {t.common.copy}
             </Text>
           </Pressable>
 
@@ -819,7 +782,7 @@ export default function ScanHistoryScreen() {
               style={{ width: 16, height: 16 }}
             />
             <Text style={[styles.cardButtonText, { color: theme.blue }]}>
-              Share
+              {t.common.share}
             </Text>
           </Pressable>
 
@@ -840,7 +803,7 @@ export default function ScanHistoryScreen() {
               style={{ width: 16, height: 16 }}
             />
             <Text style={[styles.cardButtonText, { color: theme.blue }]}>
-              Preview
+              {t.common.preview}
             </Text>
           </Pressable>
 
@@ -890,10 +853,10 @@ export default function ScanHistoryScreen() {
         />
       </View>
       <Text style={[styles.emptyTitle, { color: theme.label }]}>
-        History Disabled
+        {t.history.historyDisabled}
       </Text>
       <Text style={[styles.emptyDescription, { color: theme.secondaryLabel }]}>
-        Scan history is turned off. Enable it to keep a record of your scans.
+        {t.history.historyDisabledDescription}
       </Text>
       <Pressable
         style={({ pressed }) => [
@@ -908,7 +871,7 @@ export default function ScanHistoryScreen() {
           tintColor="#FFFFFF"
           style={{ width: 18, height: 18 }}
         />
-        <Text style={styles.enableButtonText}>Enable History</Text>
+        <Text style={styles.enableButtonText}>{t.history.enableHistory}</Text>
       </Pressable>
     </Animated.View>
   );
@@ -932,12 +895,12 @@ export default function ScanHistoryScreen() {
             />
           </View>
           <Text style={[styles.emptyTitle, { color: theme.label }]}>
-            No Results
+            {t.history.noResults}
           </Text>
           <Text
             style={[styles.emptyDescription, { color: theme.secondaryLabel }]}
           >
-            No {isScansTab ? "scans" : "generations"} found for "{search}"
+            {t.history.noResultsFor} "{search}"
           </Text>
         </Animated.View>
       );
@@ -963,12 +926,12 @@ export default function ScanHistoryScreen() {
             />
           </View>
           <Text style={[styles.emptyTitle, { color: theme.label }]}>
-            No Scans Yet
+            {t.history.noScansYet}
           </Text>
           <Text
             style={[styles.emptyDescription, { color: theme.secondaryLabel }]}
           >
-            Scanned barcodes and QR codes will appear here
+            {t.history.noScansDescription}
           </Text>
         </Animated.View>
       );
@@ -988,12 +951,12 @@ export default function ScanHistoryScreen() {
           />
         </View>
         <Text style={[styles.emptyTitle, { color: theme.label }]}>
-          No Generations Yet
+          {t.history.noGenerationsYet}
         </Text>
         <Text
           style={[styles.emptyDescription, { color: theme.secondaryLabel }]}
         >
-          Generated QR codes and barcodes will appear here
+          {t.history.noGenerationsDescription}
         </Text>
       </Animated.View>
     );
@@ -1017,7 +980,7 @@ export default function ScanHistoryScreen() {
           />
           <View style={styles.disabledBannerText}>
             <Text style={[styles.disabledBannerTitle, { color: theme.label }]}>
-              History Paused
+              {t.history.historyPaused}
             </Text>
             <Text
               style={[
@@ -1025,7 +988,7 @@ export default function ScanHistoryScreen() {
                 { color: theme.secondaryLabel },
               ]}
             >
-              New scans won't be saved
+              {t.history.newScansNotSaved}
             </Text>
           </View>
         </View>
@@ -1037,7 +1000,7 @@ export default function ScanHistoryScreen() {
           ]}
           onPress={handleEnableHistory}
         >
-          <Text style={styles.enableBannerButtonText}>Enable</Text>
+          <Text style={styles.enableBannerButtonText}>{t.common.enable}</Text>
         </Pressable>
       </Animated.View>
     );
@@ -1050,8 +1013,10 @@ export default function ScanHistoryScreen() {
     const currentFiltered = isScans ? filteredHistory : filteredGenerations;
     const hasItems = currentList.length > 0;
     const isSearching = search.length > 0;
-    const itemName = isScans ? "scan" : "generation";
-    const itemNamePlural = isScans ? "scans" : "generations";
+    const itemName = isScans ? t.history.scan : t.history.generation;
+    const itemNamePlural = isScans
+      ? t.history.scans.toLowerCase()
+      : t.history.generations.toLowerCase();
 
     return (
       <View>
@@ -1081,10 +1046,12 @@ export default function ScanHistoryScreen() {
             <Text
               style={[
                 styles.segmentedButtonText,
-                { color: selectedTab === 0 ? theme.label : theme.secondaryLabel },
+                {
+                  color: selectedTab === 0 ? theme.label : theme.secondaryLabel,
+                },
               ]}
             >
-              Scans
+              {t.history.scans}
             </Text>
           </Pressable>
           <Pressable
@@ -1106,10 +1073,12 @@ export default function ScanHistoryScreen() {
             <Text
               style={[
                 styles.segmentedButtonText,
-                { color: selectedTab === 1 ? theme.label : theme.secondaryLabel },
+                {
+                  color: selectedTab === 1 ? theme.label : theme.secondaryLabel,
+                },
               ]}
             >
-              Generations
+              {t.history.generations}
             </Text>
           </Pressable>
         </View>
@@ -1120,7 +1089,7 @@ export default function ScanHistoryScreen() {
               style={[styles.listHeaderText, { color: theme.secondaryLabel }]}
             >
               {isSearching
-                ? `${currentFiltered.length} of ${currentList.length} ${itemNamePlural}`
+                ? `${currentFiltered.length} ${t.history.of} ${currentList.length} ${itemNamePlural}`
                 : `${currentList.length} ${currentList.length === 1 ? itemName : itemNamePlural}`}
             </Text>
             {!isSearching && (
@@ -1138,7 +1107,7 @@ export default function ScanHistoryScreen() {
                   style={{ width: 14, height: 14 }}
                 />
                 <Text style={[styles.clearAllText, { color: theme.red }]}>
-                  Clear All
+                  {t.common.clearAll}
                 </Text>
               </Pressable>
             )}
@@ -1169,10 +1138,12 @@ export default function ScanHistoryScreen() {
             />
           </View>
           <Text style={[styles.lockedTitle, { color: theme.label }]}>
-            History Locked
+            {t.history.historyLocked}
           </Text>
-          <Text style={[styles.lockedSubtitle, { color: theme.secondaryLabel }]}>
-            Authenticate to view your scan history
+          <Text
+            style={[styles.lockedSubtitle, { color: theme.secondaryLabel }]}
+          >
+            {t.history.authenticateToView}
           </Text>
           <Pressable
             style={({ pressed }) => [
@@ -1189,7 +1160,7 @@ export default function ScanHistoryScreen() {
               style={{ width: 22, height: 22 }}
             />
             <Text style={styles.unlockButtonText}>
-              {isAuthenticating ? "Authenticating..." : "Unlock"}
+              {isAuthenticating ? t.history.authenticating : t.common.unlock}
             </Text>
           </Pressable>
         </Animated.View>
@@ -1320,7 +1291,9 @@ export default function ScanHistoryScreen() {
                       tintColor="#FFFFFF"
                       style={{ width: 18, height: 18 }}
                     />
-                    <Text style={styles.previewButtonText}>Copy</Text>
+                    <Text style={styles.previewButtonText}>
+                      {t.common.copy}
+                    </Text>
                   </Pressable>
 
                   <Pressable
@@ -1335,7 +1308,9 @@ export default function ScanHistoryScreen() {
                       tintColor="#FFFFFF"
                       style={{ width: 18, height: 18 }}
                     />
-                    <Text style={styles.previewButtonText}>Share</Text>
+                    <Text style={styles.previewButtonText}>
+                      {t.common.share}
+                    </Text>
                   </Pressable>
                 </View>
               </>
@@ -1391,7 +1366,12 @@ export default function ScanHistoryScreen() {
                   ) : is2DBarcode(previewScanItem.type) ? (
                     <Barcode2D
                       value={previewScanItem.data}
-                      type={previewScanItem.type.toLowerCase() as "datamatrix" | "aztec" | "pdf417"}
+                      type={
+                        previewScanItem.type.toLowerCase() as
+                          | "datamatrix"
+                          | "aztec"
+                          | "pdf417"
+                      }
                       size={200}
                     />
                   ) : getBarcodeFormat(previewScanItem.type) ? (
@@ -1431,7 +1411,9 @@ export default function ScanHistoryScreen() {
                       tintColor="#FFFFFF"
                       style={{ width: 18, height: 18 }}
                     />
-                    <Text style={styles.previewButtonText}>Copy</Text>
+                    <Text style={styles.previewButtonText}>
+                      {t.common.copy}
+                    </Text>
                   </Pressable>
 
                   <Pressable
@@ -1446,7 +1428,9 @@ export default function ScanHistoryScreen() {
                       tintColor="#FFFFFF"
                       style={{ width: 18, height: 18 }}
                     />
-                    <Text style={styles.previewButtonText}>Share</Text>
+                    <Text style={styles.previewButtonText}>
+                      {t.common.share}
+                    </Text>
                   </Pressable>
                 </View>
               </>

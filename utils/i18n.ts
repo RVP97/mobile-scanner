@@ -55,6 +55,9 @@ export interface Translations {
     unableToOpenUrl: string;
     sharingNotAvailable: string;
     failedToShare: string;
+    noCodeToScan: string;
+    generateYourOwn: string;
+    tryGenerator: string;
   };
 
   // History screen
@@ -164,6 +167,49 @@ export interface Translations {
     sharingNotAvailable: string;
     failedToExport: string;
   };
+
+  // Welcome screen
+  welcome: {
+    title: string;
+    subtitle: string;
+    scanTitle: string;
+    scanDescription: string;
+    generateTitle: string;
+    generateDescription: string;
+    historyTitle: string;
+    historyDescription: string;
+    getStartedTitle: string;
+    getStartedDescription: string;
+    getStarted: string;
+    back: string;
+  };
+
+  // Language selection
+  languageSelection: {
+    title: string;
+    subtitle: string;
+    continue: string;
+  };
+
+  // Help section
+  help: {
+    title: string;
+    howToScanTitle: string;
+    howToScanStep1: string;
+    howToScanStep2: string;
+    howToScanStep3: string;
+    howToGenerateTitle: string;
+    howToGenerateStep1: string;
+    howToGenerateStep2: string;
+    howToGenerateStep3: string;
+    whereToFindTitle: string;
+    whereToFindDescription: string;
+    tipsTitle: string;
+    tip1: string;
+    tip2: string;
+    tip3: string;
+    tip4: string;
+  };
 }
 
 const en: Translations = {
@@ -217,6 +263,9 @@ const en: Translations = {
     unableToOpenUrl: "Unable to open this URL",
     sharingNotAvailable: "Sharing is not available on this device",
     failedToShare: "Failed to share the image",
+    noCodeToScan: "No code to scan?",
+    generateYourOwn: "Create your own QR codes and barcodes",
+    tryGenerator: "Try Generator",
   },
   history: {
     scans: "Scans",
@@ -320,6 +369,48 @@ const en: Translations = {
     sharingNotAvailable: "Sharing is not available on this device",
     failedToExport: "Failed to export history.",
   },
+  languageSelection: {
+    title: "Choose Your Language",
+    subtitle: "Select your preferred language to continue",
+    continue: "Continue",
+  },
+  welcome: {
+    title: "Welcome to Scanner",
+    subtitle: "Scan QR codes and barcodes instantly, or create your own",
+    scanTitle: "Scan Codes",
+    scanDescription:
+      "Point your camera at any QR code or barcode to instantly read its content",
+    generateTitle: "Generate Codes",
+    generateDescription:
+      "Create your own QR codes and barcodes for sharing information",
+    historyTitle: "Save History",
+    historyDescription:
+      "Keep track of all your scans and generated codes in one place",
+    getStartedTitle: "Get Started",
+    getStartedDescription:
+      "You can scan existing codes or generate your own QR codes and barcodes using the Generator tab. No special codes needed to get started!",
+    getStarted: "Get Started",
+    back: "Back",
+  },
+  help: {
+    title: "Help & Guide",
+    howToScanTitle: "How to Scan",
+    howToScanStep1: "1. Open the Scanner tab",
+    howToScanStep2: "2. Point your camera at a QR code or barcode",
+    howToScanStep3: "3. The content will be displayed automatically",
+    howToGenerateTitle: "How to Generate Codes",
+    howToGenerateStep1: "1. Go to the Generator tab",
+    howToGenerateStep2: "2. Choose a code type (QR Code, CODE 128, EAN-13, etc.)",
+    howToGenerateStep3: "3. Enter your content and tap Generate",
+    whereToFindTitle: "Where to Find QR Codes",
+    whereToFindDescription:
+      "QR codes and barcodes are everywhere! Look for them on products, posters, business cards, websites, and more. You can also create your own using the Generator tab - no special codes needed to get started!",
+    tipsTitle: "Tips",
+    tip1: "• Use the Generator tab to create QR codes for URLs, text, or contact information",
+    tip2: "• Enable 'Auto-Copy' in Settings to automatically copy scanned content",
+    tip3: "• Use 'Scan and Go' to automatically open URLs after scanning",
+    tip4: "• Scan codes from photos using the 'From Gallery' button",
+  },
 };
 
 const es: Translations = {
@@ -374,6 +465,9 @@ const es: Translations = {
     unableToOpenUrl: "No se puede abrir esta URL",
     sharingNotAvailable: "Compartir no está disponible en este dispositivo",
     failedToShare: "Error al compartir la imagen",
+    noCodeToScan: "¿No tienes código para escanear?",
+    generateYourOwn: "Crea tus propios códigos QR y de barras",
+    tryGenerator: "Probar Generador",
   },
   history: {
     scans: "Escaneos",
@@ -480,6 +574,48 @@ const es: Translations = {
     sharingNotAvailable: "Compartir no está disponible en este dispositivo",
     failedToExport: "Error al exportar historial.",
   },
+  languageSelection: {
+    title: "Elige Tu Idioma",
+    subtitle: "Selecciona tu idioma preferido para continuar",
+    continue: "Continuar",
+  },
+  welcome: {
+    title: "Bienvenido a Escáner",
+    subtitle: "Escanea códigos QR y de barras al instante, o crea los tuyos",
+    scanTitle: "Escanear Códigos",
+    scanDescription:
+      "Apunta tu cámara a cualquier código QR o de barras para leer su contenido",
+    generateTitle: "Generar Códigos",
+    generateDescription:
+      "Crea tus propios códigos QR y de barras para compartir información",
+    historyTitle: "Guardar Historial",
+    historyDescription:
+      "Mantén un registro de todos tus escaneos y códigos generados",
+    getStartedTitle: "Comenzar",
+    getStartedDescription:
+      "Puedes escanear códigos existentes o generar tus propios códigos QR y de barras usando la pestaña Generador. ¡No necesitas códigos especiales para empezar!",
+    getStarted: "Comenzar",
+    back: "Atrás",
+  },
+  help: {
+    title: "Ayuda y Guía",
+    howToScanTitle: "Cómo Escanear",
+    howToScanStep1: "1. Abre la pestaña Escáner",
+    howToScanStep2: "2. Apunta tu cámara a un código QR o de barras",
+    howToScanStep3: "3. El contenido se mostrará automáticamente",
+    howToGenerateTitle: "Cómo Generar Códigos",
+    howToGenerateStep1: "1. Ve a la pestaña Generador",
+    howToGenerateStep2: "2. Elige un tipo de código (QR Code, CODE 128, EAN-13, etc.)",
+    howToGenerateStep3: "3. Ingresa tu contenido y toca Generar",
+    whereToFindTitle: "Dónde Encontrar Códigos QR",
+    whereToFindDescription:
+      "¡Los códigos QR y de barras están en todas partes! Búscalos en productos, carteles, tarjetas de presentación, sitios web y más. También puedes crear los tuyos usando la pestaña Generador - ¡no necesitas códigos especiales para empezar!",
+    tipsTitle: "Consejos",
+    tip1: "• Usa la pestaña Generador para crear códigos QR para URLs, texto o información de contacto",
+    tip2: "• Activa 'Auto-Copiar' en Ajustes para copiar automáticamente el contenido escaneado",
+    tip3: "• Usa 'Escanear e Ir' para abrir URLs automáticamente después de escanear",
+    tip4: "• Escanea códigos desde fotos usando el botón 'Desde Galería'",
+  },
 };
 
 const fr: Translations = {
@@ -534,6 +670,9 @@ const fr: Translations = {
     unableToOpenUrl: "Impossible d'ouvrir cette URL",
     sharingNotAvailable: "Le partage n'est pas disponible sur cet appareil",
     failedToShare: "Échec du partage de l'image",
+    noCodeToScan: "Pas de code à scanner?",
+    generateYourOwn: "Créez vos propres codes QR et codes-barres",
+    tryGenerator: "Essayer Générateur",
   },
   history: {
     scans: "Scans",
@@ -638,6 +777,48 @@ const fr: Translations = {
     error: "Erreur",
     sharingNotAvailable: "Le partage n'est pas disponible sur cet appareil",
     failedToExport: "Échec de l'exportation de l'historique.",
+  },
+  languageSelection: {
+    title: "Choisissez Votre Langue",
+    subtitle: "Sélectionnez votre langue préférée pour continuer",
+    continue: "Continuer",
+  },
+  welcome: {
+    title: "Bienvenue dans Scanner",
+    subtitle: "Scannez les codes QR et codes-barres instantanément, ou créez les vôtres",
+    scanTitle: "Scanner les Codes",
+    scanDescription:
+      "Pointez votre caméra vers n'importe quel code QR ou code-barres pour lire son contenu",
+    generateTitle: "Générer des Codes",
+    generateDescription:
+      "Créez vos propres codes QR et codes-barres pour partager des informations",
+    historyTitle: "Sauvegarder l'Historique",
+    historyDescription:
+      "Gardez une trace de tous vos scans et codes générés en un seul endroit",
+    getStartedTitle: "Commencer",
+    getStartedDescription:
+      "Vous pouvez scanner des codes existants ou générer vos propres codes QR et codes-barres en utilisant l'onglet Générateur. Aucun code spécial nécessaire pour commencer!",
+    getStarted: "Commencer",
+    back: "Retour",
+  },
+  help: {
+    title: "Aide et Guide",
+    howToScanTitle: "Comment Scanner",
+    howToScanStep1: "1. Ouvrez l'onglet Scanner",
+    howToScanStep2: "2. Pointez votre caméra vers un code QR ou code-barres",
+    howToScanStep3: "3. Le contenu s'affichera automatiquement",
+    howToGenerateTitle: "Comment Générer des Codes",
+    howToGenerateStep1: "1. Allez dans l'onglet Générateur",
+    howToGenerateStep2: "2. Choisissez un type de code (QR Code, CODE 128, EAN-13, etc.)",
+    howToGenerateStep3: "3. Entrez votre contenu et appuyez sur Générer",
+    whereToFindTitle: "Où Trouver les Codes QR",
+    whereToFindDescription:
+      "Les codes QR et codes-barres sont partout! Cherchez-les sur les produits, affiches, cartes de visite, sites web et plus encore. Vous pouvez également créer les vôtres en utilisant l'onglet Générateur - aucun code spécial nécessaire pour commencer!",
+    tipsTitle: "Conseils",
+    tip1: "• Utilisez l'onglet Générateur pour créer des codes QR pour les URLs, texte ou informations de contact",
+    tip2: "• Activez 'Copie Auto' dans les Réglages pour copier automatiquement le contenu scanné",
+    tip3: "• Utilisez 'Scanner et Ouvrir' pour ouvrir automatiquement les URLs après le scan",
+    tip4: "• Scannez des codes depuis des photos en utilisant le bouton 'Depuis la Galerie'",
   },
 };
 

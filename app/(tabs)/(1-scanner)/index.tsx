@@ -1,6 +1,7 @@
 import { useStorage } from "@/hooks/useStorage";
 import { useTranslations } from "@/hooks/useTranslations";
 import { saveScanToHistory } from "@/utils/scanHistory";
+import { useRouter } from "expo-router";
 import BarcodeScanning, {
   BarcodeFormat,
 } from "@react-native-ml-kit/barcode-scanning";
@@ -235,6 +236,11 @@ export default function ScannerScreen() {
   const theme = colors[colorScheme ?? "light"];
   const previewCodeRef = useRef<View>(null);
   const t = useTranslations();
+  const router = useRouter();
+  const [hasScannedBefore, setHasScannedBefore] = useStorage(
+    "hasScannedBefore",
+    false,
+  );
 
   // Multi-scan state
   const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
@@ -356,6 +362,11 @@ export default function ScannerScreen() {
       setScanned(true);
       setScannedData(data);
       setScannedType(type);
+
+      // Mark that user has scanned before
+      if (!hasScannedBefore) {
+        setHasScannedBefore(true);
+      }
 
       // Save to history if enabled
       if (saveHistory) {
@@ -1424,6 +1435,50 @@ export default function ScannerScreen() {
           <View style={[styles.corner, styles.bottomRight]} />
         </Animated.View>
 
+        {/* Helpful Info Card - Show when user hasn't scanned before */}
+        {!hasScannedBefore && !multiScan && (
+          <Animated.View
+            entering={FadeInDown.delay(800).duration(500)}
+            style={[styles.helpCard, { top: insets.top + 80 }]}
+          >
+            <BlurView
+              tint="systemMaterialDark"
+              intensity={90}
+              style={styles.helpCardInner}
+            >
+              <SymbolView
+                name="lightbulb.fill"
+                tintColor="#FFD60A"
+                style={{ width: 24, height: 24 }}
+              />
+              <View style={styles.helpCardContent}>
+                <Text style={styles.helpCardTitle}>
+                  {t.scanner.noCodeToScan}
+                </Text>
+                <Text style={styles.helpCardText}>
+                  {t.scanner.generateYourOwn}
+                </Text>
+              </View>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.helpCardButton,
+                  pressed && { opacity: 0.7 },
+                ]}
+                onPress={() => {
+                  if (hapticEnabled) {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }
+                  router.push("/(tabs)/(4-generator)");
+                }}
+              >
+                <Text style={styles.helpCardButtonText}>
+                  {t.scanner.tryGenerator}
+                </Text>
+              </Pressable>
+            </BlurView>
+          </Animated.View>
+        )}
+
         {/* Multi-scan counter badge */}
         {multiScan && scannedItems.length > 0 && (
           <Animated.View
@@ -2014,5 +2069,45 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderCurve: "continuous",
     marginBottom: 20,
+  },
+  helpCard: {
+    position: "absolute",
+    left: 20,
+    right: 20,
+    alignSelf: "center",
+  },
+  helpCardInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    padding: 16,
+    borderRadius: 16,
+    borderCurve: "continuous",
+    overflow: "hidden",
+  },
+  helpCardContent: {
+    flex: 1,
+    gap: 4,
+  },
+  helpCardTitle: {
+    color: "rgba(255, 255, 255, 0.95)",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  helpCardText: {
+    color: "rgba(255, 255, 255, 0.8)",
+    fontSize: 13,
+  },
+  helpCardButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 8,
+    borderCurve: "continuous",
+  },
+  helpCardButtonText: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "600",
   },
 });

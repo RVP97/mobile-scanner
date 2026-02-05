@@ -16,6 +16,8 @@ import { SymbolView } from "expo-symbols";
 import { useEffect, useState } from "react";
 import {
   Alert,
+  Modal,
+  PlatformColor,
   Pressable,
   ScrollView,
   Share,
@@ -40,6 +42,7 @@ const colors = {
     red: "#FF3B30",
     green: "#34C759",
     purple: "#AF52DE",
+    orange: "#FF9500",
   },
   dark: {
     background: "#000000",
@@ -52,6 +55,7 @@ const colors = {
     red: "#FF453A",
     green: "#30D158",
     purple: "#BF5AF2",
+    orange: "#FF9F0A",
   },
 };
 
@@ -156,6 +160,7 @@ export default function SettingsScreen() {
   );
   const [language, setLanguage] = useStorage<Language>("language", "en");
   const [biometricType, setBiometricType] = useState<string>("Face ID");
+  const [showHelp, setShowHelp] = useState(false);
 
   // Check available biometric type
   useEffect(() => {
@@ -501,6 +506,34 @@ export default function SettingsScreen() {
         </View>
       </View>
 
+      {/* Help */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionHeader, { color: theme.secondaryLabel }]}>
+          HELP
+        </Text>
+        <View
+          style={[
+            styles.sectionContent,
+            { backgroundColor: theme.secondaryBackground },
+          ]}
+        >
+          <SettingsRow
+            icon="questionmark.circle.fill"
+            iconColor={theme.blue}
+            title={t.help.title}
+            subtitle="Learn how to use the app"
+            onPress={() => {
+              if (hapticEnabled) {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              }
+              setShowHelp(true);
+            }}
+            showChevron
+            theme={theme}
+          />
+        </View>
+      </View>
+
       {/* About */}
       <View style={styles.section}>
         <Text style={[styles.sectionHeader, { color: theme.secondaryLabel }]}>
@@ -542,6 +575,132 @@ export default function SettingsScreen() {
           ({Application.nativeBuildVersion ?? "1"})
         </Text>
       </View>
+
+      {/* Help Modal */}
+      <Modal
+        visible={showHelp}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowHelp(false)}
+      >
+        <View style={[styles.modalContainer, { backgroundColor: theme.background }]}>
+          <View style={styles.modalHeader}>
+            <Text style={[styles.modalTitle, { color: theme.label }]}>
+              {t.help.title}
+            </Text>
+            <Pressable
+              onPress={() => {
+                if (hapticEnabled) {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }
+                setShowHelp(false);
+              }}
+              hitSlop={10}
+            >
+              <SymbolView
+                name="xmark.circle.fill"
+                tintColor={theme.secondaryLabel}
+                style={{ width: 28, height: 28 }}
+              />
+            </Pressable>
+          </View>
+
+          <ScrollView
+            style={styles.modalContent}
+            contentContainerStyle={styles.modalScrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* How to Scan */}
+            <View style={styles.helpSection}>
+              <View style={styles.helpSectionHeader}>
+                <SymbolView
+                  name="camera.fill"
+                  tintColor={theme.blue}
+                  style={{ width: 24, height: 24 }}
+                />
+                <Text style={[styles.helpSectionTitle, { color: theme.label }]}>
+                  {t.help.howToScanTitle}
+                </Text>
+              </View>
+              <Text style={[styles.helpStep, { color: theme.secondaryLabel }]}>
+                {t.help.howToScanStep1}
+              </Text>
+              <Text style={[styles.helpStep, { color: theme.secondaryLabel }]}>
+                {t.help.howToScanStep2}
+              </Text>
+              <Text style={[styles.helpStep, { color: theme.secondaryLabel }]}>
+                {t.help.howToScanStep3}
+              </Text>
+            </View>
+
+            {/* How to Generate */}
+            <View style={styles.helpSection}>
+              <View style={styles.helpSectionHeader}>
+                <SymbolView
+                  name="qrcode"
+                  tintColor={theme.green}
+                  style={{ width: 24, height: 24 }}
+                />
+                <Text style={[styles.helpSectionTitle, { color: theme.label }]}>
+                  {t.help.howToGenerateTitle}
+                </Text>
+              </View>
+              <Text style={[styles.helpStep, { color: theme.secondaryLabel }]}>
+                {t.help.howToGenerateStep1}
+              </Text>
+              <Text style={[styles.helpStep, { color: theme.secondaryLabel }]}>
+                {t.help.howToGenerateStep2}
+              </Text>
+              <Text style={[styles.helpStep, { color: theme.secondaryLabel }]}>
+                {t.help.howToGenerateStep3}
+              </Text>
+            </View>
+
+            {/* Where to Find */}
+            <View style={styles.helpSection}>
+              <View style={styles.helpSectionHeader}>
+                <SymbolView
+                  name="magnifyingglass"
+                  tintColor={theme.orange}
+                  style={{ width: 24, height: 24 }}
+                />
+                <Text style={[styles.helpSectionTitle, { color: theme.label }]}>
+                  {t.help.whereToFindTitle}
+                </Text>
+              </View>
+              <Text style={[styles.helpText, { color: theme.secondaryLabel }]}>
+                {t.help.whereToFindDescription}
+              </Text>
+            </View>
+
+            {/* Tips */}
+            <View style={styles.helpSection}>
+              <View style={styles.helpSectionHeader}>
+                <SymbolView
+                  name="lightbulb.fill"
+                  tintColor="#FFD60A"
+                  style={{ width: 24, height: 24 }}
+                />
+                <Text style={[styles.helpSectionTitle, { color: theme.label }]}>
+                  {t.help.tipsTitle}
+                </Text>
+              </View>
+              <Text style={[styles.helpTip, { color: theme.secondaryLabel }]}>
+                {t.help.tip1}
+              </Text>
+              <Text style={[styles.helpTip, { color: theme.secondaryLabel }]}>
+                {t.help.tip2}
+              </Text>
+              <Text style={[styles.helpTip, { color: theme.secondaryLabel }]}>
+                {t.help.tip3}
+              </Text>
+              <Text style={[styles.helpTip, { color: theme.secondaryLabel }]}>
+                {t.help.tip4}
+              </Text>
+            </View>
+          </ScrollView>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -613,5 +772,56 @@ const styles = StyleSheet.create({
   },
   appVersion: {
     fontSize: 14,
+  },
+  modalContainer: {
+    flex: 1,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 20,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: PlatformColor("separator"),
+  },
+  modalTitle: {
+    fontSize: 28,
+    fontWeight: "700",
+  },
+  modalContent: {
+    flex: 1,
+  },
+  modalScrollContent: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+  helpSection: {
+    marginBottom: 32,
+  },
+  helpSectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 16,
+  },
+  helpSectionTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  helpStep: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 8,
+  },
+  helpText: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  helpTip: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 8,
   },
 });

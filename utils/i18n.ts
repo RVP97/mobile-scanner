@@ -237,7 +237,7 @@ const en: Translations = {
     requestingPermission: "Requesting camera permission...",
     cameraAccess: "Camera Access",
     cameraPermissionText: "We need camera access to scan barcodes and QR codes",
-    grantPermission: "Grant Permission",
+    grantPermission: "Continue",
     scanComplete: "Scan Complete",
     urlDetected: "Website URL detected",
     contentCaptured: "Content captured",
@@ -439,7 +439,7 @@ const es: Translations = {
     cameraAccess: "Acceso a Cámara",
     cameraPermissionText:
       "Necesitamos acceso a la cámara para escanear códigos de barras y QR",
-    grantPermission: "Permitir Acceso",
+    grantPermission: "Continuar",
     scanComplete: "Escaneo Completo",
     urlDetected: "URL detectada",
     contentCaptured: "Contenido capturado",
@@ -644,7 +644,7 @@ const fr: Translations = {
     cameraAccess: "Accès Caméra",
     cameraPermissionText:
       "Nous avons besoin de la caméra pour scanner les codes-barres et QR",
-    grantPermission: "Autoriser l'Accès",
+    grantPermission: "Continuer",
     scanComplete: "Scan Terminé",
     urlDetected: "URL détectée",
     contentCaptured: "Contenu capturé",

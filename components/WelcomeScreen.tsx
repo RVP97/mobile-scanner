@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Text,
   useColorScheme,
+  useWindowDimensions,
   View,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
@@ -83,6 +84,8 @@ export default function WelcomeScreen() {
   const theme = colors[colorScheme ?? "light"];
   const t = useTranslations();
   const router = useRouter();
+  const { width: windowWidth } = useWindowDimensions();
+  const isWideScreen = windowWidth > 600;
   const insets = useSafeAreaInsets();
   const [hasSeenWelcome, setHasSeenWelcome] = useStorage(
     "hasSeenWelcome",
@@ -145,6 +148,7 @@ export default function WelcomeScreen() {
         contentContainerStyle={[
           styles.content,
           { paddingTop: insets.top + 40, paddingBottom: insets.bottom + 40 },
+          isWideScreen && styles.contentWide,
         ]}
         showsVerticalScrollIndicator={false}
       >
@@ -223,7 +227,7 @@ export default function WelcomeScreen() {
       {/* Get Started Button */}
       <Animated.View
         entering={FadeInDown.delay(300).duration(400)}
-        style={[styles.buttonContainer, { paddingBottom: insets.bottom + 20 }]}
+        style={[styles.buttonContainer, { paddingBottom: insets.bottom + 20 }, isWideScreen && styles.buttonContainerWide]}
       >
         <Pressable
           style={({ pressed }) => [
@@ -251,6 +255,11 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 24,
+  },
+  contentWide: {
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
   },
   header: {
     alignItems: "center",
@@ -321,6 +330,11 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingHorizontal: 24,
     paddingTop: 20,
+  },
+  buttonContainerWide: {
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
   },
   getStartedButton: {
     flexDirection: "row",

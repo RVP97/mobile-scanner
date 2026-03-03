@@ -34,6 +34,7 @@ import {
   Text,
   TextInput,
   useColorScheme,
+  useWindowDimensions,
   View,
 } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
@@ -234,6 +235,9 @@ export default function ScannerScreen() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
+  const { width: windowWidth } = useWindowDimensions();
+  const isWideScreen = windowWidth > 600;
+  const contentMaxWidth = isWideScreen ? 600 : undefined;
   const previewCodeRef = useRef<View>(null);
   const t = useTranslations();
   const router = useRouter();
@@ -703,7 +707,7 @@ export default function ScannerScreen() {
         style={[styles.container, { backgroundColor: theme.background }]}
         contentContainerStyle={[
           styles.resultContent,
-          { paddingBottom: insets.bottom + 100 },
+          { paddingBottom: insets.bottom + 100, maxWidth: contentMaxWidth, alignSelf: "center", width: "100%" },
         ]}
         contentInsetAdjustmentBehavior="automatic"
       >
@@ -1045,7 +1049,7 @@ export default function ScannerScreen() {
         style={[styles.container, { backgroundColor: theme.background }]}
         contentContainerStyle={[
           styles.resultContent,
-          { paddingBottom: insets.bottom + 100 },
+          { paddingBottom: insets.bottom + 100, maxWidth: contentMaxWidth, alignSelf: "center", width: "100%" },
         ]}
         contentInsetAdjustmentBehavior="automatic"
       >
@@ -1428,7 +1432,7 @@ export default function ScannerScreen() {
         </View>
 
         {/* Scan Frame */}
-        <Animated.View entering={FadeIn.duration(600)} style={styles.scanFrame}>
+        <Animated.View entering={FadeIn.duration(600)} style={[styles.scanFrame, isWideScreen && styles.scanFrameWide]}>
           <View style={[styles.corner, styles.topLeft]} />
           <View style={[styles.corner, styles.topRight]} />
           <View style={[styles.corner, styles.bottomLeft]} />
@@ -1668,6 +1672,10 @@ const styles = StyleSheet.create({
   scanFrame: {
     width: 280,
     height: 280,
+  },
+  scanFrameWide: {
+    width: 340,
+    height: 340,
   },
   corner: {
     position: "absolute",
@@ -2074,7 +2082,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 20,
     right: 20,
-    alignSelf: "center",
   },
   helpCardInner: {
     flexDirection: "row",

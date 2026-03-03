@@ -191,7 +191,8 @@ export default function ScanHistoryScreen() {
   const hasAttemptedAuthRef = useRef(false);
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
-  const { height: windowHeight } = useWindowDimensions();
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const isWideScreen = windowWidth > 600;
   const t = useTranslations();
   const [saveHistory, setSaveHistory] = useStorage("saveHistory", true);
   const [requireAuth] = useStorage("requireAuthForHistory", false);
@@ -1123,7 +1124,7 @@ export default function ScanHistoryScreen() {
       <View style={[styles.container, { backgroundColor: theme.background }]}>
         <Animated.View
           entering={FadeIn.duration(400)}
-          style={styles.lockedContainer}
+          style={[styles.lockedContainer, isWideScreen && styles.lockedContainerWide]}
         >
           <View
             style={[
@@ -1190,6 +1191,7 @@ export default function ScanHistoryScreen() {
         contentContainerStyle={[
           styles.listContent,
           isEmpty && styles.listContentEmpty,
+          isWideScreen && styles.listContentWide,
         ]}
         contentInsetAdjustmentBehavior="automatic"
         ListHeaderComponent={renderHeader}
@@ -1493,6 +1495,11 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingBottom: 0,
   },
+  listContentWide: {
+    maxWidth: 700,
+    alignSelf: "center",
+    width: "100%",
+  },
   segmentedControlContainer: {
     flexDirection: "row",
     padding: 3,
@@ -1691,6 +1698,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 40,
+  },
+  lockedContainerWide: {
+    maxWidth: 500,
+    alignSelf: "center",
+    width: "100%",
   },
   lockedIconContainer: {
     width: 100,

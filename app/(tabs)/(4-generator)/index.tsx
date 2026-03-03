@@ -17,6 +17,7 @@ import {
   Text,
   TextInput,
   useColorScheme,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { captureRef } from "react-native-view-shot";
@@ -379,6 +380,8 @@ export default function GeneratorScreen() {
   const theme = colors[colorScheme ?? "light"];
   const [saveHistory] = useStorage("saveHistory", true);
   const t = useTranslations();
+  const { width: windowWidth } = useWindowDimensions();
+  const isWideScreen = windowWidth > 600;
 
   const getPlaceholder = (key: string): string => {
     const placeholders: Record<PlaceholderKey, string> = {
@@ -495,7 +498,7 @@ export default function GeneratorScreen() {
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: theme.background }]}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={[styles.contentContainer, isWideScreen && styles.contentContainerWide]}
       contentInsetAdjustmentBehavior="automatic"
       keyboardDismissMode="on-drag"
     >
@@ -737,6 +740,11 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 16,
     paddingBottom: 100,
+  },
+  contentContainerWide: {
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
   },
   section: {
     marginBottom: 24,

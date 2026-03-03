@@ -25,6 +25,7 @@ import {
   Switch,
   Text,
   useColorScheme,
+  useWindowDimensions,
   View,
 } from "react-native";
 
@@ -147,6 +148,8 @@ export default function SettingsScreen() {
   const colorScheme = useColorScheme();
   const theme = colors[colorScheme ?? "light"];
   const t = useTranslations();
+  const { width: windowWidth } = useWindowDimensions();
+  const isWideScreen = windowWidth > 600;
 
   const [hapticEnabled, setHapticEnabled] = useStorage("hapticEnabled", true);
   const [soundEnabled, setSoundEnabled] = useStorage("soundEnabled", true);
@@ -350,7 +353,7 @@ export default function SettingsScreen() {
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: theme.background }]}
-      contentContainerStyle={styles.content}
+      contentContainerStyle={[styles.content, isWideScreen && styles.contentWide]}
       contentInsetAdjustmentBehavior="automatic"
       bounces={false}
     >
@@ -607,7 +610,7 @@ export default function SettingsScreen() {
 
           <ScrollView
             style={styles.modalContent}
-            contentContainerStyle={styles.modalScrollContent}
+            contentContainerStyle={[styles.modalScrollContent, isWideScreen && styles.modalScrollContentWide]}
             showsVerticalScrollIndicator={false}
           >
             {/* How to Scan */}
@@ -712,6 +715,11 @@ const styles = StyleSheet.create({
   content: {
     paddingBottom: 20,
   },
+  contentWide: {
+    maxWidth: 700,
+    alignSelf: "center",
+    width: "100%",
+  },
   section: {
     marginTop: 20,
   },
@@ -796,6 +804,11 @@ const styles = StyleSheet.create({
   modalScrollContent: {
     padding: 20,
     paddingBottom: 40,
+  },
+  modalScrollContentWide: {
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
   },
   helpSection: {
     marginBottom: 32,

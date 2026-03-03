@@ -2038,7 +2038,7 @@ const styles = StyleSheet.create({
     borderCurve: "continuous",
   },
   multiItemType: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.3,
   },
@@ -2049,10 +2049,10 @@ const styles = StyleSheet.create({
   multiItemActions: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 8,
   },
   multiItemButton: {
-    padding: 6,
+    padding: 10,
   },
   continueButton: {
     flexDirection: "row",

@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.rvp97.scanner",
       "appStoreUrl": "https://apps.apple.com/us/app/fast-qr-barcode/id6758315540",
       "infoPlist": {

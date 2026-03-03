@@ -1624,20 +1624,22 @@ const styles = StyleSheet.create({
   },
   cardActions: {
     flexDirection: "row",
-    gap: 8,
+    flexWrap: "wrap",
+    gap: 10,
   },
   cardButton: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
     borderCurve: "continuous",
+    minHeight: 44,
   },
   deleteButton: {
     marginLeft: "auto",
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
   },
   cardButtonText: {
     fontSize: 14,

@@ -237,7 +237,8 @@ export default function ScannerScreen() {
   const theme = colors[colorScheme ?? "light"];
   const { width: windowWidth } = useWindowDimensions();
   const isWideScreen = windowWidth > 600;
-  const contentMaxWidth = isWideScreen ? 600 : undefined;
+  const isTablet = windowWidth > 744;
+  const contentMaxWidth = isTablet ? 700 : isWideScreen ? 600 : undefined;
   const previewCodeRef = useRef<View>(null);
   const t = useTranslations();
   const router = useRouter();
@@ -707,6 +708,7 @@ export default function ScannerScreen() {
         style={[styles.container, { backgroundColor: theme.background }]}
         contentContainerStyle={[
           styles.resultContent,
+          isTablet && styles.resultContentTablet,
           { paddingBottom: insets.bottom + 100, maxWidth: contentMaxWidth, alignSelf: "center", width: "100%" },
         ]}
         contentInsetAdjustmentBehavior="automatic"
@@ -1049,6 +1051,7 @@ export default function ScannerScreen() {
         style={[styles.container, { backgroundColor: theme.background }]}
         contentContainerStyle={[
           styles.resultContent,
+          isTablet && styles.resultContentTablet,
           { paddingBottom: insets.bottom + 100, maxWidth: contentMaxWidth, alignSelf: "center", width: "100%" },
         ]}
         contentInsetAdjustmentBehavior="automatic"
@@ -1400,7 +1403,7 @@ export default function ScannerScreen() {
 
       <View style={styles.overlay}>
         {/* Top Controls */}
-        <View style={[styles.topControls, { top: insets.top + 16 }]}>
+        <View style={[styles.topControls, { top: insets.top + 16 }, isTablet && { left: 40, right: 40 }]}>
           <Pressable
             style={({ pressed }) => [
               styles.controlButton,
@@ -1432,7 +1435,7 @@ export default function ScannerScreen() {
         </View>
 
         {/* Scan Frame */}
-        <Animated.View entering={FadeIn.duration(600)} style={[styles.scanFrame, isWideScreen && styles.scanFrameWide]}>
+        <Animated.View entering={FadeIn.duration(600)} style={[styles.scanFrame, isWideScreen && styles.scanFrameWide, isTablet && styles.scanFrameTablet]}>
           <View style={[styles.corner, styles.topLeft]} />
           <View style={[styles.corner, styles.topRight]} />
           <View style={[styles.corner, styles.bottomLeft]} />
@@ -1510,7 +1513,7 @@ export default function ScannerScreen() {
         )}
 
         {/* Bottom Area */}
-        <View style={[styles.bottomArea, { bottom: insets.bottom + 100 }]}>
+        <View style={[styles.bottomArea, { bottom: insets.bottom + 100 }, isTablet && { left: 40, right: 40 }]}>
           <BlurView
             tint="systemMaterialDark"
             intensity={80}
@@ -1677,6 +1680,10 @@ const styles = StyleSheet.create({
     width: 340,
     height: 340,
   },
+  scanFrameTablet: {
+    width: 420,
+    height: 420,
+  },
   corner: {
     position: "absolute",
     width: 40,
@@ -1756,6 +1763,10 @@ const styles = StyleSheet.create({
   resultContent: {
     padding: 24,
     paddingTop: 60,
+  },
+  resultContentTablet: {
+    padding: 40,
+    paddingTop: 80,
   },
   successHeader: {
     alignItems: "center",
@@ -1881,10 +1892,10 @@ const styles = StyleSheet.create({
   },
   previewModalContent: {
     width: "90%",
-    maxWidth: 360,
+    maxWidth: 440,
     borderRadius: 20,
     borderCurve: "continuous",
-    padding: 20,
+    padding: 24,
     alignItems: "center",
   },
   previewHeader: {
@@ -2082,6 +2093,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 20,
     right: 20,
+    maxWidth: 500,
+    alignSelf: "center",
   },
   helpCardInner: {
     flexDirection: "row",

@@ -739,9 +739,10 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 16,
     gap: 14,
+    minHeight: 52,
   },
   rowPressed: {
     opacity: 0.6,

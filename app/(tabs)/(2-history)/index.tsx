@@ -193,6 +193,7 @@ export default function ScanHistoryScreen() {
   const theme = colors[colorScheme ?? "light"];
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const isWideScreen = windowWidth > 600;
+  const isTablet = windowWidth > 744;
   const t = useTranslations();
   const [saveHistory, setSaveHistory] = useStorage("saveHistory", true);
   const [requireAuth] = useStorage("requireAuthForHistory", false);
@@ -1625,7 +1626,7 @@ const styles = StyleSheet.create({
   cardActions: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: 12,
   },
   cardButton: {
     flexDirection: "row",
@@ -1747,10 +1748,10 @@ const styles = StyleSheet.create({
   },
   previewModalContent: {
     width: "90%",
-    maxWidth: 360,
+    maxWidth: 440,
     borderRadius: 20,
     borderCurve: "continuous",
-    padding: 20,
+    padding: 24,
     alignItems: "center",
   },
   previewHeader: {

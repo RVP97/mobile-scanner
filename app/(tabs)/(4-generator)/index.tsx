@@ -742,7 +742,7 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   contentContainerWide: {
-    maxWidth: 600,
+    maxWidth: 700,
     alignSelf: "center",
     width: "100%",
   },
@@ -761,10 +761,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 12,
+    padding: 14,
     paddingHorizontal: 16,
     borderRadius: 10,
     borderCurve: "continuous",
+    minHeight: 52,
   },
   selectorContent: {
     flexDirection: "row",
@@ -776,10 +777,11 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 17,
-    padding: 12,
+    padding: 14,
     paddingHorizontal: 16,
     borderRadius: 10,
     borderCurve: "continuous",
+    minHeight: 48,
   },
   generateButton: {
     flexDirection: "row",
@@ -790,6 +792,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderCurve: "continuous",
     marginBottom: 24,
+    minHeight: 52,
   },
   generateButtonText: {
     color: "#fff",

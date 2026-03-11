@@ -279,6 +279,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderCurve: "continuous",
     borderWidth: 2,
+    minHeight: 80,
   },
   languageButtonPressed: {
     opacity: 0.7,

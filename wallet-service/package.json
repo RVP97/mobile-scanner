@@ -1,0 +1,29 @@
+{
+  "name": "lens-wallet-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Stateless Apple Wallet pass signer for the Lens iOS app (Cloudflare Worker, App Attest gated).",
+  "scripts": {
+    "dev": "wrangler dev",
+    "test": "npm run typecheck && vitest run",
+    "typecheck": "tsc --noEmit",
+    "bench": "vitest run test/cpu.bench.test.ts",
+    "icons": "swift scripts/gen-icons.swift assets && node scripts/embed-assets.mjs",
+    "fixtures": "sh scripts/gen-test-certs.sh",
+    "dry-run": "wrangler deploy --dry-run --outdir dist"
+  },
+  "dependencies": {
+    "asn1js": "^3.0.6",
+    "fflate": "^0.8.2",
+    "pkijs": "^3.4.1",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260926.1",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.0",
+    "wrangler": "^4.143.0"
+  }
+}

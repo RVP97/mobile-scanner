@@ -8,7 +8,7 @@ struct PrivacyView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Your scans stay on your iPhone.")
                         .font(.title3.weight(.semibold))
-                    Text("Lens has no account, no tracking and no servers. We never see what you scan, create or where you are.")
+                    Text("Lens has no account and no tracking. We never see what you scan, create or where you are.")
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 8)
@@ -19,7 +19,7 @@ struct PrivacyView: View {
                              detail: "There's nothing to sign up for and nothing to sign in to.")
                 PrivacyPoint(symbol: "chart.bar.xaxis", title: "No tracking or analytics",
                              detail: "Lens doesn't collect usage data, and there are no ads.")
-                PrivacyPoint(symbol: "icloud.slash", title: "No servers of our own",
+                PrivacyPoint(symbol: "icloud.slash", title: "Nothing stored on our side",
                              detail: "History, created codes and settings are stored only on this iPhone.")
             }
 
@@ -28,6 +28,8 @@ struct PrivacyView: View {
                              detail: "To show where a link really goes, Lens contacts that link's own server to follow redirects and look up the domain's age. You can turn this off in Settings.")
                 PrivacyPoint(symbol: "barcode", title: "Product lookup",
                              detail: "When you open a product barcode, Lens asks Open Food Facts or Open Products Facts about that one number.")
+                PrivacyPoint(symbol: "wallet.pass", title: "Add to Apple Wallet",
+                             detail: "Wallet only accepts signed passes, so Lens sends that one pass's details to its signing service. It signs the pass and returns it immediately; nothing is stored or logged.")
                 PrivacyPoint(symbol: "location", title: "Place names",
                              detail: "If Remember where I scanned is on, Apple Maps turns your location into a place name. The name and coordinates stay in your History.")
             } header: {

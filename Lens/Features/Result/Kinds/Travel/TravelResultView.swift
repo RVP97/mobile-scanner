@@ -23,6 +23,9 @@ struct TravelResultView: View {
                 ResultPrimaryButton(title: "Add to Apple Wallet", symbol: "wallet.pass", tint: .primary, isBusy: isPreparingPass) {
                     Task { await prepareWalletPass() }
                 }
+                Text("Pass details are sent to Lens's signing service to create your pass. Nothing is stored.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                 if let walletError {
                     Label(walletError, systemImage: "exclamationmark.triangle.fill")
                         .font(.footnote)

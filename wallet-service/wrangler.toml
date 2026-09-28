@@ -1,0 +1,47 @@
+# Lens wallet-service — Apple Wallet pass signer (App Attest gated).
+# Setup: see README.md. Secrets (never in this file): PASS_CERT_PEM, PASS_KEY_PEM, WWDR_PEM.
+name = "lens-wallet-service"
+account_id = "0a386cbd8884cf2b1dbdb84125d4a364"
+main = "src/index.ts"
+tsconfig = "tsconfig.json"
+compatibility_date = "2026-09-01"
+workers_dev = false
+preview_urls = false
+
+# Only claim /lens/* on bloom.vallepinto.com — everything else on that host keeps being served as today.
+routes = [
+  { pattern = "bloom.vallepinto.com/lens/*", zone_name = "vallepinto.com" },
+]
+
+[vars]
+TEAM_ID = "JWDA82S3B5"            # Apple Developer Team ID
+APP_ID = "com.rvp97.scanner"      # bundle id; the App Attest app identifier is "<TEAM_ID>.<APP_ID>"
+PASS_TYPE_ID = "pass.com.rvp97.scanner"
+APP_ATTEST_ENV = "production"     # must match the app's com.apple.developer.devicecheck.appattest-environment entitlement
+KILL_SWITCH = "0"                 # "1" → every /lens/v1 endpoint answers 503
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lens-wallet"
+database_id = "8d2e430d-67e4-43a8-b4a6-fbbea0341018"
+migrations_dir = "migrations"
+
+# Workers Rate Limiting bindings only support 10 s / 60 s periods, so they act as burst limiters;
+# the hourly quotas (20 passes/key, 60 requests/IP, 10 attests/IP) are enforced in D1 (see src/env.ts).
+[[ratelimits]]
+name = "RL_IP"
+namespace_id = "7201"
+simple = { limit = 15, period = 60 }
+
+[[ratelimits]]
+name = "RL_KEY"
+namespace_id = "7202"
+simple = { limit = 5, period = 60 }
+
+[triggers]
+crons = ["*/15 * * * *"]   # purge expired challenges, old IP buckets, long-unused device keys
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+# Only request metadata + the error class names the Worker logs; bodies are never logged.

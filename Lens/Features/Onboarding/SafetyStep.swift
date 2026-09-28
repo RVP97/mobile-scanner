@@ -24,7 +24,7 @@ struct SafetyStep: View {
                         .opacity(stage >= 5 ? 1 : 0.35)
                 }
                 Label {
-                    Text("Checks run on your iPhone. Lens has no servers and never collects what you scan.")
+                    Text("Checks run on your iPhone. Lens never collects what you scan.")
                 } icon: {
                     Image(systemName: "lock.shield")
                 }

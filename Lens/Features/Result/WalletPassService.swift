@@ -4,8 +4,8 @@ import Foundation
 /// (`bloom.vallepinto.com/lens`). Wallet only accepts signed passes, and the signing key
 /// can't ship inside the app, so this is the one feature that talks to a Lens server.
 enum WalletPassService {
-    /// Flip on once the signing Worker is deployed. The Worker also has its own kill switch.
-    static let isServiceLive = false
+    /// The signing Worker is live; it also has its own server-side kill switch.
+    static let isServiceLive = true
 
     static var isAvailable: Bool { isServiceLive && AddPassSheet.isAvailable }
 

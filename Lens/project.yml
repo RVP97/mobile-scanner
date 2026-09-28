@@ -52,6 +52,9 @@ targets:
     sources:
       - path: Widgets
       - path: Shared
+      # Kind glyphs and tints for the Live Activity, from the one source of truth.
+      - path: Core/Models/CodeKind.swift
+      - path: Core/Design/Palette.swift
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rvp97.scanner.widgets

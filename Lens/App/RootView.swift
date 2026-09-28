@@ -13,8 +13,9 @@ struct RootView: View {
             .sheet(isPresented: .constant(onboardingDone)) {
                 sheetContent
                     .presentationDetents(detents, selection: $model.detent)
-                    .presentationBackgroundInteraction(.enabled(upThrough: AppModel.resultDetent))
+                    .presentationBackgroundInteraction(.enabled(upThrough: interactiveDetent))
                     .presentationDragIndicator(.visible)
+                    .modifier(CameraSheetSurface())
                     .interactiveDismissDisabled()
                     .sheet(item: $model.modal) { modal in
                         switch modal {
@@ -41,11 +42,35 @@ struct RootView: View {
         }
     }
 
+    /// The largest detent at which the camera stays live and tappable. Must be a member of
+    /// `detents`, or UIKit silently ignores it and dims the camera.
+    private var interactiveDetent: PresentationDetent {
+        switch model.sheetContent {
+        case .home: AppModel.peekDetent
+        case .result: AppModel.resultDetent
+        case .multiReview: .medium
+        }
+    }
+
     private var detents: Set<PresentationDetent> {
         switch model.sheetContent {
         case .home: [AppModel.peekDetent, .large]
         case .result: [AppModel.resultDetent, .large]
         case .multiReview: [.medium, .large]
+        }
+    }
+}
+
+/// Light glass over a dark camera reads as muddy grey, so in light mode the sheet gets a
+/// solid surface. Dark mode keeps the system material (Liquid Glass on iOS 26).
+private struct CameraSheetSurface: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
+
+    func body(content: Content) -> some View {
+        if colorScheme == .light {
+            content.presentationBackground(Color(.systemBackground))
+        } else {
+            content
         }
     }
 }

@@ -35,16 +35,17 @@ enum Palette {
 }
 
 extension Color {
-    /// A dynamic color from two sRGB hex values.
-    init(light: UInt32, dark: UInt32) {
-        self.init(uiColor: UIColor { traits in
+    /// A dynamic color from two sRGB hex values. `nonisolated` because UIKit resolves the
+    /// provider on SwiftUI's render thread, not the main actor.
+    nonisolated init(light: UInt32, dark: UInt32) {
+        self.init(uiColor: UIColor { @Sendable traits in
             UIColor(hex: traits.userInterfaceStyle == .dark ? dark : light)
         })
     }
 }
 
 extension UIColor {
-    convenience init(hex: UInt32, alpha: CGFloat = 1) {
+    nonisolated convenience init(hex: UInt32, alpha: CGFloat = 1) {
         self.init(
             red: CGFloat((hex >> 16) & 0xFF) / 255,
             green: CGFloat((hex >> 8) & 0xFF) / 255,

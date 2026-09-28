@@ -37,7 +37,7 @@ struct HistoryPeek: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 20)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private var lockedRow: some View {
@@ -67,14 +67,20 @@ struct HistoryPeek: View {
         HStack(spacing: 12) {
             Image(systemName: "qrcode.viewfinder")
                 .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Palette.accent)
                 .frame(width: 44, height: 44)
-                .background(.fill.tertiary, in: .rect(cornerRadius: 12, style: .continuous))
+                .background(Palette.accent.opacity(0.16), in: .rect(cornerRadius: 12, style: .continuous))
                 .accessibilityHidden(true)
-            Text("Point at a code to start")
-                .font(.headline)
-                .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Point at any code")
+                    .font(.headline)
+                Text("Your scans will appear here.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 0)
         }
+        .accessibilityElement(children: .combine)
     }
 
     /// Condensed tiles of the scans before the latest, the total, and a chevron that says "pull up".

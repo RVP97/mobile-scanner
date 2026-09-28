@@ -76,17 +76,6 @@ struct TravelResultView: View {
     }
 }
 
-/// The system "Add to Wallet" sheet.
-struct AddPassSheet: UIViewControllerRepresentable {
-    var pass: PKPass
-
-    func makeUIViewController(context: Context) -> UIViewController {
-        PKAddPassesViewController(pass: pass) ?? UIViewController()
-    }
-
-    func updateUIViewController(_ controller: UIViewController, context: Context) {}
-}
-
 #if DEBUG
 #Preview { ResultPreview(.sampleTravel) }
 #endif

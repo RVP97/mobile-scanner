@@ -75,7 +75,7 @@ extension String {
 }
 
 extension Character {
-    var isASCIIDigit: Bool { isASCII && isNumber }
+    nonisolated var isASCIIDigit: Bool { isASCII && isNumber }
 }
 
 /// Minimal `a=1&b=2` reader for URI query strings that URLComponents rejects (spaces, raw unicode).

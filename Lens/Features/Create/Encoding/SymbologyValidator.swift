@@ -166,6 +166,3 @@ enum SymbologyValidator {
     }
 }
 
-private extension Character {
-    nonisolated var isASCIIDigit: Bool { isASCII && isNumber }
-}

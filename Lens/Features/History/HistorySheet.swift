@@ -13,19 +13,28 @@ struct HistorySheet: View {
 
     private let lock = HistoryLock.shared
 
+    /// Sheet height above which the full History replaces the peek row.
+    private static let expandedThreshold: CGFloat = 260
+
     var body: some View {
         let isLocked = requireFaceID && !lock.isUnlocked
 
-        Group {
-            if model.detent == AppModel.peekDetent {
-                HistoryPeek(isLocked: isLocked)
-                    .transition(.opacity)
-            } else {
+        // Both layouts stay mounted and cross-fade on the sheet's *measured* height. Swapping the
+        // view tree on `model.detent` made UIKit re-apply detents mid-drag and snap the sheet back.
+        GeometryReader { proxy in
+            let expanded = proxy.size.height > Self.expandedThreshold
+            ZStack(alignment: .top) {
                 HistoryBrowser(isLocked: isLocked)
-                    .transition(.opacity)
+                    .opacity(expanded ? 1 : 0)
+                    .allowsHitTesting(expanded)
+                    .accessibilityHidden(!expanded)
+                HistoryPeek(isLocked: isLocked)
+                    .opacity(expanded ? 0 : 1)
+                    .allowsHitTesting(!expanded)
+                    .accessibilityHidden(expanded)
             }
+            .animation(.smooth(duration: 0.2), value: expanded)
         }
-        .animation(.smooth(duration: 0.25), value: model.detent == AppModel.peekDetent)
         .task { LegacyImporter.runIfNeeded(into: modelContext) }
         .onAppear(perform: promptForReviewIfDue)
         .onDisappear { ReviewPrompter.leftHomeForResult = true }

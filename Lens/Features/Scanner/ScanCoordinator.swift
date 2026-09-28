@@ -181,8 +181,6 @@ final class ScanCoordinator {
             UIPasteboard.general.string = result.code.raw
         }
         RecordWriter.save(result, in: context.modelContext)
-        let defaults = UserDefaults.standard
-        defaults.set(defaults.integer(forKey: Pref.successfulScans) + 1, forKey: Pref.successfulScans)
 
         let title = String(localized: result.payload.kind.title)
         AccessibilityNotification.Announcement("\(title), \(result.payload.displayTitle)").post()

@@ -8,15 +8,18 @@ struct EmailResultView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ResultCard {
-                DetailRow(label: "To", value: message.to.isEmpty ? String(localized: "No recipient") : message.to)
-                if !message.subject.isEmpty {
-                    CardDivider()
-                    DetailRow(label: "Subject", value: message.subject)
-                }
-                if !message.body.isEmpty {
-                    CardDivider()
-                    DetailRow(label: "Message", value: message.body)
+            // The recipient is the header; the card is the draft itself.
+            if !message.subject.isEmpty || !message.body.isEmpty {
+                ResultCard {
+                    if !message.subject.isEmpty {
+                        DetailRow(label: "Subject", value: message.subject)
+                    }
+                    if !message.subject.isEmpty, !message.body.isEmpty {
+                        CardDivider()
+                    }
+                    if !message.body.isEmpty {
+                        DetailRow(label: "Message", value: message.body)
+                    }
                 }
             }
             if let url = ContactLinks.mail(message.to, subject: message.subject, body: message.body) {
@@ -37,10 +40,8 @@ struct SMSResultView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ResultCard {
-                DetailRow(label: "To", value: message.number.isEmpty ? String(localized: "No recipient") : message.number)
-                if !message.body.isEmpty {
-                    CardDivider()
+            if !message.body.isEmpty {
+                ResultCard {
                     DetailRow(label: "Message", value: message.body)
                 }
             }
@@ -54,7 +55,7 @@ struct SMSResultView: View {
     }
 }
 
-/// `tel:` — the number, large, and "Call".
+/// `tel:` — the number is the header; the body is "Call" and a way to message it.
 struct PhoneResultView: View {
     var number: String
     var result: ScanResult
@@ -62,13 +63,6 @@ struct PhoneResultView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ResultCard {
-                Text(number)
-                    .font(.title2.weight(.semibold))
-                    .monospacedDigit()
-                    .textSelection(.enabled)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
             if let url = ContactLinks.tel(number) {
                 ResultPrimaryButton(title: "Call", symbol: "phone.fill", tint: CodeKind.phone.tint) {
                     openURL(url)

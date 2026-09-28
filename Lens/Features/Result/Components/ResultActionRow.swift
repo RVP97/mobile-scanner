@@ -1,17 +1,19 @@
 import SwiftUI
 import UIKit
 
-/// The secondary row under every result: optional kind-specific actions, then Copy · Share · Show code.
+/// The secondary row under every result: optional kind-specific actions, then Copy · Share · Show Code.
 /// Wraps to a column at accessibility text sizes.
 struct ResultActionRow<Leading: View>: View {
     var result: ScanResult
     /// What "Copy" puts on the pasteboard. Nil hides Copy (when a leading action already copies).
     var copyText: String?
-    var showCodeTitle: LocalizedStringKey = "Show code"
+    var showCodeTitle: LocalizedStringKey = "Show Code"
+    /// Off when the body already draws the code (a product's barcode).
+    var showsCode = true
     @ViewBuilder var leading: Leading
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @State private var showingCode = false
+    @State private var showingCode = ResultActionRow.opensCodeOnLaunch
 
     var body: some View {
         let layout = dynamicTypeSize.isAccessibilitySize
@@ -24,14 +26,25 @@ struct ResultActionRow<Leading: View>: View {
             ShareLink(item: shareText) {
                 Label("Share", systemImage: "square.and.arrow.up")
             }
-            Button { showingCode = true } label: {
-                Label(showCodeTitle, systemImage: "qrcode")
+            if showsCode {
+                Button { showingCode = true } label: {
+                    Label(showCodeTitle, systemImage: "qrcode")
+                }
             }
         }
         .buttonStyle(.secondaryAction)
         .fullScreenCover(isPresented: $showingCode) {
             CodeCover(raw: result.code.raw, symbology: result.code.symbology, title: result.payload.displayTitle)
         }
+    }
+
+    /// `-qaCodeCover YES` opens the full-screen code straight away, for review.
+    private static var opensCodeOnLaunch: Bool {
+        #if DEBUG
+        UserDefaults.standard.bool(forKey: "qaCodeCover")
+        #else
+        false
+        #endif
     }
 
     private var shareText: String {
@@ -41,8 +54,8 @@ struct ResultActionRow<Leading: View>: View {
 }
 
 extension ResultActionRow where Leading == EmptyView {
-    init(result: ScanResult, copyText: String?, showCodeTitle: LocalizedStringKey = "Show code") {
-        self.init(result: result, copyText: copyText, showCodeTitle: showCodeTitle) { EmptyView() }
+    init(result: ScanResult, copyText: String?, showCodeTitle: LocalizedStringKey = "Show Code", showsCode: Bool = true) {
+        self.init(result: result, copyText: copyText, showCodeTitle: showCodeTitle, showsCode: showsCode) { EmptyView() }
     }
 }
 

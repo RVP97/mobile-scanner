@@ -41,6 +41,9 @@ extension View {
     }
 
     /// `.glass` / `.glassProminent` on iOS 26, bordered styles before.
+    ///
+    /// A prominent button draws a white label by default. On a light tint (the dark-mode accent)
+    /// that fails contrast, so give the label `.foregroundStyle(Palette.onTint)`.
     @ViewBuilder
     func lensGlassButtonStyle(prominent: Bool = false) -> some View {
         if #available(iOS 26.0, *) {

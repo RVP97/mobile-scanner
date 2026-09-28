@@ -53,18 +53,23 @@ struct CameraStatusView: View {
 
             VStack(spacing: 12) {
                 if kind == .denied {
-                    Button("Open Settings", action: onOpenSettings)
-                        .lensGlassButtonStyle(prominent: true)
-                        .tint(Palette.accent)
-                        .controlSize(.large)
+                    Button(action: onOpenSettings) {
+                        Text("Open Settings")
+                            .foregroundStyle(Palette.onTint)
+                    }
+                    .lensGlassButtonStyle(prominent: true)
+                    .tint(Palette.accent)
+                    .controlSize(.large)
                 }
                 Button(action: onScanPhotos) {
                     Label("Scan from Photos", systemImage: "photo.on.rectangle")
+                        .foregroundStyle(kind == .denied ? Color.white : Palette.onTint)
                 }
                 .lensGlassButtonStyle(prominent: kind != .denied)
                 .tint(kind == .denied ? .white : Palette.accent)
                 .controlSize(.large)
             }
+            .fontWeight(.semibold)
             .padding(.top, 8)
         }
         .foregroundStyle(.white)

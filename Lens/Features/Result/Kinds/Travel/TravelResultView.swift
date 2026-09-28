@@ -20,7 +20,7 @@ struct TravelResultView: View {
             BoardingPassCard(pass: pass, date: date)
 
             if WalletPassService.isAvailable, PKAddPassesViewController.canAddPasses() {
-                ResultPrimaryButton(title: "Add to Apple Wallet", symbol: "wallet.pass", tint: .primary, isBusy: isPreparingPass) {
+                ResultPrimaryButton(title: "Add to Apple Wallet", symbol: "wallet.pass", tint: Palette.ink, isBusy: isPreparingPass) {
                     Task { await prepareWalletPass() }
                 }
                 Text("Pass details are sent to Lens's signing service to create your pass. Nothing is stored.")

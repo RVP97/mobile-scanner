@@ -54,17 +54,21 @@ struct CardDivider: View {
 struct RowIconButton: View {
     var symbol: String
     var label: LocalizedStringKey
+    /// Nil keeps it quiet (reveal); a tint marks a real action (call, email).
+    var tint: Color? = nil
     var action: () -> Void
 
     var body: some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.body.weight(.semibold))
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(tint.map(AnyShapeStyle.init) ?? AnyShapeStyle(.secondary))
+                .frame(width: 36, height: 36)
+                .background(tint.map { AnyShapeStyle($0.opacity(0.14)) } ?? AnyShapeStyle(.clear), in: .circle)
                 .frame(width: 44, height: 44)
                 .contentShape(.rect)
         }
         .buttonStyle(.plain)
-        .foregroundStyle(.secondary)
         .accessibilityLabel(Text(label))
     }
 }

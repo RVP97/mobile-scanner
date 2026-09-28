@@ -16,14 +16,8 @@ struct CodeCover: View {
         VStack(spacing: 24) {
             HStack {
                 Spacer()
-                Button { dismiss() } label: {
-                    Image(systemName: "xmark")
-                        .font(.body.weight(.semibold))
-                        .frame(width: 30, height: 30)
-                }
-                .lensGlassButtonStyle()
-                .buttonBorderShape(.circle)
-                .accessibilityLabel("Close")
+                SheetCloseButton { dismiss() }
+                    .padding(.trailing, -8)
             }
 
             Spacer(minLength: 0)
@@ -54,7 +48,7 @@ struct CodeCover: View {
         .padding(20)
         .frame(maxWidth: 560)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemBackground))
+        .background(Color(.systemGroupedBackground))
         .onAppear { brightness.raise() }
         .onDisappear { brightness.restore() }
         .onChange(of: scenePhase) { _, phase in
@@ -69,13 +63,21 @@ struct CodeCover: View {
                 .interpolation(.none)
                 .resizable()
                 .scaledToFit()
-                .frame(maxWidth: side, maxHeight: side)
+                // Hug the code's own shape, so a wide PDF417 or barcode isn't boxed in a square.
+                .frame(width: fitted(image.size, in: side).width, height: fitted(image.size, in: side).height)
         } else {
             ContentUnavailableView("Can't draw this code", systemImage: "qrcode", description: Text(raw))
                 .foregroundStyle(.black)
                 .frame(width: side, height: side / 2)
         }
     }
+}
+
+/// The largest size with `size`'s aspect ratio that fits a `side`×`side` square.
+private func fitted(_ size: CGSize, in side: CGFloat) -> CGSize {
+    guard size.width > 0, size.height > 0 else { return CGSize(width: side, height: side) }
+    let scale = min(side / size.width, side / size.height)
+    return CGSize(width: size.width * scale, height: size.height * scale)
 }
 
 /// Remembers the screen brightness, turns it all the way up, and puts it back.

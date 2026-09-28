@@ -4,7 +4,8 @@ import SwiftUI
 struct ProductResultView: View {
     var gtin: String
     var result: ScanResult
-    @Binding var resolvedTitle: String?
+    /// Set to the product's name when the lookup finds it; the header shows it.
+    @Binding var productName: String?
 
     @Environment(\.openURL) private var openURL
     @State private var outcome: ProductLookup.Outcome?
@@ -18,7 +19,7 @@ struct ProductResultView: View {
                 if let url = WebSearch.url(for: searchQuery) { openURL(url) }
             }
 
-            ResultActionRow(result: result, copyText: gtin) {
+            ResultActionRow(result: result, copyText: gtin, showsCode: false) {
                 Button {
                     if let url = WebSearch.shoppingURL(for: searchQuery) { openURL(url) }
                 } label: {
@@ -30,7 +31,7 @@ struct ProductResultView: View {
         .task(id: gtin) {
             let found = await ProductLookup.lookup(gtin: gtin)
             outcome = found
-            if case .found(let info) = found { resolvedTitle = info.name }
+            if case .found(let info) = found { productName = info.name }
         }
     }
 
@@ -92,14 +93,16 @@ struct ProductResultView: View {
                         .background(.white, in: .rect(cornerRadius: 12, style: .continuous))
                         .accessibilityHidden(true)
                 }
-                Text(GTIN.grouped(gtin))
-                    .font(.title3.weight(.medium))
-                    .fontDesign(.monospaced)
-                    .textSelection(.enabled)
+                // The header shows the digits until the product's name replaces them.
+                if productName != nil {
+                    Text(GTIN.grouped(gtin))
+                        .font(.body.weight(.medium))
+                        .fontDesign(.monospaced)
+                        .textSelection(.enabled)
+                }
+                checkDigitPill
             }
             .frame(maxWidth: .infinity)
-
-            checkDigitPill.frame(maxWidth: .infinity)
 
             CardDivider()
             DetailRow(label: "Format", value: formatText)
@@ -141,10 +144,9 @@ private struct ProductSummary: View {
             .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(info.name)
-                    .font(.headline)
+                // The name is the header's title; the card adds what's known about it.
                 if !info.brand.isEmpty {
-                    Text(info.brand).foregroundStyle(.secondary)
+                    Text(info.brand).font(.headline)
                 }
                 let details = ([info.quantity] + info.categories).filter { !$0.isEmpty }
                 if !details.isEmpty {

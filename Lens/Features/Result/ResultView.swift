@@ -6,8 +6,8 @@ struct ResultView: View {
     var result: ScanResult
 
     @Environment(AppModel.self) private var model
-    /// A better title found after the fact (a product's name from the lookup).
-    @State private var resolvedTitle: String?
+    /// A product's name, once the lookup finds it.
+    @State private var productName: String?
     /// Set when a link turns out to be dangerous, so the header reads as a warning.
     @State private var isDangerous = false
 
@@ -17,12 +17,11 @@ struct ResultView: View {
                 ResultHeader(
                     kind: result.payload.kind,
                     symbology: result.code.symbology,
-                    title: resolvedTitle ?? result.payload.displayTitle,
-                    subtitle: resolvedTitle == nil ? result.payload.displaySubtitle : result.payload.displayTitle,
+                    heading: ResultHeading(result.payload, productName: productName),
                     tint: isDangerous ? Palette.danger : nil,
                     onClose: model.dismissResult
                 )
-                .animation(.smooth, value: resolvedTitle)
+                .animation(.smooth, value: productName)
 
                 content
 
@@ -34,7 +33,7 @@ struct ResultView: View {
                 }
             }
             .padding(.horizontal, 20)
-            .padding(.top, 24)
+            .padding(.top, 20)
             .padding(.bottom, 32)
             .frame(maxWidth: 640)
             .frame(maxWidth: .infinity)
@@ -46,7 +45,7 @@ struct ResultView: View {
         switch result.payload {
         case .link(let url): LinkResultView(url: url, result: result, isDangerous: $isDangerous)
         case .wifi(let network): WiFiResultView(network: network, result: result)
-        case .product(let gtin): ProductResultView(gtin: gtin, result: result, resolvedTitle: $resolvedTitle)
+        case .product(let gtin): ProductResultView(gtin: gtin, result: result, productName: $productName)
         case .contact(let card): ContactResultView(card: card, result: result)
         case .event(let event): EventResultView(event: event, result: result)
         case .email(let message): EmailResultView(message: message, result: result)

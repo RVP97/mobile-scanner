@@ -10,16 +10,17 @@ struct ContactResultView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ResultCard {
-                identity
-                quickActions
-            }
-
             if !rows.isEmpty {
                 ResultCard {
                     ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
                         if index > 0 { CardDivider() }
-                        DetailRow(label: row.label, value: row.value)
+                        DetailRow(label: row.label, value: row.value) {
+                            if let action = row.action {
+                                RowIconButton(symbol: action.symbol, label: action.label, tint: CodeKind.contact.tint) {
+                                    openURL(action.url)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -35,51 +36,33 @@ struct ContactResultView: View {
         }
     }
 
-    private var identity: some View {
-        HStack(spacing: 16) {
-            Text(card.initials)
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(CodeKind.contact.tint)
-                .frame(width: 64, height: 64)
-                .background(Palette.tileFill(.contact), in: .circle)
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(card.displayName).font(.headline)
-                if !card.jobTitle.isEmpty { Text(card.jobTitle).foregroundStyle(.secondary) }
-                if !card.organization.isEmpty, card.organization != card.displayName {
-                    Text(card.organization).foregroundStyle(.secondary)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .accessibilityElement(children: .combine)
-        }
-    }
-
-    private var quickActions: some View {
-        HStack(spacing: 8) {
-            quickAction("Call", symbol: "phone.fill", url: card.phones.first.flatMap { ContactLinks.tel($0) })
-            quickAction("Message", symbol: "message.fill", url: card.phones.first.flatMap { ContactLinks.sms($0) })
-            quickAction("Email", symbol: "envelope.fill", url: card.emails.first.flatMap { ContactLinks.mail($0) })
-        }
-        .buttonStyle(.secondaryAction)
-    }
-
-    private func quickAction(_ title: LocalizedStringKey, symbol: String, url: URL?) -> some View {
-        Button { if let url { openURL(url) } } label: {
-            Label(title, systemImage: symbol)
-        }
-        .disabled(url == nil)
+    private struct RowAction {
+        var symbol: String
+        var label: LocalizedStringKey
+        var url: URL
     }
 
     private struct Row {
         var label: LocalizedStringKey
         var value: String
+        var action: RowAction?
     }
 
+    /// Every way to reach them, each with its one-tap action (call, email, open) beside it.
     private var rows: [Row] {
-        card.phones.map { Row(label: "Phone", value: $0) }
-            + card.emails.map { Row(label: "Email", value: $0) }
-            + card.urls.map { Row(label: "Website", value: $0) }
+        let phones = card.phones.map { phone in
+            Row(label: "Phone", value: phone,
+                action: ContactLinks.tel(phone).map { RowAction(symbol: "phone.fill", label: "Call \(phone)", url: $0) })
+        }
+        let emails = card.emails.map { email in
+            Row(label: "Email", value: email,
+                action: ContactLinks.mail(email).map { RowAction(symbol: "envelope.fill", label: "Email \(email)", url: $0) })
+        }
+        let websites = card.urls.map { site in
+            Row(label: "Website", value: site,
+                action: URL(string: site.contains("://") ? site : "https://\(site)").map { RowAction(symbol: "safari.fill", label: "Open \(site)", url: $0) })
+        }
+        return phones + emails + websites
             + (card.address.isEmpty ? [] : [Row(label: "Address", value: card.address)])
             + (card.note.isEmpty ? [] : [Row(label: "Note", value: card.note)])
     }

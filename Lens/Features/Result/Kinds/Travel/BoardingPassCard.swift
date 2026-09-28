@@ -23,14 +23,22 @@ struct BoardingPassCard: View {
     }
 
     private var header: some View {
+        // "Norte Air … NR 412", or just "NR 412" when the airline isn't one Lens knows by name.
         HStack {
-            Label(pass.airlineName ?? pass.carrier, systemImage: "airplane")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(CodeKind.travel.tint)
+            Label {
+                Text(pass.airlineName ?? pass.flightDesignator)
+                    .fontDesign(pass.airlineName == nil ? .monospaced : .default)
+            } icon: {
+                Image(systemName: "airplane")
+            }
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(CodeKind.travel.tint)
             Spacer()
-            Text(pass.flightDesignator)
-                .font(.subheadline.weight(.semibold))
-                .fontDesign(.monospaced)
+            if pass.airlineName != nil {
+                Text(pass.flightDesignator)
+                    .font(.subheadline.weight(.semibold))
+                    .fontDesign(.monospaced)
+            }
         }
     }
 

@@ -46,7 +46,7 @@ struct TravelResultView: View {
 
             ResultActionRow(result: result, copyText: nil, showCodeTitle: "Show Pass") {
                 Button {
-                    if let url = WebSearch.url(for: "\(pass.flightDesignator) flight status") { openURL(url) }
+                    if let url = WebSearch.url(for: String(localized: "\(pass.flightDesignator) flight status", comment: "Web search query")) { openURL(url) }
                 } label: {
                     Label("Track Flight", systemImage: "airplane.departure")
                 }

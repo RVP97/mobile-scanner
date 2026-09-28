@@ -194,7 +194,13 @@ extension GeoPoint {
     var coordinateText: String {
         let lat = abs(latitude).formatted(.number.precision(.fractionLength(0...4)))
         let lon = abs(longitude).formatted(.number.precision(.fractionLength(0...4)))
-        return "\(lat)° \(latitude >= 0 ? "N" : "S"), \(lon)° \(longitude >= 0 ? "E" : "W")"
+        let northSouth = latitude >= 0
+            ? String(localized: "compass.north", defaultValue: "N", comment: "Abbreviation for north in a coordinate")
+            : String(localized: "compass.south", defaultValue: "S", comment: "Abbreviation for south in a coordinate")
+        let eastWest = longitude >= 0
+            ? String(localized: "compass.east", defaultValue: "E", comment: "Abbreviation for east in a coordinate")
+            : String(localized: "compass.west", defaultValue: "W", comment: "Abbreviation for west in a coordinate")
+        return "\(lat)° \(northSouth), \(lon)° \(eastWest)"
     }
 }
 

@@ -179,9 +179,12 @@ private struct SafeLinkCard: View {
                     Text(verbatim: "atlas-coffee.co")
                         .font(.subheadline.weight(.medium))
                         .monospaced()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
                 }
                 Spacer(minLength: 8)
                 StatusPill(text: "Looks Safe", symbol: "checkmark.shield.fill", tint: Palette.safe)
+                    .fixedSize()
             }
             HStack(spacing: 8) {
                 fact("HTTPS", symbol: "lock.fill")

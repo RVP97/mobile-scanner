@@ -16,7 +16,13 @@ struct ExportBar: View {
             Button {
                 Task { await saveToPhotos() }
             } label: {
-                Label("Save to Photos", systemImage: "square.and.arrow.down")
+                // Longer languages drop the glyph before they shrink the title.
+                ViewThatFits(in: .horizontal) {
+                    Label("Save to Photos", systemImage: "square.and.arrow.down")
+                    Text("Save to Photos")
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                }
             }
             .buttonStyle(.primaryAction(Palette.tint(for: model.document.kind)))
             .disabled(model.scene == nil || working)

@@ -21,7 +21,7 @@ enum ShipmentCarrier: String, CaseIterable {
         case .fedex: URL(string: "https://www.fedex.com/fedextrack/?trknbr=\(encoded)")
         case .usps: URL(string: "https://tools.usps.com/go/TrackConfirmAction?tLabels=\(encoded)")
         case .dhl: URL(string: "https://www.dhl.com/global-en/home/tracking/tracking-express.html?submit=1&tracking-id=\(encoded)")
-        case .postal: number.hasSuffix("US") ? ShipmentCarrier.usps.trackingURL(for: number) : WebSearch.url(for: "track \(number)")
+        case .postal: number.hasSuffix("US") ? ShipmentCarrier.usps.trackingURL(for: number) : WebSearch.url(for: String(localized: "track \(number)", comment: "Web search query for a parcel tracking number"))
         }
     }
 

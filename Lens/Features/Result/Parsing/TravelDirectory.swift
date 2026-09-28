@@ -3,9 +3,10 @@ import Foundation
 /// Small offline directory so a boarding pass can say "Mexico City" instead of only "MEX".
 /// Covers the busiest airports and carriers; anything else shows its code alone.
 enum TravelDirectory {
-    static func city(for airport: String) -> String? { airports[airport.uppercased()] }
+    static func city(for airport: String) -> String? { airports[airport.uppercased()].map { String(localized: $0) } }
 
-    static let airports: [String: String] = [
+    /// City names are localized: "Mexico City" reads "Ciudad de México" in Spanish.
+    static let airports: [String: LocalizedStringResource] = [
         "ATL": "Atlanta", "PEK": "Beijing", "PKX": "Beijing", "DXB": "Dubai", "LAX": "Los Angeles",
         "HND": "Tokyo", "NRT": "Tokyo", "ORD": "Chicago", "MDW": "Chicago", "LHR": "London",
         "LGW": "London", "STN": "London", "LTN": "London", "LCY": "London", "PVG": "Shanghai",

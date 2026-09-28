@@ -37,7 +37,7 @@ struct ShipmentResultView: View {
         // Number and carrier are the header; the body is the one thing to do with them.
         VStack(alignment: .leading, spacing: 16) {
             ResultPrimaryButton(title: "Track Package", symbol: "shippingbox.fill", tint: CodeKind.shipment.tint) {
-                if let url = carrier?.trackingURL(for: number) ?? WebSearch.url(for: "track \(number)") { openURL(url) }
+                if let url = carrier?.trackingURL(for: number) ?? WebSearch.url(for: String(localized: "track \(number)", comment: "Web search query for a parcel tracking number")) { openURL(url) }
             }
             ResultActionRow(result: result, copyText: number)
         }

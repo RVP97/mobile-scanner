@@ -1,0 +1,134 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Create a code with ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Create a code with ${applicationName}",
+              "Make a QR code with ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Crear un código con ${applicationName}",
+              "Crear un código QR con ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Créer un code avec ${applicationName}",
+              "Créer un code QR avec ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Read a code in an image with ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Read a code in an image with ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Leer un código en una imagen con ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Lire un code dans une image avec ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Scan a code with ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Scan a code with ${applicationName}",
+              "Scan with ${applicationName}",
+              "Open the ${applicationName} camera"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Escanear un código con ${applicationName}",
+              "Escanear con ${applicationName}",
+              "Abrir la cámara de ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scanner un code avec ${applicationName}",
+              "Scanner avec ${applicationName}",
+              "Ouvrir l’appareil photo de ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Scan several codes with ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Scan several codes with ${applicationName}",
+              "Start a multi-scan in ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Escanear varios códigos con ${applicationName}",
+              "Iniciar un escaneo múltiple en ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scanner plusieurs codes avec ${applicationName}",
+              "Démarrer un scan multiple dans ${applicationName}"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

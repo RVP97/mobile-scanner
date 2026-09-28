@@ -97,33 +97,43 @@ enum GTIN {
 }
 
 enum GS1Prefixes {
-    static func region(for prefix: Int) -> String? {
-        ranges.first { $0.range.contains(prefix) }?.name
+    static func region(for prefix: Int, locale: Locale = .current) -> String? {
+        switch ranges.first(where: { $0.range.contains(prefix) })?.name {
+        case .country(let code): locale.localizedString(forRegionCode: code) ?? code
+        case .label(let label): String(localized: label)
+        case nil: nil
+        }
     }
 
-    private static let ranges: [(range: ClosedRange<Int>, name: String)] = [
-        (0...19, "USA & Canada"), (30...39, "USA & Canada"), (60...139, "USA & Canada"),
-        (200...299, "In-store code"), (300...379, "France"), (380...380, "Bulgaria"), (383...383, "Slovenia"),
-        (385...385, "Croatia"), (387...387, "Bosnia and Herzegovina"), (389...389, "Montenegro"),
-        (400...440, "Germany"), (450...459, "Japan"), (490...499, "Japan"), (460...469, "Russia"),
-        (471...471, "Taiwan"), (474...474, "Estonia"), (475...475, "Latvia"), (477...477, "Lithuania"),
-        (479...479, "Sri Lanka"), (480...480, "Philippines"), (482...482, "Ukraine"), (489...489, "Hong Kong"),
-        (500...509, "United Kingdom"), (520...521, "Greece"), (528...528, "Lebanon"), (529...529, "Cyprus"),
-        (535...535, "Malta"), (539...539, "Ireland"), (540...549, "Belgium & Luxembourg"),
-        (560...560, "Portugal"), (569...569, "Iceland"), (570...579, "Denmark"), (590...590, "Poland"),
-        (594...594, "Romania"), (599...599, "Hungary"), (600...601, "South Africa"), (611...611, "Morocco"),
-        (616...616, "Kenya"), (622...622, "Egypt"), (628...628, "Saudi Arabia"), (629...629, "United Arab Emirates"),
-        (640...649, "Finland"), (690...699, "China"), (700...709, "Norway"), (729...729, "Israel"),
-        (730...739, "Sweden"), (740...740, "Guatemala"), (741...741, "El Salvador"), (742...742, "Honduras"),
-        (743...743, "Nicaragua"), (744...744, "Costa Rica"), (745...745, "Panama"),
-        (746...746, "Dominican Republic"), (750...750, "Mexico"), (754...755, "Canada"),
-        (759...759, "Venezuela"), (760...769, "Switzerland"), (770...771, "Colombia"), (773...773, "Uruguay"),
-        (775...775, "Peru"), (777...777, "Bolivia"), (778...779, "Argentina"), (780...780, "Chile"),
-        (784...784, "Paraguay"), (786...786, "Ecuador"), (789...790, "Brazil"), (800...839, "Italy"),
-        (840...849, "Spain"), (850...850, "Cuba"), (858...858, "Slovakia"), (859...859, "Czechia"),
-        (860...860, "Serbia"), (868...869, "Türkiye"), (870...879, "Netherlands"), (880...880, "South Korea"),
-        (885...885, "Thailand"), (888...888, "Singapore"), (890...890, "India"), (893...893, "Vietnam"),
-        (899...899, "Indonesia"), (900...919, "Austria"), (930...939, "Australia"), (940...949, "New Zealand"),
-        (955...955, "Malaysia"), (977...977, "Periodical (ISSN)"), (978...979, "Book (ISBN)"),
+    /// A single country (named by the system, in the reader's language) or a label of our own.
+    private enum Name {
+        case country(String)
+        case label(LocalizedStringResource)
+    }
+
+    private static let ranges: [(range: ClosedRange<Int>, name: Name)] = [
+        (0...19, .label("USA & Canada")), (30...39, .label("USA & Canada")), (60...139, .label("USA & Canada")),
+        (200...299, .label("In-store code")), (300...379, .country("FR")), (380...380, .country("BG")), (383...383, .country("SI")),
+        (385...385, .country("HR")), (387...387, .country("BA")), (389...389, .country("ME")),
+        (400...440, .country("DE")), (450...459, .country("JP")), (490...499, .country("JP")), (460...469, .country("RU")),
+        (471...471, .country("TW")), (474...474, .country("EE")), (475...475, .country("LV")), (477...477, .country("LT")),
+        (479...479, .country("LK")), (480...480, .country("PH")), (482...482, .country("UA")), (489...489, .label("Hong Kong")),
+        (500...509, .country("GB")), (520...521, .country("GR")), (528...528, .country("LB")), (529...529, .country("CY")),
+        (535...535, .country("MT")), (539...539, .country("IE")), (540...549, .label("Belgium & Luxembourg")),
+        (560...560, .country("PT")), (569...569, .country("IS")), (570...579, .country("DK")), (590...590, .country("PL")),
+        (594...594, .country("RO")), (599...599, .country("HU")), (600...601, .country("ZA")), (611...611, .country("MA")),
+        (616...616, .country("KE")), (622...622, .country("EG")), (628...628, .country("SA")), (629...629, .country("AE")),
+        (640...649, .country("FI")), (690...699, .country("CN")), (700...709, .country("NO")), (729...729, .country("IL")),
+        (730...739, .country("SE")), (740...740, .country("GT")), (741...741, .country("SV")), (742...742, .country("HN")),
+        (743...743, .country("NI")), (744...744, .country("CR")), (745...745, .country("PA")),
+        (746...746, .country("DO")), (750...750, .country("MX")), (754...755, .country("CA")),
+        (759...759, .country("VE")), (760...769, .country("CH")), (770...771, .country("CO")), (773...773, .country("UY")),
+        (775...775, .country("PE")), (777...777, .country("BO")), (778...779, .country("AR")), (780...780, .country("CL")),
+        (784...784, .country("PY")), (786...786, .country("EC")), (789...790, .country("BR")), (800...839, .country("IT")),
+        (840...849, .country("ES")), (850...850, .country("CU")), (858...858, .country("SK")), (859...859, .country("CZ")),
+        (860...860, .country("RS")), (868...869, .country("TR")), (870...879, .country("NL")), (880...880, .country("KR")),
+        (885...885, .country("TH")), (888...888, .country("SG")), (890...890, .country("IN")), (893...893, .country("VN")),
+        (899...899, .country("ID")), (900...919, .country("AT")), (930...939, .country("AU")), (940...949, .country("NZ")),
+        (955...955, .country("MY")), (977...977, .label("Periodical (ISSN)")), (978...979, .label("Book (ISBN)")),
     ]
 }

@@ -26,6 +26,7 @@ struct PrimaryActionStyle: ButtonStyle {
             .font(.headline)
             .foregroundStyle(Palette.onTint)
             .padding(.vertical, 8)
+            .padding(.horizontal, 16)
             .frame(maxWidth: .infinity, minHeight: 54)
             .background(tint, in: .capsule)
             .contentShape(.capsule)
@@ -47,7 +48,8 @@ struct SecondaryActionStyle: ButtonStyle {
             .labelStyle(StackedLabelStyle())
             .padding(.horizontal, 8)
             .padding(.vertical, 10)
-            .frame(maxWidth: .infinity, minHeight: 64)
+            // Tiles in a row share one height (and icon line) when a title wraps.
+            .frame(maxWidth: .infinity, minHeight: 64, maxHeight: .infinity, alignment: .top)
             .background(.fill.secondary, in: .rect(cornerRadius: 16, style: .continuous))
             .contentShape(.rect(cornerRadius: 16, style: .continuous))
             .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.4)
@@ -73,8 +75,10 @@ struct StackedLabelStyle: LabelStyle {
                 configuration.icon
                     .font(.body.weight(.semibold))
                     .frame(height: iconSlot)
+                // Two lines so longer languages ("Copier le mot de passe") wrap instead of truncating.
                 configuration.title
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.center)
                     .minimumScaleFactor(0.8)
             }
         }

@@ -27,7 +27,7 @@ enum Symbology: String, Codable, CaseIterable, Identifiable, Sendable {
 
     var displayName: String {
         switch self {
-        case .qr: "QR Code"
+        case .qr: String(localized: "QR Code")
         case .microQR: "Micro QR"
         case .aztec: "Aztec"
         case .dataMatrix: "Data Matrix"

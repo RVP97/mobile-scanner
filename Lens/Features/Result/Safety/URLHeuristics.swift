@@ -6,8 +6,6 @@ enum URLHeuristics {
         var signals: [SafetySignal] = []
         /// Lowercase, punycode-decoded host. Nil for non-web URLs.
         var host: String?
-        var lookalike: LookalikeMatch?
-        var isHTTPS = false
     }
 
     static func analyze(_ url: URL) -> Report {
@@ -20,8 +18,8 @@ enum URLHeuristics {
         guard let rawHost = url.host(percentEncoded: false), !rawHost.isEmpty else { return Report() }
 
         let host = Punycode.decodeHost(rawHost.lowercased()).trimmingCharacters(in: CharacterSet(charactersIn: "."))
-        var report = Report(host: host, isHTTPS: url.scheme?.lowercased() == "https")
-        report.signals.append(report.isHTTPS ? .https : .plainHTTP)
+        var report = Report(host: host)
+        report.signals.append(url.scheme?.lowercased() == "https" ? .https : .plainHTTP)
 
         if let user = url.user(percentEncoded: false), !user.isEmpty {
             report.signals.append(.userInfo(realHost: host))
@@ -42,7 +40,6 @@ enum URLHeuristics {
             report.signals.append(labels.contains(where: Confusables.mixesScripts) ? .mixedScripts : .internationalHost)
         }
         if let match = LookalikeDetector.match(host: host) {
-            report.lookalike = match
             report.signals.append(.lookalike(match, registrable: registrable))
             report.signals.removeAll { $0.kind == .internationalHost }
         }

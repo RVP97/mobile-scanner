@@ -1,52 +1,23 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# Xcode / XcodeGen (the project is generated from Lens/project.yml)
+Lens/Lens.xcodeproj/
+Lens/build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+.DS_Store
 
-# dependencies
+# Node (wallet-service, screenshots)
 node_modules/
+.wrangler/
+.next/
 
-# Expo
-.expo/
-dist/
-web-build/
-expo-env.d.ts
-
-# Native
-.kotlin/
-*.orig.*
-*.jks
+# Signing material — never commit
 *.p8
 *.p12
+*.pem
+*.cer
 *.key
 *.mobileprovision
-ios/
-android/
 
-# Metro
-.metro-health-check*
-
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
-
-# macOS
-.DS_Store
-*.pem
-
-# local env files
-.env
-.env*.local
-
-# typescript
-*.tsbuildinfo
-
-# Editor
-.idea/
-.cursor/
-.agents/
-*.swp
-*.swo
-
-# Build
-build/
-
-app-example
+# Local tooling
+.claude/

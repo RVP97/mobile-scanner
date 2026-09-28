@@ -1,50 +1,49 @@
-# Welcome to your Expo app 👋
+# Lunet
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A free, native iOS QR & barcode scanner that tells you what a code means before you act on it:
+every link is checked for scams first, and each kind of code gets its own answer — join a Wi-Fi
+network, add a boarding pass to Wallet, save a contact, look up a product.
 
-## Get started
+- **Native SwiftUI**, iOS 17+ (Liquid Glass on iOS 26, material fallbacks before)
+- **On-device**: scanning, parsing, safety heuristics and history never leave the iPhone
+- **Everywhere**: Control Center, Lock Screen, Action button, Live Activity for multi-scan, widgets, Shortcuts
+- **Create**: 15 symbologies, a styling studio (dots, corners, colors, logo, frames) with on-device scan verification
+- English, Spanish, French
 
-1. Install dependencies
+Bundle ID `com.rvp97.scanner` (the App Store listing that used to be "Fast QR & Barcode"; the app
+imports history from the previous Expo version on first launch).
 
-   ```bash
-   npm install
-   ```
+## Repository
 
-2. Start the app
+| Path | What |
+| --- | --- |
+| `Lens/` | The iOS app, widget extension and tests. The Xcode project is generated from `Lens/project.yml`. |
+| `wallet-service/` | Cloudflare Worker that signs Apple Wallet passes, gated by App Attest. See its README. |
+| `screenshots/` | Next.js tool for composing App Store screenshots. |
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Build & run
 
 ```bash
-npm run reset-project
+brew install xcodegen
+cd Lens && xcodegen generate && open Lens.xcodeproj
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Tests: `xcodebuild -project Lens/Lens.xcodeproj -scheme Lens -destination 'platform=iOS Simulator,name=iPhone 17' test`
 
-## Learn more
+Signing: set your team in Xcode (or `DEVELOPMENT_TEAM` in `project.yml`). Capabilities used: App Groups
+(`group.com.rvp97.scanner`), Hotspot Configuration, App Attest (production).
 
-To learn more about developing your project with Expo, look at the following resources:
+### Debug QA harness
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Debug builds accept launch arguments that open any screen with sample data, for design review and
+screenshots without a camera — see `Lens/App/QAHarness.swift`:
 
-## Join the community
+```bash
+xcrun simctl launch booted com.rvp97.scanner -qaAppearance dark -qaSeed YES -qaScreen result:danger
+```
 
-Join our community of developers creating universal apps.
+## Wallet signing service
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Live at `bloom.vallepinto.com/lens/*` (Cloudflare account "Rovapin@gmail.com's Account"). The Pass Type ID
+certificate (`pass.com.rvp97.scanner`, team `JWDA82S3B5`) expires **2027-10-28** — renew it and re-upload the
+secrets before then (steps in `wallet-service/README.md`). Kill switch: set `KILL_SWITCH = "1"` and redeploy.

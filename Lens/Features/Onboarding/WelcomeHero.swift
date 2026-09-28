@@ -29,7 +29,7 @@ struct WelcomeHero: View {
                 }
             }
         }
-        .frame(maxWidth: 220)
+        .frame(maxWidth: 248)
         .padding(.vertical, 8)
         .accessibilityHidden(true)
         .sensoryFeedback(.impact(weight: .light, intensity: 0.7), trigger: snapped) { _, didSnap in

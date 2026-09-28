@@ -48,8 +48,9 @@ func shadow(_ ctx: CGContext, y: CGFloat, blur: CGFloat, color: CGColor) {
     ctx.setShadow(offset: CGSize(width: 0, height: -y * unitsToPixels), blur: blur * unitsToPixels, color: color)
 }
 
-/// The artwork spans 179...808 on both axes of the 1024 canvas; this square frames it.
-let artBounds = CGRect(x: 170, y: 170, width: 648, height: 648)
+/// The QR code is centred on the 1024 canvas and the lens reaches toward the top-left (the
+/// artwork spans 149...778); this square frames it, centred on the code like the icon.
+let artBounds = CGRect(x: 144, y: 144, width: 736, height: 736)
 
 func roundedRect(_ rect: CGRect, _ radius: CGFloat) -> CGPath {
     CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil)
@@ -66,7 +67,7 @@ func finder(_ origin: CGPoint, _ size: CGFloat) -> CGPath {
     return p
 }
 
-/// Data modules as (column, row) on the 28-point grid starting at (502, 502).
+/// Data modules as (column, row) on the 28-point grid starting at (472, 472).
 let modules: [(Int, Int)] = [
     (6, 0), (9, 0), (3, 1), (5, 1), (10, 1), (5, 2), (6, 2), (8, 2), (10, 2),
     (1, 3), (3, 3), (4, 3), (5, 3), (7, 3), (2, 4), (3, 4), (4, 4), (7, 4), (8, 4), (9, 4), (10, 4),
@@ -99,11 +100,11 @@ func sparkle(_ cx: CGFloat, _ cy: CGFloat, _ r: CGFloat) -> CGPath {
 func drawLoupe(_ ctx: CGContext, _ a: Appearance) {
     // The code: two visible finders and the data modules (the third hides under the lens).
     ctx.setFillColor(a.code)
-    ctx.addPath(finder(CGPoint(x: 612, y: 276), 196))
-    ctx.addPath(finder(CGPoint(x: 276, y: 612), 196))
+    ctx.addPath(finder(CGPoint(x: 582, y: 246), 196))
+    ctx.addPath(finder(CGPoint(x: 246, y: 582), 196))
     ctx.fillPath(using: .evenOdd)
     for (column, row) in modules {
-        let rect = CGRect(x: 502 + CGFloat(column) * 28, y: 502 + CGFloat(row) * 28, width: 24, height: 24)
+        let rect = CGRect(x: 472 + CGFloat(column) * 28, y: 472 + CGFloat(row) * 28, width: 24, height: 24)
         ctx.addPath(roundedRect(rect, 7.2))
     }
     ctx.fillPath()
@@ -112,11 +113,11 @@ func drawLoupe(_ ctx: CGContext, _ a: Appearance) {
     ctx.saveGState()
     shadow(ctx, y: 6, blur: 44, color: a.rims[0].copy(alpha: 0.35)!)
     ctx.setFillColor(a.disc)
-    ctx.fillEllipse(in: CGRect(x: 222, y: 222, width: 356, height: 356))
+    ctx.fillEllipse(in: CGRect(x: 192, y: 192, width: 356, height: 356))
     ctx.restoreGState()
     ctx.saveGState()
     shadow(ctx, y: 5, blur: 14, color: rgb(0x000000, 0.25))
-    ctx.addPath(finder(CGPoint(x: 284, y: 284), 240))
+    ctx.addPath(finder(CGPoint(x: 254, y: 254), 240))
     ctx.setFillColor(a.finder)
     ctx.fillPath(using: .evenOdd)
     ctx.restoreGState()
@@ -125,7 +126,7 @@ func drawLoupe(_ ctx: CGContext, _ a: Appearance) {
     ctx.saveGState()
     shadow(ctx, y: 6, blur: 20, color: rgb(0x000000, 0.12))
     ctx.beginTransparencyLayer(auxiliaryInfo: nil)
-    let centres = [CGPoint(x: 393, y: 393), CGPoint(x: 409, y: 402), CGPoint(x: 401, y: 410)]
+    let centres = [CGPoint(x: 363, y: 363), CGPoint(x: 379, y: 372), CGPoint(x: 371, y: 380)]
     for i in [2, 1, 0] {
         ctx.addPath(ring(centres[i].x, centres[i].y))
         ctx.setFillColor(a.rims[i])
@@ -134,16 +135,16 @@ func drawLoupe(_ ctx: CGContext, _ a: Appearance) {
     ctx.endTransparencyLayer()
     ctx.restoreGState()
     ctx.saveGState()
-    ctx.addPath(ring(393, 393))
+    ctx.addPath(ring(363, 363))
     ctx.clip(using: .evenOdd)
     let sheen = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB), colors: [rgb(0xFFFFFF, 0.45), rgb(0xFFFFFF, 0)] as CFArray, locations: [0, 0.6])!
-    ctx.drawLinearGradient(sheen, start: CGPoint(x: 179, y: 179), end: CGPoint(x: 480, y: 480), options: [])
+    ctx.drawLinearGradient(sheen, start: CGPoint(x: 149, y: 149), end: CGPoint(x: 450, y: 450), options: [])
     ctx.restoreGState()
 
     // The sparkle.
     ctx.saveGState()
     shadow(ctx, y: 2, blur: 12, color: rgb(0x000000, 0.22))
-    ctx.addPath(sparkle(300, 296, 54))
+    ctx.addPath(sparkle(270, 266, 54))
     ctx.setFillColor(rgb(0xFFFFFF))
     ctx.fillPath()
     ctx.restoreGState()
@@ -190,10 +191,10 @@ func write(_ img: CGImage, _ name: String) {
 
 // icon.png: 29pt (lock screen / notifications). Full-bleed light icon; iOS applies its own mask.
 for (scale, suffix) in [(1, ""), (2, "@2x"), (3, "@3x")] {
-    write(render(side: 29 * scale, appearance: .light, rounded: false, share: 0.72), "icon\(suffix).png")
+    write(render(side: 29 * scale, appearance: .light, rounded: false, share: 0.72 * 736 / 648), "icon\(suffix).png")
 }
 // logo.png: shown top-left of the pass next to logoText "Lunet". Max 160×50pt; we use a 50pt
 // tile in the dark appearance so it reads on every pass colour.
 for (scale, suffix) in [(1, ""), (2, "@2x"), (3, "@3x")] {
-    write(render(side: 50 * scale, appearance: .dark, rounded: true, share: 0.76), "logo\(suffix).png")
+    write(render(side: 50 * scale, appearance: .dark, rounded: true, share: 0.8), "logo\(suffix).png")
 }

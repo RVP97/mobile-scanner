@@ -163,10 +163,10 @@ struct LunetGlyphShape: Shape {
         for origin in LunetGeometry.finderOrigins.dropFirst() {
             glyph.addPath(LunetGeometry.finder(at: origin))
         }
-        for (x, y) in [(640, 640), (640, 724), (724, 724)] {
+        for (x, y) in [(610, 610), (610, 694), (694, 694)] {
             glyph.addRoundedRect(in: CGRect(x: x, y: y, width: 64, height: 64), cornerSize: CGSize(width: 16, height: 16))
         }
-        return glyph.applying(LunetGeometry.transform(fitting: rect.size).concatenating(
+        return glyph.applying(LunetGeometry.transform(fitting: rect.size, frame: LunetGeometry.glyphBounds).concatenating(
             CGAffineTransform(translationX: rect.minX, y: rect.minY)
         ))
     }

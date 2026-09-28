@@ -3,8 +3,9 @@ import SwiftUI
 /// The Lunet loupe, in the app icon's 1024-point units (Resources/AppIcon.icon draws the same
 /// shapes): a thick glass lens resting on a small QR code, magnifying its top-left finder.
 nonisolated enum LunetGeometry {
-    /// The square of icon space the mark occupies (the artwork spans 179...808, plus a margin).
-    static let bounds = CGRect(x: 170, y: 170, width: 648, height: 648)
+    /// The square of icon space the mark occupies: centred on the QR code, like the icon, and
+    /// wide enough for the lens reaching out toward the top-left (the artwork spans 149...778).
+    static let bounds = CGRect(x: 144, y: 144, width: 736, height: 736)
 
     // MARK: The code
 
@@ -14,11 +15,12 @@ nonisolated enum LunetGeometry {
     static let finderSize: CGFloat = 196
     /// Top-left corners of the three finders. The first hides under the lens at rest.
     static let finderOrigins: [CGPoint] = [
-        CGPoint(x: 276, y: 276),
-        CGPoint(x: 612, y: 276),
-        CGPoint(x: 276, y: 612),
+        CGPoint(x: 246, y: 246),
+        CGPoint(x: 582, y: 246),
+        CGPoint(x: 246, y: 582),
     ]
-    /// Data modules as (column, row) on the 28-point grid starting at (502, 502).
+    /// Data modules as (column, row) on the 28-point grid starting at `moduleOrigin`.
+    static let moduleOrigin: CGFloat = 472
     static let modules: [(Int, Int)] = [
         (6, 0), (9, 0),
         (3, 1), (5, 1), (10, 1),
@@ -47,8 +49,8 @@ nonisolated enum LunetGeometry {
         var path = Path()
         for (column, row) in modules {
             let rect = CGRect(
-                x: 502 + CGFloat(column) * modulePitch,
-                y: 502 + CGFloat(row) * modulePitch,
+                x: moduleOrigin + CGFloat(column) * modulePitch,
+                y: moduleOrigin + CGFloat(row) * modulePitch,
                 width: module, height: module
             )
             path.addRoundedRect(in: rect, cornerSize: CGSize(width: moduleRadius, height: moduleRadius))
@@ -59,7 +61,7 @@ nonisolated enum LunetGeometry {
     // MARK: The loupe
 
     /// Centre of the lens (the disc) at rest.
-    static let lensCenter = CGPoint(x: 400, y: 400)
+    static let lensCenter = CGPoint(x: 370, y: 370)
     static let discRadius: CGFloat = 178
     static let rimOuterRadius: CGFloat = 214
     static let rimInnerRadius: CGFloat = 172
@@ -86,7 +88,7 @@ nonisolated enum LunetGeometry {
     }
 
     /// The four-point sparkle on the lens, centred on `center`.
-    static let glintCenter = CGPoint(x: 300, y: 296)
+    static let glintCenter = CGPoint(x: 270, y: 266)
     static func glint(center: CGPoint = glintCenter, radius: CGFloat = 54) -> Path {
         let pinch = radius * 0.22
         var path = Path()
@@ -99,12 +101,15 @@ nonisolated enum LunetGeometry {
         return path
     }
 
-    /// Transform from icon units to a view of `size`, centring `bounds`.
-    static func transform(fitting size: CGSize) -> CGAffineTransform {
-        let scale = min(size.width, size.height) / bounds.width
+    /// The glyph drops the optical centring: at 16 points it should fill its frame.
+    static let glyphBounds = CGRect(x: 140, y: 140, width: 648, height: 648)
+
+    /// Transform from icon units to a view of `size`, centring `frame` (icon units).
+    static func transform(fitting size: CGSize, frame: CGRect = bounds) -> CGAffineTransform {
+        let scale = min(size.width, size.height) / frame.width
         return CGAffineTransform(translationX: size.width / 2, y: size.height / 2)
             .scaledBy(x: scale, y: scale)
-            .translatedBy(x: -bounds.midX, y: -bounds.midY)
+            .translatedBy(x: -frame.midX, y: -frame.midY)
     }
 }
 

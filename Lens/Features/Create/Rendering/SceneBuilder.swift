@@ -90,7 +90,7 @@ nonisolated enum SceneBuilder {
 
         code.offset(by: codeOrigin)
         items += code.items
-        return ArtworkScene(size: size, items: items, codeRect: CGRect(origin: codeOrigin, size: code.size))
+        return ArtworkScene(size: size, items: items)
     }
 
     // MARK: Code block
@@ -113,6 +113,8 @@ nonisolated enum SceneBuilder {
                     return .text(text)
                 case .image(let image, let rect, let clip):
                     return .image(image, rect.offsetBy(dx: point.x, dy: point.y), clip: clip.flatMap { $0.copy(using: &transform) })
+                case .mask(let image, let rect, let paint):
+                    return .mask(image, rect.offsetBy(dx: point.x, dy: point.y), paint.offset(by: point))
                 }
             }
         }
@@ -152,23 +154,23 @@ nonisolated enum SceneBuilder {
             items.append(.fill(pupils, eyePaint))
         }
         if let box = geometry.logoBox?.applying(transform) {
-            items += logoItems(style: style, image: input.logoImage, box: box)
+            items += logoItems(style: style, image: input.logoImage, box: box, paint: paint)
         }
         return Block(size: size, items: items)
     }
 
-    private static func logoItems(style: CodeStyle, image: CGImage?, box: CGRect) -> [ArtworkScene.Item] {
+    private static func logoItems(style: CodeStyle, image: CGImage?, box: CGRect, paint: ArtworkScene.Paint) -> [ArtworkScene.Item] {
         switch style.logo {
         case .none:
             return []
         case .kindGlyph:
             guard let image else { return [] }
-            let area = box.insetBy(dx: box.width * 0.1, dy: box.height * 0.1)
+            let area = box.insetBy(dx: box.width * 0.08, dy: box.height * 0.08)
             let aspect = CGFloat(image.width) / CGFloat(max(image.height, 1))
             let fitted = aspect >= 1
                 ? CGRect(x: area.minX, y: area.midY - area.width / aspect / 2, width: area.width, height: area.width / aspect)
                 : CGRect(x: area.midX - area.height * aspect / 2, y: area.minY, width: area.height * aspect, height: area.height)
-            return [.image(image, fitted, clip: nil)]
+            return [.mask(image, fitted, style.accentEyes ? .solid(style.eyeColor) : paint)]
         case .photo(_, let shape):
             guard let image else { return [] }
             let area = box.insetBy(dx: box.width * 0.04, dy: box.height * 0.04)
@@ -193,7 +195,7 @@ nonisolated enum SceneBuilder {
         let totalModules = CGFloat(barcode.modules.count) + 2 * barcode.quietZone
         let module = codeWidth / totalModules
         let isRetail = !barcode.guardModules.isEmpty
-        let textSize: CGFloat = isRetail ? 10 : max(10, totalModules * 0.06)
+        let textSize: CGFloat = isRetail ? 10 : min(max(10, totalModules * 0.06), totalModules * 0.12)
         let padding: CGFloat = 4
         let showsText = style.showsText && !barcode.text.isEmpty
         let barTop = padding * module

@@ -26,20 +26,23 @@ nonisolated enum SceneRenderer {
     private static func draw(_ item: ArtworkScene.Item, in context: CGContext) {
         switch item {
         case .fill(let path, let paint, let evenOdd):
-            let rule: CGPathFillRule = evenOdd ? .evenOdd : .winding
-            switch paint {
-            case .solid(let color):
-                context.setFillColor(color.cgColor)
-                context.addPath(path)
-                context.fillPath(using: rule)
-            case .linear(let from, let to, let start, let end):
-                guard let gradient = CGGradient(colorsSpace: sRGB, colors: [from.cgColor, to.cgColor] as CFArray, locations: [0, 1]) else { return }
-                context.saveGState()
-                context.addPath(path)
-                context.clip(using: rule)
-                context.drawLinearGradient(gradient, start: start, end: end, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
-                context.restoreGState()
-            }
+            context.saveGState()
+            context.addPath(path)
+            context.clip(using: evenOdd ? .evenOdd : .winding)
+            fill(paint, bounds: path.boundingBoxOfPath, in: context)
+            context.restoreGState()
+
+        case .mask(let mask, let rect, let paint):
+            context.saveGState()
+            // Masks are sampled bottom-up; flip locally so the glyph stays upright.
+            context.translateBy(x: rect.minX, y: rect.maxY)
+            context.scaleBy(x: 1, y: -1)
+            let local = CGRect(origin: .zero, size: rect.size)
+            context.clip(to: local, mask: mask)
+            context.scaleBy(x: 1, y: -1)
+            context.translateBy(x: -rect.minX, y: -rect.maxY)
+            fill(paint, bounds: rect, in: context)
+            context.restoreGState()
 
         case .stroke(let path, let color, let width):
             context.setStrokeColor(color.cgColor)
@@ -69,6 +72,18 @@ nonisolated enum SceneRenderer {
             context.scaleBy(x: 1, y: -1)
             context.draw(image, in: CGRect(origin: .zero, size: rect.size))
             context.restoreGState()
+        }
+    }
+
+    /// Fills the current clip with `paint`.
+    private static func fill(_ paint: ArtworkScene.Paint, bounds: CGRect, in context: CGContext) {
+        switch paint {
+        case .solid(let color):
+            context.setFillColor(color.cgColor)
+            context.fill(bounds.insetBy(dx: -1, dy: -1))
+        case .linear(let from, let to, let start, let end):
+            guard let gradient = CGGradient(colorsSpace: sRGB, colors: [from.cgColor, to.cgColor] as CFArray, locations: [0, 1]) else { return }
+            context.drawLinearGradient(gradient, start: start, end: end, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
         }
     }
 

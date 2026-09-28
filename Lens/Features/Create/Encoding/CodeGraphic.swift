@@ -49,10 +49,10 @@ nonisolated struct LinearBarcode: Hashable, Sendable {
         self.guardModules = guardModules
         self.text = text
         self.quietZone = quietZone
-        self.barHeight = barHeight ?? min(max(Double(modules.count) * 0.3, 36), 90)
+        self.barHeight = barHeight ?? min(max(Double(modules.count) * 0.4, 36), 110)
     }
 
-    /// Consecutive dark modules merged into `(start, length)` bars, so rendering never shows seams.
+    /// Consecutive dark modules as `(start, length)` bars.
     var bars: [(start: Int, length: Int)] {
         var result: [(Int, Int)] = []
         var index = 0

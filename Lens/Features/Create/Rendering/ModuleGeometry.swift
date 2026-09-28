@@ -60,6 +60,37 @@ nonisolated struct ModuleGeometry: @unchecked Sendable {
         return ModuleGeometry(dots: dots, eyeFrames: frames, pupils: pupils, logoBox: logoBox)
     }
 
+    // MARK: Swatches
+
+    /// A small representative cluster of modules in `shape`, for the Dots picker.
+    static func swatchDots(_ shape: CodeStyle.DotShape) -> CGPath {
+        let pattern = [
+            "11011",
+            "10110",
+            "01101",
+            "11011",
+        ]
+        var sample = BitMatrix(width: 5, height: 4)
+        for (row, line) in pattern.enumerated() {
+            for (column, character) in line.enumerated() { sample[row, column] = character == "1" }
+        }
+        let path = CGMutablePath()
+        for row in 0..<sample.height {
+            for column in 0..<sample.width where sample[row, column] {
+                addDot(shape, row: row, column: column, to: path) { sample.isDark(row: $0, column: $1) }
+            }
+        }
+        return path
+    }
+
+    /// One finder eye (7×7 modules): ring and pupil, for the Corners picker.
+    static func swatchEye(frame: CodeStyle.EyeFrame, pupil: CodeStyle.EyePupil) -> (frame: CGPath, pupil: CGPath) {
+        let frames = CGMutablePath(), pupils = CGMutablePath()
+        addEyeFrame(frame, at: .zero, corner: .topLeft, to: frames)
+        addPupil(pupil, in: CGRect(x: 2, y: 2, width: 3, height: 3), to: pupils)
+        return (frames, pupils)
+    }
+
     // MARK: Dots
 
     /// Horizontal runs merged into single rectangles so square modules never show hairline seams.

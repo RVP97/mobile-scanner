@@ -77,6 +77,18 @@ struct StylePreset: Identifiable {
 }
 
 extension CodeStyle {
+    /// A preset restyles shapes and colors but keeps the person's logo, frame and caption.
+    func applyingPreset(_ preset: CodeStyle) -> CodeStyle {
+        var result = preset
+        result.logo = logo
+        result.frame = frame
+        result.caption = caption
+        result.captionWeight = captionWeight
+        result.showsText = showsText
+        result.correction = correction
+        return result
+    }
+
     mutating func apply(palette: CodePalette) {
         foreground = palette.start
         gradientEnd = palette.end

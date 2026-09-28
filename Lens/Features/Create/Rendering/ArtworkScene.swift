@@ -26,12 +26,12 @@ nonisolated struct ArtworkScene: @unchecked Sendable {
         case stroke(CGPath, RGBAColor, width: CGFloat)
         case text(Text)
         case image(CGImage, CGRect, clip: CGPath?)
+        /// Paints `rect` through a grayscale mask (white shows paint), so glyphs take gradients too.
+        case mask(CGImage, CGRect, Paint)
     }
 
     var size: CGSize
     var items: [Item] = []
-    /// Where the code itself sits, for callers that need it (e.g. crop for verification).
-    var codeRect: CGRect = .zero
 }
 
 extension ArtworkScene.Text {

@@ -14,24 +14,33 @@ nonisolated enum SVGExporter {
             return "\(prefix)\(nextID)"
         }
 
+        func fillAttribute(_ paint: ArtworkScene.Paint) -> String {
+            switch paint {
+            case .solid(let color):
+                return colorAttributes(color, prefix: "fill")
+            case .linear(let from, let to, let start, let end):
+                let id = makeID("g")
+                defs.append(
+                    #"<linearGradient id="\#(id)" gradientUnits="userSpaceOnUse" x1="\#(n(start.x))" y1="\#(n(start.y))" x2="\#(n(end.x))" y2="\#(n(end.y))">"#
+                        + #"<stop offset="0" \#(colorAttributes(from, prefix: "stop-color"))/>"#
+                        + #"<stop offset="1" \#(colorAttributes(to, prefix: "stop-color"))/></linearGradient>"#
+                )
+                return #"fill="url(#\#(id))""#
+            }
+        }
+
         for item in scene.items {
             switch item {
             case .fill(let path, let paint, let evenOdd):
                 let rule = evenOdd ? #" fill-rule="evenodd""# : ""
-                let fill: String
-                switch paint {
-                case .solid(let color):
-                    fill = colorAttributes(color, prefix: "fill")
-                case .linear(let from, let to, let start, let end):
-                    let id = makeID("g")
-                    defs.append(
-                        #"<linearGradient id="\#(id)" gradientUnits="userSpaceOnUse" x1="\#(n(start.x))" y1="\#(n(start.y))" x2="\#(n(end.x))" y2="\#(n(end.y))">"#
-                            + #"<stop offset="0" \#(colorAttributes(from, prefix: "stop-color"))/>"#
-                            + #"<stop offset="1" \#(colorAttributes(to, prefix: "stop-color"))/></linearGradient>"#
-                    )
-                    fill = #"fill="url(#\#(id))""#
-                }
-                body.append(#"<path d="\#(pathData(path))" \#(fill)\#(rule)/>"#)
+                body.append(#"<path d="\#(pathData(path))" \#(fillAttribute(paint))\#(rule)/>"#)
+
+            case .mask(let mask, let rect, let paint):
+                guard let png = pngBase64(mask) else { continue }
+                let id = makeID("m")
+                let frame = #"x="\#(n(rect.minX))" y="\#(n(rect.minY))" width="\#(n(rect.width))" height="\#(n(rect.height))""#
+                defs.append(#"<mask id="\#(id)" maskUnits="userSpaceOnUse" \#(frame)><image \#(frame) href="data:image/png;base64,\#(png)"/></mask>"#)
+                body.append(#"<rect \#(frame) \#(fillAttribute(paint)) mask="url(#\#(id))"/>"#)
 
             case .stroke(let path, let color, let width):
                 body.append(#"<path d="\#(pathData(path))" fill="none" \#(colorAttributes(color, prefix: "stroke")) stroke-width="\#(n(width))"/>"#)

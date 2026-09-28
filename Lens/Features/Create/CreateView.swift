@@ -7,6 +7,7 @@ enum CreateRoute: Hashable {
     case compose(CreateIntent)
     case advanced(Symbology)
     case studio(CodeDocument)
+    case formats
 }
 
 extension EnvironmentValues {
@@ -22,7 +23,7 @@ struct DismissCreateAction {
 /// Intent-first creation: pick what to share, fill it in, then make it yours.
 struct CreateView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var path: [CreateRoute] = []
+    @State private var path: [CreateRoute] = CreateView.initialPath
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -30,22 +31,45 @@ struct CreateView: View {
                 .navigationDestination(for: CreateRoute.self) { route in
                     switch route {
                     case .compose(let intent):
-                        ComposeView(draft: CreateDraft(intent: intent))
+                        ComposeView(draft: Self.draft(for: intent))
                     case .advanced(let format):
                         ComposeView(draft: CreateDraft(format: format))
                     case .studio(let document):
                         StudioView(document: document)
+                    case .formats:
+                        FormatPicker()
                     }
                 }
         }
         .environment(\.dismissCreate, DismissCreateAction { dismiss() })
     }
+
+    private static func draft(for intent: CreateIntent) -> CreateDraft {
+        let draft = CreateDraft(intent: intent)
+#if DEBUG
+        QAHarness.fill(draft)
+#endif
+        return draft
+    }
+
+    private static var initialPath: [CreateRoute] {
+#if DEBUG
+        defer { QAHarness.createPath = [] }
+        return QAHarness.createPath
+#else
+        return []
+#endif
+    }
 }
 
-/// The first screen: a grid of things people share, plus the full format list for experts.
+/// The first screen: the four things people share most as big tiles, the rest as a list, then the
+/// full format list for experts.
 private struct IntentPicker: View {
     @Environment(\.dismissCreate) private var dismissCreate
     @Environment(\.dynamicTypeSize) private var typeSize
+
+    private static let featured: [CreateIntent] = [.link, .wifi, .contact, .text]
+    private static var more: [CreateIntent] { CreateIntent.allCases.filter { !featured.contains($0) } }
 
     private var columns: [GridItem] {
         let count = typeSize.isAccessibilitySize ? 1 : 2
@@ -56,7 +80,7 @@ private struct IntentPicker: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 LazyVGrid(columns: columns, spacing: 12) {
-                    ForEach(CreateIntent.allCases) { intent in
+                    ForEach(Self.featured) { intent in
                         NavigationLink(value: CreateRoute.compose(intent)) {
                             IntentTile(intent: intent)
                         }
@@ -64,34 +88,32 @@ private struct IntentPicker: View {
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    MicroLabel("Advanced")
-                        .padding(.leading, 4)
-                    NavigationLink {
-                        FormatPicker()
-                    } label: {
-                        HStack(spacing: 12) {
-                            Image(systemName: "barcode.viewfinder")
-                                .font(.title3)
-                                .foregroundStyle(.secondary)
-                                .frame(width: 32)
-                                .accessibilityHidden(true)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Choose a Format")
-                                    .font(.body.weight(.medium))
-                                    .foregroundStyle(.primary)
-                                Text("Code 128, Data Matrix, ITF-14, Codabar and more")
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
+                group(title: "More") {
+                    ForEach(Self.more) { intent in
+                        NavigationLink(value: CreateRoute.compose(intent)) {
+                            IntentRow(title: Text(intent.title), subtitle: Text(intent.subtitle)) {
+                                KindTile(kind: intent.kind, size: 36)
                             }
-                            Spacer(minLength: 0)
-                            Image(systemName: "chevron.right")
-                                .font(.footnote.weight(.semibold))
-                                .foregroundStyle(.tertiary)
-                                .accessibilityHidden(true)
                         }
-                        .padding(16)
-                        .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20, style: .continuous))
+                        .buttonStyle(.plain)
+                        if intent != Self.more.last {
+                            Divider().padding(.leading, 64)
+                        }
+                    }
+                }
+
+                group(title: "Advanced") {
+                    NavigationLink(value: CreateRoute.formats) {
+                        IntentRow(
+                            title: Text("Choose a Format"),
+                            subtitle: Text("Code 128, Data Matrix, ITF-14, Codabar and more")
+                        ) {
+                            Image(systemName: "barcode.viewfinder")
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundStyle(.secondary)
+                                .frame(width: 36, height: 36)
+                                .background(.fill.tertiary, in: .rect(cornerRadius: 10, style: .continuous))
+                        }
                     }
                     .buttonStyle(.plain)
                 }
@@ -108,18 +130,29 @@ private struct IntentPicker: View {
             }
         }
     }
+
+    private func group<Content: View>(title: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            MicroLabel(title)
+                .padding(.leading, 16)
+            VStack(spacing: 0) { content() }
+                .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20, style: .continuous))
+        }
+    }
 }
 
 private struct IntentTile: View {
     var intent: CreateIntent
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            KindTile(kind: intent.kind, size: 40)
+        VStack(alignment: .leading, spacing: 16) {
+            KindTile(kind: intent.kind, size: 44)
             VStack(alignment: .leading, spacing: 2) {
                 Text(intent.title)
                     .font(.headline)
                     .foregroundStyle(.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
                 Text(intent.subtitle)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -130,6 +163,37 @@ private struct IntentTile: View {
         .padding(16)
         .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20, style: .continuous))
         .contentShape(.rect(cornerRadius: 20))
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// A compact list row inside a grouped card: glyph, title and one line, chevron.
+private struct IntentRow<Icon: View>: View {
+    var title: Text
+    var subtitle: Text
+    @ViewBuilder var icon: Icon
+
+    var body: some View {
+        HStack(spacing: 12) {
+            icon
+            VStack(alignment: .leading, spacing: 1) {
+                title
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                subtitle
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 8)
+            Image(systemName: "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .frame(minHeight: 56)
+        .contentShape(.rect)
         .accessibilityElement(children: .combine)
     }
 }

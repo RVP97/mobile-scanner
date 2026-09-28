@@ -3,12 +3,13 @@ import SwiftUI
 
 /// Tools in the studio's bottom panel.
 enum StudioTool: String, CaseIterable, Identifiable {
-    case dots, corners, color, logo, frame
+    case looks, dots, corners, color, logo, frame
 
     var id: String { rawValue }
 
     var title: LocalizedStringResource {
         switch self {
+        case .looks: "Looks"
         case .dots: "Dots"
         case .corners: "Corners"
         case .color: "Color"
@@ -50,7 +51,7 @@ final class StudioModel {
         }
         if style.caption.isEmpty { style.caption = document.caption }
         self.style = style
-        tool = document.symbology == .qr ? .dots : .color
+        tool = document.symbology == .qr ? .looks : .color
         encode()
         rebuildGeometry()
         rebuildLogo()

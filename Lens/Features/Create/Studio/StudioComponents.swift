@@ -36,6 +36,7 @@ struct ShapeSwatch<Glyph: View>: View {
                     .foregroundStyle(isSelected ? .primary : .secondary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
+                    .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
             }
             .frame(minWidth: 56)
             .contentShape(.rect)

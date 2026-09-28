@@ -72,6 +72,7 @@ struct ExportBar: View {
             } label: {
                 circle(systemImage: "square.and.arrow.up")
             }
+            .tint(.primary)
             .accessibilityLabel(Text("Share"))
         }
     }

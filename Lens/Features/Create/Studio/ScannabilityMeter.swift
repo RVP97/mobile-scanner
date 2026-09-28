@@ -10,24 +10,29 @@ struct ScannabilityMeter: View {
             ZStack {
                 if model.isChecking && model.report == nil {
                     ProgressView()
+                        .controlSize(.small)
                 } else {
                     Image(systemName: state.symbol)
-                        .font(.title3.weight(.semibold))
+                        .font(.body.weight(.semibold))
                         .foregroundStyle(state.tint)
                         .contentTransition(.symbolEffect(.replace))
                 }
             }
-            .frame(width: 28)
+            .frame(width: 24)
             .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(state.title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(state.tint)
-                Text(state.detail)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .monospacedDigit()
+            // One line when it fits; the detail drops below at large text sizes or long messages.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 6) {
+                    title(state)
+                    Text(verbatim: "·").foregroundStyle(.tertiary)
+                    detail(state)
+                }
+                .lineLimit(1)
+                VStack(alignment: .leading, spacing: 1) {
+                    title(state)
+                    detail(state)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .opacity(model.isChecking ? 0.6 : 1)
@@ -38,20 +43,36 @@ struct ScannabilityMeter: View {
                     withAnimation(.smooth) { model.apply(fix) }
                 } label: {
                     Text(fix.title)
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(Palette.onTint)
+                        .padding(.horizontal, 12)
+                        .frame(minHeight: 30)
+                        .background(state.tint, in: .capsule)
                 }
-                .font(.footnote.weight(.semibold))
-                .buttonStyle(.bordered)
-                .buttonBorderShape(.capsule)
-                .tint(state.tint)
-                .controlSize(.small)
+                .buttonStyle(.plain)
+                .frame(minHeight: 44)
+                .fixedSize()
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .frame(minHeight: 60)
-        .background(state.tint.opacity(0.1), in: .rect(cornerRadius: 18, style: .continuous))
+        .padding(.leading, 14)
+        .padding(.trailing, state.fix == nil ? 14 : 8)
+        .frame(minHeight: 48)
+        .background(state.tint.opacity(0.12), in: .rect(cornerRadius: 16, style: .continuous))
         .animation(.smooth(duration: 0.25), value: model.report)
         .sensoryFeedback(.warning, trigger: state.isProblem) { _, isProblem in isProblem }
+    }
+
+    private func title(_ state: MeterState) -> some View {
+        Text(state.title)
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(state.tint)
+    }
+
+    private func detail(_ state: MeterState) -> some View {
+        Text(state.detail)
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .monospacedDigit()
     }
 }
 
@@ -73,8 +94,8 @@ private struct MeterState {
         let time = max(report.duration / .seconds(1), 0.1).formatted(.number.precision(.fractionLength(1)))
         switch report.verdict {
         case .verified:
-            self.init(symbol: "checkmark.seal.fill", tint: Palette.safe, title: "Verified · scans in \(time)s",
-                      detail: "Contrast \(contrast):1 · Scans reliably")
+            self.init(symbol: "checkmark.seal.fill", tint: Palette.safe, title: "Verified",
+                      detail: "Scans in \(time)s · Contrast \(contrast):1")
         case .lowContrast:
             self.init(symbol: "exclamationmark.triangle.fill", tint: Palette.caution, title: "Low contrast",
                       detail: "\(contrast):1 — may fail in dim light", fix: .darkenInk, isProblem: true)

@@ -47,7 +47,17 @@ enum HistorySamples {
         let shared = ScanRecord(raw: "WIFI:T:WPA;S:Studio Norte;P:linea-4;;", symbology: .qr, kind: .wifi, origin: .created,
                                 title: "Studio Norte", subtitle: "Wi-Fi · WPA2", createdAt: at(daysAgo: 14, 10, 0))
 
-        return [menu, pen, wifi, maya, locker, shipment, flight, shared]
+        let parking = ScanRecord(raw: "https://bit.ly/3xQpark", symbology: .qr, kind: .link,
+                                 title: "n0rthbank-login.co", subtitle: "Parking meter · looks like northbank",
+                                 createdAt: at(daysAgo: 2, 18, 34))
+        parking.safetyRaw = SafetyVerdict.Level.danger.rawValue
+
+        let flyer = ScanRecord(raw: "https://tinyurl.com/yoga-roma", symbology: .qr, kind: .link,
+                               title: "Sunrise Yoga — Parque México", subtitle: "tinyurl.com · redirects twice",
+                               createdAt: at(daysAgo: 3, 8, 15))
+        flyer.safetyRaw = SafetyVerdict.Level.caution.rawValue
+
+        return [menu, pen, wifi, maya, parking, flyer, locker, shipment, flight, shared]
     }
 }
 #endif

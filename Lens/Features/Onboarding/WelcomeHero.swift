@@ -11,7 +11,7 @@ struct WelcomeHero: View {
     private static let kinds: [CodeKind] = [.link, .wifi, .product, .travel, .contact, .text]
     private static let matrix = QRMatrix("https://lens.app/welcome")
     private static let duration: TimeInterval = 2.3
-    private static let tile: CGFloat = 48
+    private static let tile: CGFloat = 52
 
     var body: some View {
         GeometryReader { proxy in
@@ -20,7 +20,7 @@ struct WelcomeHero: View {
                 scene(in: proxy.size, t: t)
             }
         }
-        .frame(height: 244)
+        .frame(height: 280)
         .accessibilityHidden(true)
         .sensoryFeedback(.impact(weight: .light), trigger: landed) { _, didLand in
             didLand && haptics && !reduceMotion
@@ -45,7 +45,7 @@ struct WelcomeHero: View {
     @ViewBuilder
     private func scene(in size: CGSize, t: Double) -> some View {
         let center = CGPoint(x: size.width / 2, y: size.height / 2)
-        let radiusX = min(132, (size.width - Self.tile) / 2)
+        let radiusX = min(144, (size.width - Self.tile) / 2)
         let radiusY: CGFloat = (size.height - Self.tile) / 2
 
         ZStack {
@@ -56,7 +56,7 @@ struct WelcomeHero: View {
             }
 
             let icon = Ease.outBack(progress(t, from: 0.75, over: 0.55))
-            LensAppIcon(size: 104)
+            LensAppIcon(size: 112)
                 .scaleEffect(0.6 + 0.4 * icon)
                 .opacity(min(1, icon * 1.4))
                 .position(center)

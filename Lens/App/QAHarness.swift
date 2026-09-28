@@ -44,6 +44,7 @@ enum QAHarness {
             model.sheetContent = .multiReview
             model.detent = .large
         default:
+            if applyExtended(screen, model: model) { return }
             if screen.hasPrefix("result:"), let result = sample(named: String(screen.dropFirst(7))) {
                 model.show(result)
             }

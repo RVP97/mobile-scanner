@@ -26,25 +26,32 @@ struct SettingsHistorySection: View {
         let isEmpty = anyRecord.isEmpty
 
         Section {
-            Toggle("Save history", isOn: $saveHistory)
+            Toggle(isOn: $saveHistory) {
+                SettingsLabel("Save History", symbol: "clock.fill", color: .gray)
+            }
             Toggle(isOn: rememberPlaceBinding) {
-                Text("Remember where I scanned")
-                Text("Place names only, kept on this iPhone")
+                SettingsLabel("Remember where I scanned", symbol: "location.fill", color: .blue,
+                              subtitle: "Place names only, kept on this iPhone")
             }
             Toggle(isOn: lockBinding) {
-                Text(biometry.requireTitle)
+                SettingsLabel(biometry.requireTitle, symbol: biometry.symbol, color: .green)
             }
             ShareLink(
                 item: HistoryExport(container: modelContext.container),
                 preview: SharePreview(Text("Lens History"), image: Image(systemName: "tablecells"))
             ) {
-                Label("Export CSV", systemImage: "square.and.arrow.up")
+                SettingsLabel("Export CSV", symbol: "tablecells.fill", color: .teal)
             }
+            .foregroundStyle(.primary)
             .disabled(isEmpty)
             Button(role: .destructive) {
                 confirmingClear = true
             } label: {
-                Label("Clear History", systemImage: "trash")
+                Label {
+                    Text("Clear History")
+                } icon: {
+                    SettingsGlyph(symbol: "trash.fill", color: isEmpty ? .gray : .red)
+                }
             }
             .foregroundStyle(isEmpty ? Color.secondary : Palette.danger)
             .disabled(isEmpty)

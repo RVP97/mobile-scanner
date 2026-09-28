@@ -1,21 +1,22 @@
 import SwiftUI
 
-/// Scrollable content with actions pinned to the bottom. Content scrolls only when it has to
-/// (small phones, accessibility text sizes).
+/// Content with actions pinned to the bottom. Content scrolls only when it has to (small phones,
+/// accessibility text sizes); hero pages center it in the space above the actions when it fits.
 struct OnboardingPage<Content: View, Actions: View>: View {
+    var centered = false
     @ViewBuilder var content: Content
     @ViewBuilder var actions: Actions
 
     var body: some View {
-        ScrollView {
-            content
-                .frame(maxWidth: 520)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 24)
-                .padding(.top, 16)
-                .padding(.bottom, 24)
+        ViewThatFits(in: .vertical) {
+            if centered {
+                padded
+                    .frame(maxHeight: .infinity)
+                    .offset(y: -16)
+            }
+            ScrollView { padded }
+                .scrollBounceBehavior(.basedOnSize)
         }
-        .scrollBounceBehavior(.basedOnSize)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             VStack(spacing: 12) { actions }
                 .frame(maxWidth: 520)
@@ -25,6 +26,15 @@ struct OnboardingPage<Content: View, Actions: View>: View {
                 .padding(.bottom, 8)
                 .background(Color(.systemBackground))
         }
+    }
+
+    private var padded: some View {
+        content
+            .frame(maxWidth: 520)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 24)
+            .padding(.top, 16)
+            .padding(.bottom, 24)
     }
 }
 

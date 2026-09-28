@@ -10,7 +10,11 @@ struct StudioView: View {
     @Environment(\.modelContext) private var modelContext
 
     init(document: CodeDocument) {
-        _model = State(initialValue: StudioModel(document: document))
+        let model = StudioModel(document: document)
+#if DEBUG
+        if let tool = QAHarness.studioTool, model.tools.contains(tool) { model.tool = tool }
+#endif
+        _model = State(initialValue: model)
     }
 
     var body: some View {
@@ -34,7 +38,8 @@ struct StudioView: View {
                         .padding(.top, 8)
                     ScannabilityMeter(model: model)
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .padding(.top, 12)
+                        .padding(.bottom, 8)
                     controls
                 }
             }
@@ -70,10 +75,10 @@ struct StudioView: View {
 
     private var stage: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(Color(.secondarySystemGroupedBackground))
+            StudioStage()
             CodeCanvas(scene: model.scene)
-                .padding(model.isLinear ? 16 : 20)
+                .shadow(color: .black.opacity(0.08), radius: 16, y: 6)
+                .padding(model.isLinear ? 20 : 24)
                 .accessibilityElement()
                 .accessibilityAddTraits(.isImage)
                 .accessibilityLabel(Text("\(model.document.symbology.displayName) for \(model.document.title)"))
@@ -86,13 +91,9 @@ struct StudioView: View {
 
     private var controls: some View {
         VStack(spacing: 12) {
-            if model.isQR { LooksRow(model: model) }
             if model.tools.count > 1 {
-                Picker("Tool", selection: $model.tool) {
-                    ForEach(model.tools) { Text($0.title).tag($0) }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal, 16)
+                StudioToolBar(selection: $model.tool, tools: model.tools)
+                    .padding(.horizontal, 16)
             }
             ScrollView {
                 toolPanel
@@ -100,8 +101,16 @@ struct StudioView: View {
                     .padding(.bottom, 16)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(minHeight: 150, maxHeight: sizeClass == .regular ? .infinity : 210)
+            .frame(minHeight: 150, maxHeight: sizeClass == .regular ? .infinity : 230)
             .scrollBounceBehavior(.basedOnSize)
+            .mask {
+                // Content that continues below fades out instead of being cut by the export bar.
+                VStack(spacing: 0) {
+                    Color.black
+                    LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
+                        .frame(height: 20)
+                }
+            }
         }
         .padding(.top, 4)
     }
@@ -109,12 +118,40 @@ struct StudioView: View {
     @ViewBuilder
     private var toolPanel: some View {
         switch model.tool {
+        case .looks: LooksTool(model: model)
         case .dots: DotsTool(model: model)
         case .corners: CornersTool(model: model)
         case .color: ColorTool(model: model)
         case .logo: LogoTool(model: model)
         case .frame: FrameTool(model: model)
         }
+    }
+}
+
+/// The neutral surface the code sits on: a quiet dot grid, like a design tool's canvas.
+private struct StudioStage: View {
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 28, style: .continuous)
+        shape
+            .fill(Color(light: 0xE8E9ED, dark: 0x1F1F21))
+            .overlay {
+                Canvas { context, size in
+                    let spacing: CGFloat = 16
+                    var dots = Path()
+                    var y = spacing / 2
+                    while y < size.height {
+                        var x = spacing / 2
+                        while x < size.width {
+                            dots.addEllipse(in: CGRect(x: x - 1, y: y - 1, width: 2, height: 2))
+                            x += spacing
+                        }
+                        y += spacing
+                    }
+                    context.fill(dots, with: .style(.primary.opacity(0.1)))
+                }
+                .clipShape(shape)
+            }
+            .accessibilityHidden(true)
     }
 }
 

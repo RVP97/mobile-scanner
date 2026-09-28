@@ -14,5 +14,11 @@ extension ScanRecord {
     /// The row's headline, falling back to the raw text for untitled records.
     var historyTitle: String { title.isEmpty ? raw : title }
 
-    var isVerifiedSafe: Bool { safetyRaw == SafetyVerdict.Level.safe.rawValue }
+    var isVerifiedSafe: Bool { safetyLevel == .safe }
+
+    /// The stored safety verdict for links, if one was reached.
+    var safetyLevel: SafetyVerdict.Level? { safetyRaw.flatMap(SafetyVerdict.Level.init(rawValue:)) }
+
+    /// A link Lens warned about: shown with its caution state everywhere it's listed.
+    var isFlagged: Bool { safetyLevel == .caution || safetyLevel == .danger }
 }

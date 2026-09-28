@@ -87,6 +87,7 @@ private struct DangerReplayCard: View {
                         lookalikeDomain
                         Text("A zero, not an “o”")
                             .font(.caption)
+                            .monospaced(false)
                             .foregroundStyle(Palette.danger)
                     }
                 }

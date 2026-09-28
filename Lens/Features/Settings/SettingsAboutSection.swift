@@ -7,17 +7,17 @@ struct SettingsAboutSection: View {
 
     var body: some View {
         Section("About") {
+            NavigationLink(value: SettingsRoute.privacy) {
+                SettingsLabel("Privacy", symbol: "lock.fill", color: .blue)
+            }
             Link(destination: Self.reviewURL) {
-                Label("Rate Lens", systemImage: "star")
+                SettingsLabel("Rate Lens", symbol: "star.fill", color: .yellow)
             }
+            .foregroundStyle(.primary)
             ShareLink(item: Self.appStoreURL, message: Text("Lens reads any code and checks links before you open them.")) {
-                Label("Share Lens", systemImage: "square.and.arrow.up")
+                SettingsLabel("Share Lens", symbol: "square.and.arrow.up", color: .green)
             }
-            NavigationLink {
-                PrivacyView()
-            } label: {
-                Label("Privacy", systemImage: "hand.raised")
-            }
+            .foregroundStyle(.primary)
             LabeledContent("Version", value: Self.version)
         }
     }

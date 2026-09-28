@@ -8,6 +8,7 @@ struct TravelResultView: View {
     var result: ScanResult
 
     @Environment(\.openURL) private var openURL
+    @Environment(\.colorScheme) private var colorScheme
     @State private var calendarDraft: CalendarDraft?
     @State private var walletPass: PKPass?
     @State private var walletError: String?
@@ -20,9 +21,15 @@ struct TravelResultView: View {
             BoardingPassCard(pass: pass, date: date)
 
             if WalletPassService.isAvailable, PKAddPassesViewController.canAddPasses() {
-                ResultPrimaryButton(title: "Add to Apple Wallet", symbol: "wallet.pass", tint: Palette.ink, isBusy: isPreparingPass) {
+                // Apple's own badge, as Wallet's branding guidelines require.
+                AddPassButton(style: colorScheme == .dark ? .blackOutline : .black) {
+                    guard !isPreparingPass else { return }
                     Task { await prepareWalletPass() }
                 }
+                .frame(height: 54)
+                .opacity(isPreparingPass ? 0.5 : 1)
+                .overlay { if isPreparingPass { ProgressView().tint(.white) } }
+                .accessibilityLabel("Add to Apple Wallet")
                 Text("Pass details are sent to Lens's signing service to create your pass. Nothing is stored.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)

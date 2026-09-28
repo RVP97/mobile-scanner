@@ -5,6 +5,7 @@ import SwiftUI
 struct RootView: View {
     @Environment(AppModel.self) private var model
     @AppStorage(Pref.onboardingDone) private var onboardingDone = false
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         @Bindable var model = model
@@ -27,6 +28,9 @@ struct RootView: View {
             .fullScreenCover(isPresented: .constant(!onboardingDone)) {
                 OnboardingFlow()
             }
+#if DEBUG
+            .task { QAHarness.apply(model: model, context: modelContext) }
+#endif
     }
 
     @ViewBuilder

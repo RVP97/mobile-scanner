@@ -25,7 +25,12 @@ struct OnboardingFlow: View {
         }
         .safeAreaInset(edge: .top, spacing: 0) { header }
         .environment(\.colorScheme, step.prefersDarkAppearance ? .dark : systemScheme)
-        .onAppear { model.cameraPaused = true }
+        .onAppear {
+            model.cameraPaused = true
+#if DEBUG
+            if let step = QAHarness.onboardingStep, let start = steps.firstIndex(of: step) { index = start }
+#endif
+        }
     }
 
     @ViewBuilder

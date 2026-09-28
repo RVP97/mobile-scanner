@@ -32,7 +32,7 @@ struct EverywhereSetupList: View {
                 .buttonStyle(.bordered)
                 .buttonBorderShape(.capsule)
                 .tint(Palette.accent)
-                .accessibilityHint(Text("Shows how to add Ojito here."))
+                .accessibilityHint(Text("Shows how to add Lunet here."))
         }
         .padding(12)
         .background(Color(.secondarySystemBackground), in: .rect(cornerRadius: 20, style: .continuous))

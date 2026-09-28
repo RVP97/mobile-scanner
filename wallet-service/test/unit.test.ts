@@ -90,9 +90,9 @@ describe("pass.json", () => {
     expect(p.passTypeIdentifier).toBe("pass.com.rvp97.scanner");
     expect(p.teamIdentifier).toBe("TESTTEAM01");
     expect(p.serialNumber).toBe("SER-1");
-    expect(p.organizationName).toBe("Ojito");
-    expect(p.logoText).toBe("Ojito");
-    expect(p.description).toContain("(created with Ojito)");
+    expect(p.organizationName).toBe("Lunet");
+    expect(p.logoText).toBe("Lunet");
+    expect(p.description).toContain("(created with Lunet)");
     expect(JSON.stringify(p)).not.toContain("Lens");
     expect(p.description).toContain("MEX–JFK");
     expect(p.boardingPass.transitType).toBe("PKTransitTypeAir");

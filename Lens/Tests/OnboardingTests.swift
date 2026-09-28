@@ -17,29 +17,39 @@ struct OnboardingStepTests {
 
 struct OnboardingWelcomeMotionTests {
     @Test func settlesOnTheIconPose() {
-        let pose = WelcomeMotion.pose(at: WelcomeMotion.duration)
-        #expect(pose.blades.allSatisfy { abs($0 - 1) < 0.0001 })
-        #expect(abs(pose.pupil - 1) < 0.0001)
-        #expect(abs(pose.openness - 1) < 0.0001)
-        #expect(pose.spin == .zero)
+        #expect(WelcomeMotion.pose(at: WelcomeMotion.duration) == .rest)
     }
 
-    @Test func startsShutWithTheIrisGathered() {
+    @Test func startsWithTheLensAwayAndOutOfFocus() {
         let pose = WelcomeMotion.pose(at: 0)
-        #expect(pose.openness < 0.05)
-        #expect(pose.blades.allSatisfy { abs($0) < 0.0001 })
-        #expect(abs(pose.pupil) < 0.0001)
+        #expect(pose.code == 0)
+        #expect(pose.lensOpacity == 0)
+        #expect(pose.lensOffset == WelcomeMotion.glideFrom)
+        #expect(pose.focus == 0)
+        #expect(pose.glint == 0)
     }
 
-    @Test func blinksOnceAfterTheBloom() {
-        let closedMoment = WelcomeMotion.blinkStart + WelcomeMotion.blinkClose
-        #expect(WelcomeMotion.pose(at: closedMoment).openness < 0.1)
-        #expect(WelcomeMotion.pose(at: WelcomeMotion.blinkStart - 0.01).openness == 1)
+    @Test func finderSnapsPastFocusThenSettles() {
+        let snaps = stride(from: WelcomeMotion.focusStart, through: WelcomeMotion.focusStart + WelcomeMotion.focusDuration, by: 0.01)
+            .map { WelcomeMotion.pose(at: $0).focus }
+        #expect(snaps.max()! > 1)
+        #expect(abs(snaps.last! - 1) < 0.0001)
     }
 
-    @Test func idleDriftIsSlow() {
-        let later = WelcomeMotion.pose(at: WelcomeMotion.duration + 1)
-        #expect(abs(later.spin.degrees) > 0)
-        #expect(abs(later.spin.degrees) < 10)
+    @Test func refractionSweepsOneFullTurn() {
+        let nearEnd = WelcomeMotion.pose(at: WelcomeMotion.sweepStart + WelcomeMotion.sweepDuration * 0.999)
+        #expect(nearEnd.refraction.degrees > 359)
+        let midway = WelcomeMotion.pose(at: WelcomeMotion.sweepStart + WelcomeMotion.sweepDuration / 2)
+        #expect(abs(midway.refraction.degrees - 180) < 0.0001)
+        #expect(midway.spread > 1.5)
+    }
+
+    @Test func idleGlintsNowAndThenAndRestsBetween() {
+        let restMoment = WelcomeMotion.duration + 1
+        #expect(WelcomeMotion.pose(at: restMoment) == .rest)
+        let glintMoment = WelcomeMotion.duration + WelcomeMotion.idlePeriod - WelcomeMotion.idleGlint / 2
+        let glinting = WelcomeMotion.pose(at: glintMoment)
+        #expect(glinting.glint > 1.2)
+        #expect(glinting.lensOffset == .zero)
     }
 }

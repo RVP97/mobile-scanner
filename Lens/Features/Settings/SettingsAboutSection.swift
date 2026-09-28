@@ -12,11 +12,11 @@ struct SettingsAboutSection: View {
                 SettingsLabel("Privacy", symbol: "lock.fill", color: .blue)
             }
             Link(destination: Self.reviewURL) {
-                SettingsLabel("Rate Ojito", symbol: "star.fill", color: .yellow)
+                SettingsLabel("Rate Lunet", symbol: "star.fill", color: .yellow)
             }
             .foregroundStyle(.primary)
-            ShareLink(item: Self.appStoreURL, message: Text("Ojito reads any code and checks links before you open them.")) {
-                SettingsLabel("Share Ojito", symbol: "square.and.arrow.up", color: .green)
+            ShareLink(item: Self.appStoreURL, message: Text("Lunet reads any code and checks links before you open them.")) {
+                SettingsLabel("Share Lunet", symbol: "square.and.arrow.up", color: .green)
             }
             .foregroundStyle(.primary)
         }
@@ -25,10 +25,10 @@ struct SettingsAboutSection: View {
     /// The icon, the name and the version: who you're talking to.
     private var identity: some View {
         HStack(spacing: 16) {
-            OjitoAppIcon(size: 56)
+            LunetAppIcon(size: 56)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: "Ojito")
+                Text(verbatim: "Lunet")
                     .font(.headline)
                 Text("Version \(Self.version)")
                     .font(.subheadline)

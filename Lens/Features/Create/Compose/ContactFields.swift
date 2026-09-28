@@ -15,7 +15,7 @@ struct ContactFields: View {
             }
             .background(ContactPickerPresenter(isPresented: $picking, onPick: fill))
         } footer: {
-            Text("Pick your card (or anyone's) to fill this in. Ojito only sees the one you choose.")
+            Text("Pick your card (or anyone's) to fill this in. Lunet only sees the one you choose.")
         }
 
         Section {

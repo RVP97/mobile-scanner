@@ -43,14 +43,14 @@ struct EverywhereIllustration: View {
                     .fill(Palette.accent)
                     .frame(width: 4 * unit, height: 12 * unit)
                     .offset(x: 13 * unit, y: -12 * unit)
-                OjitoGlyph()
+                LunetGlyph()
                     .foregroundStyle(Palette.accent)
                     .frame(width: 18 * unit, height: 18 * unit)
                     .offset(x: 26 * unit, y: -12 * unit)
             }
             .frame(width: size, height: size, alignment: .leading)
         case .lockScreen:
-            // Time at the top, the two bottom buttons; Ojito in the left one.
+            // Time at the top, the two bottom buttons; Lunet in the left one.
             VStack(spacing: 0) {
                 Text(verbatim: "9:41")
                     .font(.system(size: 15 * unit, weight: .semibold))
@@ -61,7 +61,7 @@ struct EverywhereIllustration: View {
                     Circle()
                         .fill(Palette.accent.opacity(0.28))
                         .overlay {
-                            OjitoGlyph()
+                            LunetGlyph()
                                 .foregroundStyle(Palette.accent)
                                 .padding(3 * unit)
                         }

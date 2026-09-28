@@ -38,7 +38,7 @@ struct SettingsHistorySection: View {
             }
             ShareLink(
                 item: HistoryExport(container: modelContext.container),
-                preview: SharePreview(Text("Ojito History"), image: Image(systemName: "tablecells"))
+                preview: SharePreview(Text("Lunet History"), image: Image(systemName: "tablecells"))
             ) {
                 SettingsLabel("Export CSV", symbol: "tablecells.fill", color: .teal)
             }
@@ -67,13 +67,13 @@ struct SettingsHistorySection: View {
         } message: {
             Text("Every scan and created code will be deleted from this iPhone. This can't be undone.")
         }
-        .alert("Location Is Off for Ojito", isPresented: $showingLocationDenied) {
+        .alert("Location Is Off for Lunet", isPresented: $showingLocationDenied) {
             Button("Open Settings") {
                 if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("To remember where you scan, allow location access while using Ojito.")
+            Text("To remember where you scan, allow location access while using Lunet.")
         }
         .alert("Set Up a Passcode", isPresented: $showingNoPasscode) {
             Button("OK", role: .cancel) {}

@@ -126,7 +126,7 @@ enum WiFiJoiner {
             case .invalidSSID, .invalidSSIDPrefix:
                 return .failed(String(localized: "This code has a network name iPhone can't use."))
             case .applicationIsNotInForeground:
-                return .failed(String(localized: "Keep Ojito open while it joins."))
+                return .failed(String(localized: "Keep Lunet open while it joins."))
             default:
                 return .failed(String(localized: "Couldn't join \(network.ssid). Make sure you're in range and try again."))
             }

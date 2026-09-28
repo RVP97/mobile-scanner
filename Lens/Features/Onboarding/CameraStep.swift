@@ -12,11 +12,11 @@ struct CameraStep: View {
             VStack(spacing: 32) {
                 CameraIllustration()
                 OnboardingTitle(
-                    title: "Ojito needs your camera to read codes",
+                    title: "Lunet needs your camera to read codes",
                     subtitle: "Reads codes. Ignores the rest."
                 )
                 VStack(alignment: .leading, spacing: 16) {
-                    reassurance("Only while Ojito is open", symbol: "iphone")
+                    reassurance("Only while Lunet is open", symbol: "iphone")
                     reassurance("Nothing is recorded or uploaded", symbol: "video.slash")
                     reassurance("Or scan from Photos instead", symbol: "photo.on.rectangle")
                 }

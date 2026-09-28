@@ -13,16 +13,22 @@ struct EverywhereDeepLinkTests {
         #expect(LensDeepLink(url: url) == .multiScan)
     }
 
-    @Test(arguments: ["ojito", "lens", "scanner"])
+    @Test(arguments: ["lunet", "ojito", "lens", "scanner"])
     func everySchemeRoutesTheSame(_ scheme: String) throws {
         #expect(LensDeepLink(url: try #require(URL(string: "\(scheme)://create"))) == .create)
         #expect(LensDeepLink(url: try #require(URL(string: "\(scheme)://scan?mode=multi"))) == .multiScan)
     }
 
-    @Test func appRoutesOjitoScheme() throws {
+    @Test func appRoutesLunetScheme() throws {
         let model = AppModel()
-        model.handle(url: try #require(URL(string: "ojito://scan?mode=multi")))
+        model.handle(url: try #require(URL(string: "lunet://scan?mode=multi")))
         #expect(model.isMultiScanActive)
+    }
+
+    @Test func appStillRoutesOjitoScheme() throws {
+        let model = AppModel()
+        model.handle(url: try #require(URL(string: "ojito://create")))
+        #expect(model.modal == .create)
     }
 
     @Test func foreignURLsAreIgnored() throws {

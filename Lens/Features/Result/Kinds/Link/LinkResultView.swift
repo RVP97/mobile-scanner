@@ -46,7 +46,7 @@ struct LinkResultView: View {
             Button("Open \(host)") { openURL(url) }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Ojito found something unusual about this link. Only continue if you trust whoever gave you the code.")
+            Text("Lunet found something unusual about this link. Only continue if you trust whoever gave you the code.")
         }
         .task(id: url) { await check() }
     }

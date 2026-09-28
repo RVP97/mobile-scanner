@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Ojito</string>
+	<string>Lunet</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -27,6 +27,7 @@
 			<string>com.rvp97.scanner</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>lunet</string>
 				<string>ojito</string>
 				<string>lens</string>
 				<string>scanner</string>
@@ -38,13 +39,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Ojito uses the camera to read QR codes and barcodes. Nothing is recorded or uploaded.</string>
+	<string>Lunet uses the camera to read QR codes and barcodes. Nothing is recorded or uploaded.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Ojito saves the codes you create to your photo library.</string>
+	<string>Lunet saves the codes you create to your photo library.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Ojito can remember where you scanned each code. Locations stay on your iPhone.</string>
+	<string>Lunet can remember where you scanned each code. Locations stay on your iPhone.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Ojito uses Face ID to keep your scan history private.</string>
+	<string>Lunet uses Face ID to keep your scan history private.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

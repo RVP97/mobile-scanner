@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// "Ojito checks every link first": a replay of a dangerous sticker being caught, next to an
+/// "Lunet checks every link first": a replay of a dangerous sticker being caught, next to an
 /// ordinary link passing.
 struct SafetyStep: View {
     var onContinue: () -> Void
@@ -15,7 +15,7 @@ struct SafetyStep: View {
         OnboardingPage {
             VStack(spacing: 24) {
                 OnboardingTitle(
-                    title: "Ojito checks every link first",
+                    title: "Lunet checks every link first",
                     subtitle: "See where a code really goes, before anything opens."
                 )
                 VStack(spacing: 12) {
@@ -24,7 +24,7 @@ struct SafetyStep: View {
                         .opacity(stage >= 5 ? 1 : 0.35)
                 }
                 Label {
-                    Text("Checks run on your iPhone. Ojito never collects what you scan.")
+                    Text("Checks run on your iPhone. Lunet never collects what you scan.")
                 } icon: {
                     Image(systemName: "lock.shield")
                 }

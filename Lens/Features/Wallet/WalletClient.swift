@@ -30,7 +30,7 @@ actor WalletClient {
             case .unsupportedDevice:
                 String(localized: "Adding to Wallet needs a real iPhone or iPad — App Attest isn't available on this device or in the Simulator.")
             case .attestationFailed:
-                String(localized: "This copy of Ojito couldn't be verified. Try again later.")
+                String(localized: "This copy of Lunet couldn't be verified. Try again later.")
             case .rateLimited:
                 String(localized: "You've created a lot of passes recently. Try again in a little while.")
             case .serviceUnavailable:

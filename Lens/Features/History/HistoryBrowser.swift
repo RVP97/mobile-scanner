@@ -113,7 +113,7 @@ struct HistoryBrowser: View {
             ToolbarItemGroup(placement: .bottomBar) {
                 ShareLink(
                     item: HistoryExport(container: modelContext.container, ids: selection),
-                    preview: SharePreview(Text("Ojito History"), image: Image(systemName: "tablecells"))
+                    preview: SharePreview(Text("Lunet History"), image: Image(systemName: "tablecells"))
                 ) {
                     Label("Export", systemImage: "square.and.arrow.up")
                 }

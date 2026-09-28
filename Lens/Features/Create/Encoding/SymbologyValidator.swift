@@ -46,7 +46,7 @@ enum SymbologyValidator {
         case .pharmacode: return pharmacode(trimmed)
         case .codabar: return codabar(trimmed)
         case .microQR, .microPDF417, .code93, .gs1DataBar:
-            return .invalid("Ojito can read \(symbology.displayName) but can't make it yet.")
+            return .invalid("Lunet can read \(symbology.displayName) but can't make it yet.")
         }
     }
 

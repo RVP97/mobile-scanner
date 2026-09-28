@@ -27,7 +27,7 @@ struct FirstScanSuccessCard: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Your first scan")
                         .font(.title3.weight(.bold))
-                    Text("Ojito knew what it was and what to do next.")
+                    Text("Lunet knew what it was and what to do next.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

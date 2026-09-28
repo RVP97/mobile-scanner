@@ -1,87 +1,104 @@
 import SwiftUI
 
-/// The one choreographed moment: the eye opens, the iris blades swirl out into place around the
-/// code-eye pupil, it blinks once, then the iris keeps a slow drift. Reduce Motion shows the icon.
+/// The one choreographed moment: the loupe glides in over the little code, the finder under it
+/// snaps into focus, the rim's colors sweep once and the sparkle glints. Then it rests, with a
+/// slow glint every few seconds. Reduce Motion shows the icon.
 struct WelcomeHero: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage(Pref.haptics) private var haptics = Pref.Default.haptics
     @State private var start: Date?
-    @State private var blinked = false
+    @State private var snapped = false
+
+    /// A moment to hold the animation at, for screenshots (DEBUG only).
+    private var frozenTime: Double? {
+        #if DEBUG
+        QAHarness.welcomeTime
+        #else
+        nil
+        #endif
+    }
 
     var body: some View {
         Group {
             if reduceMotion {
-                OjitoMark()
+                LunetMark()
             } else {
                 TimelineView(.animation(paused: start == nil)) { timeline in
-                    let elapsed = start.map { timeline.date.timeIntervalSince($0) } ?? 0
-                    OjitoMark(pose: WelcomeMotion.pose(at: elapsed))
+                    let elapsed = frozenTime ?? start.map { timeline.date.timeIntervalSince($0) } ?? 0
+                    LunetMark(pose: WelcomeMotion.pose(at: elapsed))
                 }
             }
         }
-        .frame(maxWidth: 280)
-        .padding(.vertical, 16)
+        .frame(maxWidth: 220)
+        .padding(.vertical, 8)
         .accessibilityHidden(true)
-        .sensoryFeedback(.impact(weight: .light, intensity: 0.7), trigger: blinked) { _, didBlink in
-            didBlink && haptics
+        .sensoryFeedback(.impact(weight: .light, intensity: 0.7), trigger: snapped) { _, didSnap in
+            didSnap && haptics
         }
         .task {
             guard !reduceMotion else { return }
             start = .now
-            try? await Task.sleep(for: .seconds(WelcomeMotion.blinkStart + WelcomeMotion.blinkClose))
-            blinked = true
+            try? await Task.sleep(for: .seconds(WelcomeMotion.focusStart + WelcomeMotion.focusDuration * 0.4))
+            snapped = true
         }
     }
 }
 
 /// The Welcome animation as a pure function of time, so it can be tested and scrubbed.
 nonisolated enum WelcomeMotion {
-    static let openDuration = 0.3
-    static let bladeStart = 0.12
-    static let bladeStagger = 0.06
-    static let bladeDuration = 0.55
-    static let pupilStart = 0.25
-    static let pupilDuration = 0.4
-    static let blinkStart = 0.95
-    static let blinkClose = 0.09
-    static let blinkOpen = 0.2
-    /// When the pose is exactly the icon; the idle drift starts from here.
-    static let duration = blinkStart + blinkClose + blinkOpen
-    /// Idle: degrees per second the iris turns, and how much each blade breathes.
-    static let driftSpeed = 4.0
-    static let breath = 0.025
+    static let codeDuration = 0.2
+    static let glideStart = 0.05
+    static let glideDuration = 0.6
+    /// Where the lens starts, in icon units: over the code's data, down and to the right.
+    static let glideFrom = CGSize(width: 210, height: 230)
+    static let focusStart = 0.5
+    static let focusDuration = 0.3
+    static let sweepStart = 0.6
+    static let sweepDuration = 0.5
+    static let glintStart = 0.85
+    static let glintDuration = 0.35
+    /// When the pose is exactly the icon; the idle glint starts from here.
+    static let duration = glintStart + glintDuration
+    /// Idle: a glint every `idlePeriod` seconds, lasting `idleGlint`.
+    static let idlePeriod = 4.5
+    static let idleGlint = 0.7
 
-    static func pose(at t: Double) -> OjitoMark.Pose {
-        var pose = OjitoMark.Pose()
-        pose.openness = openness(at: t)
-        pose.pupil = Ease.outBack(progress(t, from: pupilStart, over: pupilDuration))
-        pose.blades = (0..<OjitoGeometry.bladeCount).map { index in
-            let begin = bladeStart + Double(index) * bladeStagger
-            return Ease.outBack(progress(t, from: begin, over: bladeDuration)) + idleBreath(index, at: t)
+    static func pose(at t: Double) -> LunetMark.Pose {
+        var pose = LunetMark.Pose()
+        pose.code = Ease.outCubic(progress(t, from: 0, over: codeDuration))
+
+        let glide = Ease.outQuart(progress(t, from: glideStart, over: glideDuration))
+        pose.lensOffset = CGSize(width: glideFrom.width * (1 - glide), height: glideFrom.height * (1 - glide))
+        pose.lensOpacity = Ease.outCubic(progress(t, from: glideStart, over: 0.2))
+
+        pose.focus = Ease.outBack(progress(t, from: focusStart, over: focusDuration))
+
+        let sweep = progress(t, from: sweepStart, over: sweepDuration)
+        if sweep > 0, sweep < 1 {
+            pose.refraction = .degrees(360 * Ease.inOutCubic(sweep))
+            pose.spread = 1 + 0.8 * sin(.pi * sweep)
         }
-        pose.spin = .degrees(max(0, t - duration) * driftSpeed)
+
+        let glint = progress(t, from: glintStart, over: glintDuration)
+        pose.glint = Ease.outBack(glint)
+        pose.glintSpin = .degrees(-90 * (1 - Ease.outCubic(glint)))
+
+        applyIdle(to: &pose, at: t)
         return pose
     }
 
-    private static func openness(at t: Double) -> Double {
-        if t < blinkStart {
-            return Ease.outCubic(progress(t, from: 0, over: openDuration))
-        }
-        let shut = 0.03
-        if t < blinkStart + blinkClose {
-            let p = progress(t, from: blinkStart, over: blinkClose)
-            return 1 - (1 - shut) * p * p
-        }
-        let p = progress(t, from: blinkStart + blinkClose, over: blinkOpen)
-        return shut + (1 - shut) * Ease.outCubic(p)
-    }
-
-    /// Starts at zero and fades in, so the handoff from the entrance has no jump.
-    private static func idleBreath(_ index: Int, at t: Double) -> Double {
+    /// Between glints the pose is exactly the icon. Each glint turns the star a quarter turn,
+    /// which lands on the same shape, so the loop has no seam.
+    private static func applyIdle(to pose: inout LunetMark.Pose, at t: Double) {
         let idle = t - duration
-        guard idle > 0 else { return 0 }
-        let fadeIn = min(1, idle / 2)
-        return breath * fadeIn * sin(idle * 1.4 + Double(index) * 1.3)
+        guard idle > 0 else { return }
+        let phase = idle.truncatingRemainder(dividingBy: idlePeriod) - (idlePeriod - idleGlint)
+        guard phase > 0 else { return }
+        let p = phase / idleGlint
+        let swell = sin(.pi * p)
+        pose.glint = 1 + 0.3 * swell
+        pose.glintSpin = .degrees(90 * Ease.inOutCubic(p))
+        pose.spread = 1 + 0.35 * swell
     }
 
     private static func progress(_ t: Double, from begin: Double, over length: Double) -> Double {
@@ -98,6 +115,14 @@ private nonisolated enum Ease {
 
     static func outCubic(_ x: Double) -> Double {
         1 - pow(1 - x, 3)
+    }
+
+    static func outQuart(_ x: Double) -> Double {
+        1 - pow(1 - x, 4)
+    }
+
+    static func inOutCubic(_ x: Double) -> Double {
+        x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2
     }
 }
 

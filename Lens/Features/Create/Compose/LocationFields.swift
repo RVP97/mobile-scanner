@@ -47,7 +47,7 @@ struct LocationFields: View {
 
             if locationDenied {
                 HStack(alignment: .firstTextBaseline) {
-                    Text("Location access is off for Ojito.")
+                    Text("Location access is off for Lunet.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                     Spacer()

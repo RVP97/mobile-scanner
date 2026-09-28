@@ -13,7 +13,7 @@ struct ScanCodeControl: ControlWidget {
             }
         }
         .displayName("Scan Code")
-        .description("Open the Ojito camera from anywhere.")
+        .description("Open the Lunet camera from anywhere.")
     }
 }
 

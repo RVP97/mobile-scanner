@@ -87,7 +87,7 @@ struct CameraStatusView: View {
         switch kind {
         case .denied: "Turn on camera access in Settings to scan codes live. You can still scan a code in a photo."
         case .restricted: "This device limits camera use. You can still scan a code in a photo."
-        default: "Ojito can’t use a camera right now. You can still scan a code in a photo."
+        default: "Lunet can’t use a camera right now. You can still scan a code in a photo."
         }
     }
 

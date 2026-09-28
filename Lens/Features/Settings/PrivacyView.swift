@@ -8,32 +8,32 @@ struct PrivacyView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Your scans stay on your iPhone.")
                         .font(.title3.weight(.semibold))
-                    Text("Ojito has no account and no tracking. We never see what you scan, create or where you are.")
+                    Text("Lunet has no account and no tracking. We never see what you scan, create or where you are.")
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 8)
             }
 
-            Section("What Ojito doesn't do") {
+            Section("What Lunet doesn't do") {
                 PrivacyPoint(symbol: "person.crop.circle.badge.xmark", title: "No account",
                              detail: "There's nothing to sign up for and nothing to sign in to.")
                 PrivacyPoint(symbol: "chart.bar.xaxis", title: "No tracking or analytics",
-                             detail: "Ojito doesn't collect usage data, and there are no ads.")
+                             detail: "Lunet doesn't collect usage data, and there are no ads.")
                 PrivacyPoint(symbol: "icloud.slash", title: "Nothing stored on our side",
                              detail: "History, created codes and settings are stored only on this iPhone.")
             }
 
             Section {
                 PrivacyPoint(symbol: "link", title: "Deep link check",
-                             detail: "To show where a link really goes, Ojito contacts that link's own server to follow redirects and look up the domain's age. You can turn this off in Settings.")
+                             detail: "To show where a link really goes, Lunet contacts that link's own server to follow redirects and look up the domain's age. You can turn this off in Settings.")
                 PrivacyPoint(symbol: "barcode", title: "Product lookup",
-                             detail: "When you open a product barcode, Ojito asks Open Food Facts or Open Products Facts about that one number.")
+                             detail: "When you open a product barcode, Lunet asks Open Food Facts or Open Products Facts about that one number.")
                 PrivacyPoint(symbol: "wallet.pass", title: "Add to Apple Wallet",
-                             detail: "Wallet only accepts signed passes, so Ojito sends that one pass's details to its signing service. It signs the pass and returns it immediately; nothing is stored or logged.")
+                             detail: "Wallet only accepts signed passes, so Lunet sends that one pass's details to its signing service. It signs the pass and returns it immediately; nothing is stored or logged.")
                 PrivacyPoint(symbol: "location", title: "Place names",
                              detail: "If Remember where I scanned is on, Apple Maps turns your location into a place name. The name and coordinates stay in your History.")
             } header: {
-                Text("When Ojito uses the network")
+                Text("When Lunet uses the network")
             } footer: {
                 Text("Opening a link, joining a network or adding a contact happens in the app you choose, under its own privacy policy.")
             }

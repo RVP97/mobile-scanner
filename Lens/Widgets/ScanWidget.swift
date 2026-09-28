@@ -40,9 +40,9 @@ struct ScanWidgetView: View {
     /// The color mark on a full-color Home Screen; the one-color glyph when tinted or clear.
     @ViewBuilder private var mark: some View {
         if renderingMode == .fullColor {
-            OjitoMark()
+            LunetMark()
         } else {
-            OjitoGlyph()
+            LunetGlyph()
                 .widgetAccentable()
         }
     }
@@ -52,7 +52,7 @@ struct ScanWidgetView: View {
         case .accessoryCircular:
             ZStack {
                 AccessoryWidgetBackground()
-                OjitoGlyph()
+                LunetGlyph()
                     .padding(10)
                     .widgetAccentable()
             }
@@ -62,7 +62,7 @@ struct ScanWidgetView: View {
         default:
             VStack(alignment: .leading, spacing: 0) {
                 mark
-                    .frame(width: 64, height: 40, alignment: .leading)
+                    .frame(width: 44, height: 44, alignment: .leading)
                 Spacer(minLength: 8)
                 Text("Scan")
                     .font(.title2.weight(.semibold))

@@ -8,7 +8,7 @@
     {
       "appearance": "dark",
       "value": {
-        "solid": "srgb:0.07059,0.07059,0.08627,1.00000"
+        "solid": "srgb:0.05490,0.06667,0.08627,1.00000"
       }
     }
   ],
@@ -19,19 +19,19 @@
           "fill-specializations": [
             {
               "value": {
-                "solid": "srgb:0.10980,0.10980,0.11765,1.00000"
+                "solid": "srgb:1.00000,1.00000,1.00000,1.00000"
               }
             },
             {
               "appearance": "dark",
               "value": {
-                "solid": "srgb:0.04314,0.05882,0.07843,1.00000"
+                "solid": "srgb:1.00000,1.00000,1.00000,1.00000"
               }
             }
           ],
           "glass": true,
-          "image-name": "eye.svg",
-          "name": "eye",
+          "image-name": "glint.svg",
+          "name": "glint",
           "position": {
             "scale": 1,
             "translation-in-points": [
@@ -58,45 +58,6 @@
           "fill-specializations": [
             {
               "value": {
-                "solid": "srgb:1.00000,1.00000,1.00000,1.00000"
-              }
-            },
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:1.00000,1.00000,1.00000,1.00000"
-              }
-            }
-          ],
-          "glass": true,
-          "image-name": "pupil.svg",
-          "name": "pupil",
-          "position": {
-            "scale": 1,
-            "translation-in-points": [
-              0,
-              0
-            ]
-          }
-        }
-      ],
-      "lighting": "individual",
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0.35
-      },
-      "specular": true,
-      "translucency": {
-        "enabled": false,
-        "value": 0.0
-      }
-    },
-    {
-      "layers": [
-        {
-          "fill-specializations": [
-            {
-              "value": {
                 "solid": "srgb:0.12157,0.65098,0.87843,1.00000"
               }
             },
@@ -108,61 +69,8 @@
             }
           ],
           "glass": true,
-          "image-name": "blade-link.svg",
-          "name": "blade-link",
-          "opacity": 0.9,
-          "position": {
-            "scale": 1,
-            "translation-in-points": [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "fill-specializations": [
-            {
-              "value": {
-                "solid": "srgb:0.18431,0.76078,0.35686,1.00000"
-              }
-            },
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:0.18824,0.81961,0.34510,1.00000"
-              }
-            }
-          ],
-          "glass": true,
-          "image-name": "blade-wifi.svg",
-          "name": "blade-wifi",
-          "opacity": 0.9,
-          "position": {
-            "scale": 1,
-            "translation-in-points": [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "fill-specializations": [
-            {
-              "value": {
-                "solid": "srgb:1.00000,0.58431,0.00000,1.00000"
-              }
-            },
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:1.00000,0.62353,0.03922,1.00000"
-              }
-            }
-          ],
-          "glass": true,
-          "image-name": "blade-product.svg",
-          "name": "blade-product",
-          "opacity": 0.9,
+          "image-name": "rim-link.svg",
+          "name": "rim-link",
           "position": {
             "scale": 1,
             "translation-in-points": [
@@ -186,9 +94,8 @@
             }
           ],
           "glass": true,
-          "image-name": "blade-travel.svg",
-          "name": "blade-travel",
-          "opacity": 0.9,
+          "image-name": "rim-travel.svg",
+          "name": "rim-travel",
           "position": {
             "scale": 1,
             "translation-in-points": [
@@ -201,20 +108,19 @@
           "fill-specializations": [
             {
               "value": {
-                "solid": "srgb:0.65098,0.30980,0.87843,1.00000"
+                "solid": "srgb:0.18431,0.76078,0.35686,1.00000"
               }
             },
             {
               "appearance": "dark",
               "value": {
-                "solid": "srgb:0.74902,0.35294,0.94902,1.00000"
+                "solid": "srgb:0.18824,0.81961,0.34510,1.00000"
               }
             }
           ],
           "glass": true,
-          "image-name": "blade-contact.svg",
-          "name": "blade-contact",
-          "opacity": 0.9,
+          "image-name": "rim-wifi.svg",
+          "name": "rim-wifi",
           "position": {
             "scale": 1,
             "translation-in-points": [
@@ -232,7 +138,7 @@
       "specular": true,
       "translucency": {
         "enabled": true,
-        "value": 0.35
+        "value": 0.4
       }
     },
     {
@@ -241,19 +147,44 @@
           "fill-specializations": [
             {
               "value": {
-                "solid": "srgb:0.74902,0.89020,0.97255,1.00000"
+                "solid": "srgb:0.10980,0.10980,0.11765,1.00000"
               }
             },
             {
               "appearance": "dark",
               "value": {
-                "solid": "srgb:0.13333,0.18824,0.23529,1.00000"
+                "solid": "srgb:1.00000,1.00000,1.00000,1.00000"
               }
             }
           ],
           "glass": true,
-          "image-name": "almond.svg",
-          "name": "almond",
+          "image-name": "eye.svg",
+          "name": "eye",
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.90980,0.96863,1.00000,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.08235,0.13725,0.18039,1.00000"
+              }
+            }
+          ],
+          "glass": true,
+          "image-name": "disc.svg",
+          "name": "disc",
           "position": {
             "scale": 1,
             "translation-in-points": [
@@ -266,12 +197,51 @@
       "lighting": "individual",
       "shadow": {
         "kind": "neutral",
-        "opacity": 0.35
+        "opacity": 0.4
       },
       "specular": true,
       "translucency": {
-        "enabled": true,
-        "value": 0.2
+        "enabled": false,
+        "value": 0.0
+      }
+    },
+    {
+      "layers": [
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.74902,0.76863,0.79608,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.26275,0.28627,0.32157,1.00000"
+              }
+            }
+          ],
+          "glass": true,
+          "image-name": "code.svg",
+          "name": "code",
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "lighting": "individual",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.0
+      },
+      "specular": false,
+      "translucency": {
+        "enabled": false,
+        "value": 0.0
       }
     }
   ],

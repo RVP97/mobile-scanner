@@ -30,7 +30,7 @@ struct TravelResultView: View {
                 .opacity(isPreparingPass ? 0.5 : 1)
                 .overlay { if isPreparingPass { ProgressView().tint(.white) } }
                 .accessibilityLabel("Add to Apple Wallet")
-                Text("Pass details are sent to Ojito's signing service to create your pass. Nothing is stored.")
+                Text("Pass details are sent to Lunet's signing service to create your pass. Nothing is stored.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                 if let walletError {

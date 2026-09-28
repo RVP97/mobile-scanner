@@ -97,7 +97,7 @@ struct MyCodeWidgetView: View {
             Spacer(minLength: 4)
             Text("My Code")
                 .font(.headline)
-            Text("Make a code in Ojito and pin it here.")
+            Text("Make a code in Lunet and pin it here.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .lineLimit(3)

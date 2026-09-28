@@ -27,7 +27,7 @@ struct LinkFields: View {
         } header: {
             Text("Link")
         } footer: {
-            Text("Ojito adds https:// if you leave it out.")
+            Text("Lunet adds https:// if you leave it out.")
         }
     }
 }
@@ -171,7 +171,7 @@ struct ProductFields: View {
         } header: {
             Text("Product number")
         } footer: {
-            Text("Use the GTIN assigned to your product. Leave off the last digit and Ojito adds the check digit.")
+            Text("Use the GTIN assigned to your product. Leave off the last digit and Lunet adds the check digit.")
         }
     }
 
@@ -226,7 +226,7 @@ struct AdvancedFields: View {
         case .code39: "Capital letters, digits, spaces and - . $ / + %"
         case .itf14: "13 digits, or 14 with the check digit."
         case .itf: "An even number of digits."
-        case .msi: "Digits. Ojito adds the check digit."
+        case .msi: "Digits. Lunet adds the check digit."
         case .pharmacode: "A whole number from 3 to 131070."
         case .codabar: "Digits and - $ : / . + between start and stop letters A–D."
         case .microQR, .microPDF417, .code93, .gs1DataBar: ""

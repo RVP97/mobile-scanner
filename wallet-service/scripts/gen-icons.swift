@@ -1,6 +1,7 @@
-// Renders the Ojito mark (an almond eye whose iris is five translucent blades in the kind
-// colours, with a QR finder pattern for a pupil) into the PNGs a .pkpass bundle needs. Same
-// geometry as the app icon (Lens/Resources/AppIcon.icon, 1024-point canvas).
+// Renders the Lunet mark (a thick glass loupe with a cyan/pink/green refraction rim and a
+// sparkle, resting on a small QR code and magnifying its top-left finder) into the PNGs a
+// .pkpass bundle needs. Same geometry as the app icon (Lens/Resources/AppIcon.icon, 1024-point
+// canvas).
 //
 //   swift scripts/gen-icons.swift assets
 //
@@ -25,91 +26,131 @@ func rgb(_ hex: UInt32, _ alpha: CGFloat = 1) -> CGColor {
 /// The icon's light and dark appearances.
 struct Appearance {
     var tile: CGColor
-    var almond: CGColor
-    var rim: CGColor
+    var code: CGColor
+    var disc: CGColor
     var finder: CGColor
-    var blades: [CGColor] // link, wifi, product, travel, contact
+    var rims: [CGColor] // link (top), travel, wifi (bottom)
 
     static let light = Appearance(
-        tile: rgb(0xFFFFFF), almond: rgb(0xCFEAFA), rim: rgb(0xB3DAF2), finder: rgb(0x1C1C1E),
-        blades: [rgb(0x1FA6E0), rgb(0x2FC25B), rgb(0xFF9500), rgb(0xFF2D55), rgb(0xA64FE0)]
+        tile: rgb(0xFFFFFF), code: rgb(0xBFC4CB), disc: rgb(0xE8F7FF), finder: rgb(0x1C1C1E),
+        rims: [rgb(0x1FA6E0), rgb(0xFF2D55), rgb(0x2FC25B)]
     )
     static let dark = Appearance(
-        tile: rgb(0x121216), almond: rgb(0x22303C), rim: rgb(0x3B4C5C), finder: rgb(0x0B0F14),
-        blades: [rgb(0x64D2FF), rgb(0x30D158), rgb(0xFF9F0A), rgb(0xFF375F), rgb(0xBF5AF2)]
+        tile: rgb(0x0E1116), code: rgb(0x434952), disc: rgb(0x15232E), finder: rgb(0xFFFFFF),
+        rims: [rgb(0x64D2FF), rgb(0xFF375F), rgb(0x30D158)]
     )
 }
 
-func almond() -> CGPath {
+/// Shadows are specified in device pixels, not user space: `shadow` scales icon units to them.
+nonisolated(unsafe) var unitsToPixels: CGFloat = 1
+
+func shadow(_ ctx: CGContext, y: CGFloat, blur: CGFloat, color: CGColor) {
+    ctx.setShadow(offset: CGSize(width: 0, height: -y * unitsToPixels), blur: blur * unitsToPixels, color: color)
+}
+
+/// The artwork spans 179...808 on both axes of the 1024 canvas; this square frames it.
+let artBounds = CGRect(x: 170, y: 170, width: 648, height: 648)
+
+func roundedRect(_ rect: CGRect, _ radius: CGFloat) -> CGPath {
+    CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil)
+}
+
+/// A QR finder (7:5:3) of `size` with its top-left at `origin`, for an even-odd fill.
+func finder(_ origin: CGPoint, _ size: CGFloat) -> CGPath {
+    let ring = size / 7
+    let outer = CGRect(origin: origin, size: CGSize(width: size, height: size))
     let p = CGMutablePath()
-    p.move(to: CGPoint(x: -420, y: 0))
-    p.addCurve(to: CGPoint(x: 420, y: 0), control1: CGPoint(x: -231, y: -346.5), control2: CGPoint(x: 231, y: -346.5))
-    p.addCurve(to: CGPoint(x: -420, y: 0), control1: CGPoint(x: 231, y: 346.5), control2: CGPoint(x: -231, y: 346.5))
+    p.addPath(roundedRect(outer, size * 0.2286))
+    p.addPath(roundedRect(outer.insetBy(dx: ring, dy: ring), size * 0.0857))
+    p.addPath(roundedRect(outer.insetBy(dx: ring * 2, dy: ring * 2), size * 0.0913))
+    return p
+}
+
+/// Data modules as (column, row) on the 28-point grid starting at (502, 502).
+let modules: [(Int, Int)] = [
+    (6, 0), (9, 0), (3, 1), (5, 1), (10, 1), (5, 2), (6, 2), (8, 2), (10, 2),
+    (1, 3), (3, 3), (4, 3), (5, 3), (7, 3), (2, 4), (3, 4), (4, 4), (7, 4), (8, 4), (9, 4), (10, 4),
+    (2, 5), (3, 5), (4, 5), (5, 5), (1, 6), (6, 6), (7, 6), (8, 6), (10, 6),
+    (0, 7), (1, 7), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (7, 7), (8, 7), (9, 7),
+    (1, 8), (2, 8), (3, 8), (4, 8), (5, 8), (10, 8), (0, 9), (1, 9), (2, 9), (4, 9), (5, 9), (8, 9), (10, 9),
+    (4, 10), (5, 10), (6, 10), (10, 10),
+]
+
+func ring(_ cx: CGFloat, _ cy: CGFloat) -> CGPath {
+    let p = CGMutablePath()
+    p.addEllipse(in: CGRect(x: cx - 214, y: cy - 214, width: 428, height: 428))
+    p.addEllipse(in: CGRect(x: cx - 172, y: cy - 172, width: 344, height: 344))
+    return p
+}
+
+func sparkle(_ cx: CGFloat, _ cy: CGFloat, _ r: CGFloat) -> CGPath {
+    let k = r * 0.22
+    let p = CGMutablePath()
+    p.move(to: CGPoint(x: cx, y: cy - r))
+    p.addQuadCurve(to: CGPoint(x: cx + r, y: cy), control: CGPoint(x: cx + k, y: cy - k))
+    p.addQuadCurve(to: CGPoint(x: cx, y: cy + r), control: CGPoint(x: cx + k, y: cy + k))
+    p.addQuadCurve(to: CGPoint(x: cx - r, y: cy), control: CGPoint(x: cx - k, y: cy + k))
+    p.addQuadCurve(to: CGPoint(x: cx, y: cy - r), control: CGPoint(x: cx - k, y: cy - k))
     p.closeSubpath()
     return p
 }
 
-func blade(_ i: Int) -> CGPath {
-    let th = (-90 + Double(i) * 72) * .pi / 180
-    var t = CGAffineTransform(translationX: 118 * cos(th), y: 118 * sin(th)).rotated(by: th + 110 * .pi / 180)
-    return CGPath(ellipseIn: CGRect(x: -138, y: -76, width: 276, height: 152), transform: &t)
-}
-
-func roundedSquare(_ side: CGFloat, _ radius: CGFloat) -> CGPath {
-    CGPath(roundedRect: CGRect(x: -side / 2, y: -side / 2, width: side, height: side), cornerWidth: radius, cornerHeight: radius, transform: nil)
-}
-
-/// Draws the eye centred at the origin in 1024-point icon units.
-func drawEye(_ ctx: CGContext, _ a: Appearance) {
-    let lid = almond()
-    ctx.addPath(lid)
-    ctx.setFillColor(a.almond)
+/// Draws the loupe on its code in 1024-point icon units (y down).
+func drawLoupe(_ ctx: CGContext, _ a: Appearance) {
+    // The code: two visible finders and the data modules (the third hides under the lens).
+    ctx.setFillColor(a.code)
+    ctx.addPath(finder(CGPoint(x: 612, y: 276), 196))
+    ctx.addPath(finder(CGPoint(x: 276, y: 612), 196))
+    ctx.fillPath(using: .evenOdd)
+    for (column, row) in modules {
+        let rect = CGRect(x: 502 + CGFloat(column) * 28, y: 502 + CGFloat(row) * 28, width: 24, height: 24)
+        ctx.addPath(roundedRect(rect, 7.2))
+    }
     ctx.fillPath()
 
+    // The glass disc with a soft cyan halo, and the magnified finder inside it.
     ctx.saveGState()
-    ctx.addPath(lid)
-    ctx.clip()
-
-    // Blades: translucent, overlapping, one soft shadow for the group.
-    ctx.saveGState()
-    ctx.setShadow(offset: CGSize(width: 0, height: 8), blur: 22, color: rgb(0x000000, 0.16))
-    ctx.beginTransparencyLayer(auxiliaryInfo: nil)
-    for i in 0..<5 {
-        ctx.addPath(blade(i))
-        ctx.setFillColor(a.blades[i].copy(alpha: 0.86)!)
-        ctx.fillPath()
-    }
-    ctx.endTransparencyLayer()
+    shadow(ctx, y: 6, blur: 44, color: a.rims[0].copy(alpha: 0.35)!)
+    ctx.setFillColor(a.disc)
+    ctx.fillEllipse(in: CGRect(x: 222, y: 222, width: 356, height: 356))
     ctx.restoreGState()
-    for i in 0..<5 {
-        ctx.addPath(blade(i))
-        ctx.setStrokeColor(rgb(0xFFFFFF, 0.4))
-        ctx.setLineWidth(4)
-        ctx.strokePath()
-    }
-
-    // Pupil: white disc, finder pattern (7:5:3) even-odd filled.
     ctx.saveGState()
-    ctx.setShadow(offset: CGSize(width: 0, height: 5), blur: 18, color: rgb(0x000000, 0.22))
-    ctx.setFillColor(rgb(0xFFFFFF))
-    ctx.fillEllipse(in: CGRect(x: -84, y: -84, width: 168, height: 168))
-    ctx.restoreGState()
-    let s: CGFloat = 106, module = s / 7, ro = s * 0.23
-    ctx.addPath(roundedSquare(s, ro))
-    ctx.addPath(roundedSquare(s - 2 * module, max(ro - module, 3)))
-    ctx.addPath(roundedSquare(3 * module, ro * 0.4))
+    shadow(ctx, y: 5, blur: 14, color: rgb(0x000000, 0.25))
+    ctx.addPath(finder(CGPoint(x: 284, y: 284), 240))
     ctx.setFillColor(a.finder)
     ctx.fillPath(using: .evenOdd)
     ctx.restoreGState()
 
-    ctx.addPath(lid)
-    ctx.setStrokeColor(a.rim)
-    ctx.setLineWidth(12)
-    ctx.strokePath()
+    // Rims, bottom to top: green, pink, cyan (with a glassy highlight).
+    ctx.saveGState()
+    shadow(ctx, y: 6, blur: 20, color: rgb(0x000000, 0.12))
+    ctx.beginTransparencyLayer(auxiliaryInfo: nil)
+    let centres = [CGPoint(x: 393, y: 393), CGPoint(x: 409, y: 402), CGPoint(x: 401, y: 410)]
+    for i in [2, 1, 0] {
+        ctx.addPath(ring(centres[i].x, centres[i].y))
+        ctx.setFillColor(a.rims[i])
+        ctx.fillPath(using: .evenOdd)
+    }
+    ctx.endTransparencyLayer()
+    ctx.restoreGState()
+    ctx.saveGState()
+    ctx.addPath(ring(393, 393))
+    ctx.clip(using: .evenOdd)
+    let sheen = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB), colors: [rgb(0xFFFFFF, 0.45), rgb(0xFFFFFF, 0)] as CFArray, locations: [0, 0.6])!
+    ctx.drawLinearGradient(sheen, start: CGPoint(x: 179, y: 179), end: CGPoint(x: 480, y: 480), options: [])
+    ctx.restoreGState()
+
+    // The sparkle.
+    ctx.saveGState()
+    shadow(ctx, y: 2, blur: 12, color: rgb(0x000000, 0.22))
+    ctx.addPath(sparkle(300, 296, 54))
+    ctx.setFillColor(rgb(0xFFFFFF))
+    ctx.fillPath()
+    ctx.restoreGState()
 }
 
-/// A `side`×`side` tile with the eye. `eyeWidth` is the eye's share of the tile's width.
-func render(side: Int, appearance: Appearance, rounded: Bool, eyeWidth: CGFloat) -> CGImage {
+/// A `side`×`side` tile with the mark. `share` is the artwork's share of the tile's width.
+func render(side: Int, appearance: Appearance, rounded: Bool, share: CGFloat) -> CGImage {
     let s = CGFloat(side)
     let ctx = CGContext(
         data: nil, width: side, height: side, bitsPerComponent: 8, bytesPerRow: 0,
@@ -124,17 +165,18 @@ func render(side: Int, appearance: Appearance, rounded: Bool, eyeWidth: CGFloat)
 
     ctx.setFillColor(appearance.tile)
     if rounded {
-        let r = s * 0.225
-        ctx.addPath(CGPath(roundedRect: CGRect(x: 0, y: 0, width: s, height: s), cornerWidth: r, cornerHeight: r, transform: nil))
+        ctx.addPath(roundedRect(CGRect(x: 0, y: 0, width: s, height: s), s * 0.225))
         ctx.fillPath()
     } else {
         ctx.fill(CGRect(x: 0, y: 0, width: s, height: s))
     }
 
-    let scale = s * eyeWidth / 840
+    let scale = s * share / artBounds.width
+    unitsToPixels = scale
     ctx.translateBy(x: s / 2, y: s / 2)
     ctx.scaleBy(x: scale, y: scale)
-    drawEye(ctx, appearance)
+    ctx.translateBy(x: -artBounds.midX, y: -artBounds.midY)
+    drawLoupe(ctx, appearance)
     return ctx.makeImage()!
 }
 
@@ -148,10 +190,10 @@ func write(_ img: CGImage, _ name: String) {
 
 // icon.png: 29pt (lock screen / notifications). Full-bleed light icon; iOS applies its own mask.
 for (scale, suffix) in [(1, ""), (2, "@2x"), (3, "@3x")] {
-    write(render(side: 29 * scale, appearance: .light, rounded: false, eyeWidth: 0.86), "icon\(suffix).png")
+    write(render(side: 29 * scale, appearance: .light, rounded: false, share: 0.72), "icon\(suffix).png")
 }
-// logo.png: shown top-left of the pass next to logoText "Ojito". Max 160×50pt; we use a 50pt
+// logo.png: shown top-left of the pass next to logoText "Lunet". Max 160×50pt; we use a 50pt
 // tile in the dark appearance so it reads on every pass colour.
 for (scale, suffix) in [(1, ""), (2, "@2x"), (3, "@3x")] {
-    write(render(side: 50 * scale, appearance: .dark, rounded: true, eyeWidth: 0.84), "logo\(suffix).png")
+    write(render(side: 50 * scale, appearance: .dark, rounded: true, share: 0.76), "logo\(suffix).png")
 }

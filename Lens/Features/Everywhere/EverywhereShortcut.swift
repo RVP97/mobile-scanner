@@ -60,31 +60,31 @@ enum EverywhereShortcut: String, CaseIterable, Identifiable {
             return [
                 "Swipe down from the top-right corner to open Control Center.",
                 "Touch and hold an empty spot, then tap Add a Control.",
-                "Search for Ojito and choose Scan Code.",
+                "Search for Lunet and choose Scan Code.",
             ]
         case .actionButton where hasControls:
             return [
                 "Open Settings and tap Action Button.",
                 "Swipe to Controls, then tap Choose a Control.",
-                "Search for Ojito and choose Scan Code.",
+                "Search for Lunet and choose Scan Code.",
             ]
         case .actionButton:
             return [
                 "Open Settings and tap Action Button.",
                 "Swipe to Shortcut, then tap Choose a Shortcut.",
-                "Choose Scan Code from Ojito.",
+                "Choose Scan Code from Lunet.",
             ]
         case .lockScreen where hasControls:
             return [
                 "Touch and hold the Lock Screen, then tap Customize.",
                 "Tap Lock Screen, then tap − on the flashlight or camera button.",
-                "Tap +, search for Ojito, and choose Scan Code.",
+                "Tap +, search for Lunet, and choose Scan Code.",
             ]
         case .lockScreen:
             return [
                 "Touch and hold the Lock Screen, then tap Customize.",
                 "Tap Lock Screen, then tap the area below the time.",
-                "Choose Ojito, then add the Scan widget.",
+                "Choose Lunet, then add the Scan widget.",
             ]
         }
     }

@@ -10,9 +10,14 @@ import SwiftUI
 /// `-qaScreen`: `home`, `history`, `create`, `settings`, `multi`, `result:<link|caution|danger|wifi|openwifi|
 /// product|travel|contact|event|location|crypto|shipment|text|email|sms|phone>`.
 /// `-qaOnboarding <welcome|answers|safety|camera|firstScan|everywhere>`. `-qaCodeCover YES` opens a result's
-/// full-screen code. `-qaDetent large` opens the sheet expanded.
+/// full-screen code. `-qaDetent large` opens the sheet expanded. `-qaWelcomeTime 0.6` freezes the Welcome
+/// animation at that moment.
 enum QAHarness {
     private static var arguments: UserDefaults { .standard }
+
+    static var welcomeTime: Double? {
+        arguments.object(forKey: "qaWelcomeTime") == nil ? nil : arguments.double(forKey: "qaWelcomeTime")
+    }
 
     static var onboardingStep: OnboardingStep? {
         guard let name = arguments.string(forKey: "qaOnboarding") else { return nil }

@@ -28,6 +28,7 @@ struct MultiScanTray: View {
                 Button(action: onDone) {
                     Text("Done · \(codes.count)")
                         .font(.headline)
+                        .foregroundStyle(Palette.onTint)
                         .contentTransition(.numericText(value: Double(codes.count)))
                         .padding(.horizontal, 8)
                         .frame(minHeight: 36)

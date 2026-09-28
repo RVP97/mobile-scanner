@@ -8,6 +8,10 @@ enum Palette {
     /// Label color to put on top of a filled tint (kind buttons, accent buttons).
     static let onTint = Color(light: 0xFFFFFF, dark: 0x000000)
 
+    /// High-contrast neutral fill for the safe choice ("Don't Open") and Wallet. Unlike `.primary`,
+    /// it stays solid on a glass sheet instead of turning into vibrant grey.
+    static let ink = Color(light: 0x1C1C1E, dark: 0xF2F2F7)
+
     static let safe = Color(light: 0x1E7A34, dark: 0x30D158)
     static let caution = Color(light: 0x8A5A00, dark: 0xFFD60A)
     static let danger = Color(light: 0xC4231B, dark: 0xFF453A)

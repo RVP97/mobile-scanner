@@ -19,38 +19,87 @@ struct KindTile: View {
 struct PrimaryActionStyle: ButtonStyle {
     var tint: Color = Palette.accent
 
+    @Environment(\.isEnabled) private var isEnabled
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.headline)
             .foregroundStyle(Palette.onTint)
+            .padding(.vertical, 8)
             .frame(maxWidth: .infinity, minHeight: 54)
             .background(tint, in: .capsule)
-            .opacity(configuration.isPressed ? 0.82 : 1)
+            .contentShape(.capsule)
+            .opacity(isEnabled ? (configuration.isPressed ? 0.82 : 1) : 0.5)
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
             .animation(.snappy(duration: 0.18), value: configuration.isPressed)
     }
 }
 
-/// Neutral filled action for the secondary row (Copy · Share · Show code).
+/// Neutral filled tile for the secondary row (Copy · Share · Show Code). Icons sit in a fixed-height
+/// slot so every title in a row shares one baseline, whatever the glyph's shape.
 struct SecondaryActionStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.subheadline.weight(.semibold))
+            .font(.footnote.weight(.semibold))
             .foregroundStyle(.primary)
             .labelStyle(StackedLabelStyle())
+            .padding(.horizontal, 8)
+            .padding(.vertical, 10)
             .frame(maxWidth: .infinity, minHeight: 64)
-            .background(.fill.secondary, in: .rect(cornerRadius: 20, style: .continuous))
-            .opacity(configuration.isPressed ? 0.7 : 1)
+            .background(.fill.secondary, in: .rect(cornerRadius: 16, style: .continuous))
+            .contentShape(.rect(cornerRadius: 16, style: .continuous))
+            .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.4)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .animation(.snappy(duration: 0.18), value: configuration.isPressed)
     }
 }
 
 /// Icon above title, used by the secondary action row.
 struct StackedLabelStyle: LabelStyle {
+    @ScaledMetric(relativeTo: .body) private var iconSlot: CGFloat = 22
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     func makeBody(configuration: Configuration) -> some View {
-        VStack(spacing: 6) {
-            configuration.icon.font(.system(size: 18, weight: .semibold))
-            configuration.title
+        // At accessibility sizes the row becomes a column, so the icon moves beside its title.
+        if dynamicTypeSize.isAccessibilitySize {
+            HStack(spacing: 12) {
+                configuration.icon.font(.body.weight(.semibold))
+                configuration.title
+            }
+        } else {
+            VStack(spacing: 6) {
+                configuration.icon
+                    .font(.body.weight(.semibold))
+                    .frame(height: iconSlot)
+                configuration.title
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
         }
+    }
+}
+
+/// The sheet's close control: a quiet filled circle with a 44pt hit target. Flat on purpose,
+/// so it never floats a glass halo over content.
+struct SheetCloseButton: View {
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "xmark")
+                .font(.subheadline.weight(.bold))
+                .imageScale(.small)
+                .foregroundStyle(.secondary)
+                .frame(width: 30, height: 30)
+                .background(.fill.tertiary, in: .circle)
+                .frame(width: 44, height: 44)
+                .contentShape(.circle)
+        }
+        .buttonStyle(.plain)
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+        .accessibilityLabel("Close")
     }
 }
 

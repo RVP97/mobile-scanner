@@ -27,27 +27,29 @@ struct DangerLinkView: View {
                 }
             }
 
-            VStack(spacing: 8) {
-                Button(action: model.dismissResult) {
-                    Label("Don't Open", systemImage: "hand.raised.fill")
-                }
-                .buttonStyle(.primaryAction(.primary))
+            VStack(spacing: 4) {
+                ResultPrimaryButton(title: "Don't Open", symbol: "hand.raised.fill", tint: Palette.ink,
+                                    action: model.dismissResult)
 
-                HStack(spacing: 8) {
-                    if canOpen {
-                        Button {
-                            if blockDangerous { confirmingOpen = true } else { openURL(verdict.original) }
-                        } label: {
-                            Label("Open Anyway", systemImage: "arrow.up.forward.square")
-                        }
-                    }
+                HStack {
                     if let reportURL {
                         Button { openURL(reportURL) } label: {
-                            Label("Report", systemImage: "exclamationmark.bubble")
+                            Label("Report Scam", systemImage: "exclamationmark.bubble")
                         }
+                        .foregroundStyle(Palette.accent)
+                    }
+                    Spacer(minLength: 16)
+                    if canOpen {
+                        Button("Open Anyway…") {
+                            if blockDangerous { confirmingOpen = true } else { openURL(verdict.original) }
+                        }
+                        .foregroundStyle(.secondary)
                     }
                 }
-                .buttonStyle(.secondaryAction)
+                .font(.subheadline.weight(.semibold))
+                .buttonStyle(.plain)
+                .frame(minHeight: 44)
+                .padding(.horizontal, 4)
             }
         }
         .confirmationDialog("Open this link anyway?", isPresented: $confirmingOpen, titleVisibility: .visible) {

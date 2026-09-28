@@ -10,19 +10,23 @@ struct EventResultView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             ResultCard {
-                HStack(alignment: .top, spacing: 16) {
+                HStack(alignment: .center, spacing: 16) {
                     if let start = event.start { dateBlock(start) }
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(event.title.isEmpty ? String(localized: "Untitled event") : event.title)
-                            .font(.headline)
-                        if let time = timeText {
-                            Label(time, systemImage: "clock").foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 6) {
+                        if let when {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(when.day).font(.headline)
+                                if let time = when.time {
+                                    Text(time).font(.subheadline).monospacedDigit()
+                                }
+                            }
                         }
                         if !event.location.isEmpty {
-                            Label(event.location, systemImage: "mappin.and.ellipse").foregroundStyle(.secondary)
+                            Label(event.location, systemImage: "mappin.and.ellipse")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
                         }
                     }
-                    .font(.subheadline)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .accessibilityElement(children: .combine)
@@ -54,23 +58,25 @@ struct EventResultView: View {
                 .monospacedDigit()
         }
         .frame(width: 60, height: 64)
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .background(Palette.tileFill(.event), in: .rect(cornerRadius: 14, style: .continuous))
     }
 
-    private var timeText: String? {
+    /// "Thursday" over "11:00 – 12:30"; the date block beside it already says which day of the month.
+    private var when: (day: String, time: String?)? {
         guard let start = event.start else { return nil }
-        let day = start.formatted(.dateTime.weekday(.wide).day().month(.wide))
+        let weekday = start.formatted(.dateTime.weekday(.wide))
         if event.isAllDay {
             guard let end = event.inclusiveEnd, !Calendar.current.isDate(end, inSameDayAs: start) else {
-                return String(localized: "\(day) · All day")
+                return (weekday, String(localized: "All day"))
             }
-            return "\(day) – \(end.formatted(.dateTime.weekday(.wide).day().month(.wide)))"
+            return (weekday, String(localized: "Until \(end.formatted(.dateTime.weekday(.wide).day().month(.wide)))"))
         }
-        guard let end = event.end else { return "\(day) · \(start.formatted(date: .omitted, time: .shortened))" }
-        let range = (start..<max(end, start.addingTimeInterval(1))).formatted(.interval.hour().minute())
-        return Calendar.current.isDate(end, inSameDayAs: start)
-            ? "\(day) · \(range)"
-            : (start..<end).formatted(.interval.day().month().hour().minute())
+        guard let end = event.end else { return (weekday, start.formatted(date: .omitted, time: .shortened)) }
+        guard Calendar.current.isDate(end, inSameDayAs: start) else {
+            return (weekday, (start..<end).formatted(.interval.day().month().hour().minute()))
+        }
+        return (weekday, (start..<max(end, start.addingTimeInterval(1))).formatted(.interval.hour().minute()))
     }
 
     private var copyText: String {

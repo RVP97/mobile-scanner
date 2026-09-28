@@ -78,6 +78,12 @@ struct ScannerScreen: View {
             && model.detent != .large
     }
 
+    /// Only the peek sheet leaves the middle of the screen uncovered. Anything taller would sit over
+    /// the camera placeholder, and a translucent sheet would show it through as blurred noise.
+    private var isCameraAreaClear: Bool {
+        model.sheetContent == .home && model.detent == AppModel.peekDetent
+    }
+
     private var detectionEnabled: Bool {
         cameraShouldRun && model.sheetContent == .home
     }
@@ -155,7 +161,7 @@ struct ScannerScreen: View {
     /// Where the result sheet's header tile lands.
     private func liftDestination(in size: CGSize) -> CGRect {
         let sheetTop = size.height * (1 - resultFraction)
-        return CGRect(x: 28, y: sheetTop + 24, width: 56, height: 56)
+        return CGRect(x: 28, y: sheetTop + 20, width: 52, height: 52)
     }
 
     // MARK: Chrome (safe-area aware)
@@ -183,6 +189,10 @@ struct ScannerScreen: View {
 
             if let status = statusKind {
                 CameraStatusView(kind: status, onOpenSettings: openSettings, onScanPhotos: scanFromPhotos)
+                    .opacity(isCameraAreaClear ? 1 : 0)
+                    .allowsHitTesting(isCameraAreaClear)
+                    .accessibilityHidden(!isCameraAreaClear)
+                    .animation(.smooth(duration: 0.25), value: isCameraAreaClear)
                 Spacer(minLength: 0)
             }
 

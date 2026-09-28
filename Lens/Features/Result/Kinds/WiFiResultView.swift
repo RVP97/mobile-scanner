@@ -17,11 +17,12 @@ struct WiFiResultView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             ResultCard {
-                DetailRow(label: "Network", value: network.ssid)
-                CardDivider()
-                DetailRow(label: "Security", value: securityText)
-                if network.security != .open {
-                    CardDivider()
+                if network.security == .open {
+                    Label("No password needed", systemImage: "lock.open.fill")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .frame(minHeight: 44, alignment: .leading)
+                } else {
                     passwordRow
                 }
             }
@@ -41,10 +42,6 @@ struct WiFiResultView: View {
         }
         .sensoryFeedback(.success, trigger: joinState == .joined) { _, joined in joined }
         .animation(.smooth, value: joinState)
-    }
-
-    private var securityText: String {
-        network.isHidden ? "\(network.securityDescription) · \(String(localized: "Hidden"))" : network.securityDescription
     }
 
     private var passwordRow: some View {

@@ -7,8 +7,10 @@ import SwiftUI
 ///
 ///     xcrun simctl launch <udid> com.rvp97.scanner -qaAppearance dark -qaSeed YES -qaScreen result:wifi
 ///
-/// `-qaScreen`: `home`, `history`, `create`, `settings`, `multi`, `result:<link|danger|wifi|product|travel|
-/// contact|event|location|crypto|shipment|text>`. `-qaOnboarding <welcome|answers|safety|camera|firstScan|everywhere>`.
+/// `-qaScreen`: `home`, `history`, `create`, `settings`, `multi`, `result:<link|caution|danger|wifi|openwifi|
+/// product|travel|contact|event|location|crypto|shipment|text|email|sms|phone>`.
+/// `-qaOnboarding <welcome|answers|safety|camera|firstScan|everywhere>`. `-qaCodeCover YES` opens a result's
+/// full-screen code. `-qaDetent large` opens the sheet expanded.
 enum QAHarness {
     private static var arguments: UserDefaults { .standard }
 
@@ -48,12 +50,20 @@ enum QAHarness {
                 model.show(result)
             }
         }
+        if arguments.string(forKey: "qaDetent") == "large" {
+            model.detent = .large
+        }
     }
 
     private static func sample(named name: String) -> ScanResult? {
         switch name {
         case "link": .sampleLink
         case "danger": .sampleDanger
+        case "caution": .sampleCaution
+        case "email": .sample("mailto:hola@atlas-coffee.co?subject=Catering%20for%2040&body=Hi!%20Could%20you%20cater%20our%20offsite%20on%20Friday%3F")
+        case "sms": .sample("SMSTO:+525512345678:Table 4 is ready")
+        case "phone": .sample("tel:+525512345678")
+        case "openwifi": .sample("WIFI:T:nopass;S:Atlas Patio;;")
         case "wifi": .sampleWiFi
         case "product": .sampleProduct
         case "travel": .sampleTravel

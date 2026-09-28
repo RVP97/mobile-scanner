@@ -14,6 +14,8 @@ extension ScanResult {
     static let sampleLink = sample("https://atlas-coffee.co/menu", place: "Atlas Coffee, Roma Norte")
     /// Userinfo trick: reads as atlas-coffee.co, opens n0rthbank-login.co. Flagged offline.
     static let sampleDanger = sample("https://atlas-coffee.co@n0rthbank-login.co/pay")
+    /// An unusual ending (.xyz): "Be careful", not blocked.
+    static let sampleCaution = sample("https://atlas-coffee.xyz/menu")
     static let sampleWiFi = sample("WIFI:T:WPA;S:Atlas Guest;P:cortado-2019;;")
     static let sampleProduct = sample("4006381333931", .ean13)
     static let sampleTravel = sample(

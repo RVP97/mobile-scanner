@@ -19,12 +19,11 @@ struct LocationResultView: View {
                 .clipShape(.rect(cornerRadius: 20, style: .continuous))
                 .accessibilityLabel(Text("Map of \(point.label.isEmpty ? point.coordinateText : point.label)"))
 
-                ResultCard {
-                    DetailRow(label: "Coordinates", value: point.coordinateText, monospaced: true)
-                }
-            } else {
-                ResultCard {
-                    DetailRow(label: "Place", value: point.label)
+                // Without a label the coordinates are already the header.
+                if !point.label.isEmpty {
+                    ResultCard {
+                        DetailRow(label: "Coordinates", value: point.coordinateText, monospaced: true)
+                    }
                 }
             }
 

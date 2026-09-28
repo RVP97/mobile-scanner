@@ -7,6 +7,9 @@ nonisolated enum LensShared {
     static let multiScanURL = URL(string: "lens://scan?mode=multi")!
     static let createURL = URL(string: "lens://create")!
     static let historyURL = URL(string: "lens://history")!
+    /// URL schemes the app answers to, all routed identically: `ojito://` is the public
+    /// name, `lens://` and `scanner://` stay for widgets, shortcuts and codes already out there.
+    static let schemes: Set<String> = ["ojito", "lens", "scanner"]
 }
 
 /// Every place outside the app (controls, widgets, Live Activity, Shortcuts) that opens Lens
@@ -29,7 +32,7 @@ nonisolated enum LensDeepLink: Hashable, Sendable {
     }
 
     init?(url: URL) {
-        guard url.scheme == "lens" || url.scheme == "scanner" else { return nil }
+        guard let scheme = url.scheme, LensShared.schemes.contains(scheme) else { return nil }
         switch url.host() {
         case "scan":
             let mode = URLComponents(url: url, resolvingAgainstBaseURL: false)?

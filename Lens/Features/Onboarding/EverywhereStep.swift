@@ -11,7 +11,7 @@ struct EverywhereStep: View {
             VStack(spacing: 24) {
                 OnboardingTitle(
                     title: "Scan faster from anywhere",
-                    subtitle: "Put Lens one press away, even when your iPhone is locked."
+                    subtitle: "Put Ojito one press away, even when your iPhone is locked."
                 )
                 EverywhereSetupList()
                 Toggle(isOn: $scanAndGo) {

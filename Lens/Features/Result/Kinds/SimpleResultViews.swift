@@ -11,7 +11,7 @@ struct CryptoResultView: View {
             ResultCard {
                 DetailRow(label: "\(request.networkName) address", value: request.address, monospaced: true)
                 CardDivider()
-                Label("Lens can't verify who receives this. Check the address with the person you're paying.",
+                Label("Ojito can't verify who receives this. Check the address with the person you're paying.",
                       systemImage: "exclamationmark.shield.fill")
                     .font(.footnote)
                     .foregroundStyle(Palette.caution)

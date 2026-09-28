@@ -32,7 +32,7 @@ const WALLET_FORMAT = {
 } as const;
 
 const DISCLAIMER =
-  "Created with Lens from a code you scanned. This pass was not issued by, and is not affiliated with, the carrier, venue or merchant named on it. Always follow the official ticket or boarding pass.";
+  "Created with Ojito from a code you scanned. This pass was not issued by, and is not affiliated with, the carrier, venue or merchant named on it. Always follow the official ticket or boarding pass.";
 
 interface Field {
   key: string;
@@ -91,8 +91,8 @@ export function buildPassJson(req: PassRequest, cfg: PassConfig, opts: BuildOpti
     passTypeIdentifier: cfg.passTypeIdentifier,
     teamIdentifier: cfg.teamIdentifier,
     serialNumber: opts.serialNumber,
-    organizationName: "Lens",
-    logoText: "Lens",
+    organizationName: "Ojito",
+    logoText: "Ojito",
     description: "",
     ...colors,
     barcodes: [barcode],
@@ -106,7 +106,7 @@ export function buildPassJson(req: PassRequest, cfg: PassConfig, opts: BuildOpti
     case "boardingPass": {
       const f = req.fields;
       const flight = `${f.carrier.length <= 3 ? f.carrier.toUpperCase() : ""}${f.flightNumber}`.trim();
-      pass.description = `Boarding pass ${f.from}–${f.to} · ${flight || f.flightNumber} · ${shortDate(f.date)} (created with Lens)`;
+      pass.description = `Boarding pass ${f.from}–${f.to} · ${flight || f.flightNumber} · ${shortDate(f.date)} (created with Ojito)`;
       const header: Field[] = [];
       if (f.gate) header.push({ key: "gate", label: "GATE", value: f.gate });
       if (f.seat) header.push({ key: "seat", label: "SEAT", value: f.seat });
@@ -159,7 +159,7 @@ export function buildPassJson(req: PassRequest, cfg: PassConfig, opts: BuildOpti
     }
     case "eventTicket": {
       const f = req.fields;
-      pass.description = `Ticket: ${f.title} (created with Lens)`;
+      pass.description = `Ticket: ${f.title} (created with Ojito)`;
       const secondary: Field[] = [];
       if (f.venue) secondary.push({ key: "venue", label: "VENUE", value: f.venue });
       if (f.date) {
@@ -188,7 +188,7 @@ export function buildPassJson(req: PassRequest, cfg: PassConfig, opts: BuildOpti
     case "storeCard":
     case "generic": {
       const f = req.fields;
-      pass.description = `${req.passType === "storeCard" ? "Card" : "Pass"}: ${f.title} (created with Lens)`;
+      pass.description = `${req.passType === "storeCard" ? "Card" : "Pass"}: ${f.title} (created with Ojito)`;
       const secondary: Field[] = [];
       if (f.subtitle) secondary.push({ key: "subtitle", label: "DETAILS", value: f.subtitle });
       if (f.number) secondary.push({ key: "number", label: "NUMBER", value: f.number, textAlignment: "PKTextAlignmentRight" });

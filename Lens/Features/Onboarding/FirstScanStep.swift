@@ -190,7 +190,7 @@ private struct CameraOffNotice: View {
                 .foregroundStyle(.secondary)
             Text("Camera access is off")
                 .font(.headline)
-            Text("You can still try the sample, or turn on the camera for Lens in Settings.")
+            Text("You can still try the sample, or turn on the camera for Ojito in Settings.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

@@ -7,7 +7,7 @@ import Foundation
 @available(iOS 18.0, *)
 struct OpenScannerControlIntent: AppIntent {
     static let title: LocalizedStringResource = "Scan Code"
-    static let description = IntentDescription("Opens the Lens camera, ready to scan.")
+    static let description = IntentDescription("Opens the Ojito camera, ready to scan.")
     static let isDiscoverable = false
 
     func perform() async throws -> some IntentResult & OpensIntent {
@@ -18,7 +18,7 @@ struct OpenScannerControlIntent: AppIntent {
 @available(iOS 18.0, *)
 struct OpenMultiScanControlIntent: AppIntent {
     static let title: LocalizedStringResource = "Multi-scan"
-    static let description = IntentDescription("Opens the Lens camera to collect several codes in a row.")
+    static let description = IntentDescription("Opens the Ojito camera to collect several codes in a row.")
     static let isDiscoverable = false
 
     func perform() async throws -> some IntentResult & OpensIntent {

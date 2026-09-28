@@ -50,7 +50,7 @@ struct ExportBar: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Lens can only add images to your library. Turn on access in Settings to save codes there.")
+            Text("Ojito can only add images to your library. Turn on access in Settings to save codes there.")
         }
     }
 

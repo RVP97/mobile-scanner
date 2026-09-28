@@ -35,14 +35,25 @@ struct StaticProvider: TimelineProvider {
 
 struct ScanWidgetView: View {
     @Environment(\.widgetFamily) private var family
+    @Environment(\.widgetRenderingMode) private var renderingMode
+
+    /// The color mark on a full-color Home Screen; the one-color glyph when tinted or clear.
+    @ViewBuilder private var mark: some View {
+        if renderingMode == .fullColor {
+            OjitoMark()
+        } else {
+            OjitoGlyph()
+                .widgetAccentable()
+        }
+    }
 
     var body: some View {
         switch family {
         case .accessoryCircular:
             ZStack {
                 AccessoryWidgetBackground()
-                LensMark()
-                    .padding(13)
+                OjitoGlyph()
+                    .padding(10)
                     .widgetAccentable()
             }
             .accessibilityElement()
@@ -50,10 +61,8 @@ struct ScanWidgetView: View {
             .containerBackground(for: .widget) { Color.clear }
         default:
             VStack(alignment: .leading, spacing: 0) {
-                LensMark()
-                    .foregroundStyle(Palette.accent)
-                    .frame(width: 44, height: 44)
-                    .widgetAccentable()
+                mark
+                    .frame(width: 64, height: 40, alignment: .leading)
                 Spacer(minLength: 8)
                 Text("Scan")
                     .font(.title2.weight(.semibold))

@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Lens</string>
+	<string>Ojito</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -27,6 +27,7 @@
 			<string>com.rvp97.scanner</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>ojito</string>
 				<string>lens</string>
 				<string>scanner</string>
 			</array>
@@ -37,13 +38,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Lens uses the camera to read QR codes and barcodes. Nothing is recorded or uploaded.</string>
+	<string>Ojito uses the camera to read QR codes and barcodes. Nothing is recorded or uploaded.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Lens saves the codes you create to your photo library.</string>
+	<string>Ojito saves the codes you create to your photo library.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Lens can remember where you scanned each code. Locations stay on your iPhone.</string>
+	<string>Ojito can remember where you scanned each code. Locations stay on your iPhone.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Lens uses Face ID to keep your scan history private.</string>
+	<string>Ojito uses Face ID to keep your scan history private.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

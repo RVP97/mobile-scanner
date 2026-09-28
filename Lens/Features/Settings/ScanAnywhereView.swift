@@ -5,14 +5,14 @@ import SwiftUI
 struct ScanAnywhereView: View {
     private static let widgetSteps: [LocalizedStringKey] = [
         "Touch and hold the Home Screen, then tap Edit › Add Widget.",
-        "Search for Lens.",
+        "Search for Ojito.",
         "Pick a size and tap Add Widget.",
     ]
 
     var body: some View {
         List {
             Section {
-                Text("The fastest scan is the one where you never look for the app. Put Lens where your thumb already is.")
+                Text("The fastest scan is the one where you never look for the app. Put Ojito where your thumb already is.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .listRowBackground(Color.clear)

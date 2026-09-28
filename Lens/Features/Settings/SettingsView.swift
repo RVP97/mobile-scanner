@@ -101,7 +101,7 @@ struct SettingsView: View {
         } header: {
             Text("Safety")
         } footer: {
-            Text("Deep check follows redirects and looks up the domain's age by contacting the link's own server. Nothing is sent to Lens.")
+            Text("Deep check follows redirects and looks up the domain's age by contacting the link's own server. Nothing is sent to Ojito.")
         }
     }
 
@@ -151,9 +151,9 @@ private struct SettingsLanguageSection: View {
                 }
             }
             .foregroundStyle(.primary)
-            .accessibilityHint("Opens Lens in the Settings app")
+            .accessibilityHint("Opens Ojito in the Settings app")
         } footer: {
-            Text("Lens follows your iPhone's language. You can choose a different one for Lens in the Settings app.")
+            Text("Ojito follows your iPhone's language. You can choose a different one for Ojito in the Settings app.")
         }
     }
 

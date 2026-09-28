@@ -56,7 +56,7 @@ struct DangerLinkView: View {
             Button("Open Anyway", role: .destructive) { openURL(verdict.original) }
             Button("Don't Open", role: .cancel) {}
         } message: {
-            Text("Lens thinks this link is a scam. Only continue if you trust whoever gave you the code.")
+            Text("Ojito thinks this link is a scam. Only continue if you trust whoever gave you the code.")
         }
     }
 
@@ -69,7 +69,7 @@ struct DangerLinkView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("This code isn't what it says")
                     .font(.title3.bold())
-                Text("Lens stopped it before anything opened.")
+                Text("Ojito stopped it before anything opened.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -97,7 +97,7 @@ struct DangerLinkView: View {
         components.path = "reportphishing@apwg.org"
         components.queryItems = [
             URLQueryItem(name: "subject", value: String(localized: "Phishing QR code")),
-            URLQueryItem(name: "body", value: String(localized: "I scanned a QR code that leads to a phishing page:\n\n\(chain)\n\nReported with Lens.")),
+            URLQueryItem(name: "body", value: String(localized: "I scanned a QR code that leads to a phishing page:\n\n\(chain)\n\nReported with Ojito.")),
         ]
         return components.url
     }

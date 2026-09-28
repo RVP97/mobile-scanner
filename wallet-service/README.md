@@ -26,8 +26,8 @@ Served only at `bloom.vallepinto.com/lens/*`; everything else on that host is un
    ECDSA P-256 signature over `SHA256(authenticatorData ‖ SHA256(body))`, the rpIdHash, and that the counter
    strictly increases (updated atomically together with the hourly quota), and **only then** parses the body.
 3. **Build.** Strict schema (`src/schema.ts`, unknown keys rejected) → `pass.json` (`src/passjson.ts`:
-   `organizationName`/`logoText` "Lens", random UUID serial, fixed colour palette, flight `semantics`, a back-field
-   disclaimer that the pass isn't issued by the carrier/venue) + bundled Lens icon/logo PNGs → `manifest.json`
+   `organizationName`/`logoText` "Ojito", random UUID serial, fixed colour palette, flight `semantics`, a back-field
+   disclaimer that the pass isn't issued by the carrier/venue) + bundled Ojito icon/logo PNGs → `manifest.json`
    (SHA-1 per file) → detached CMS signature (`src/pkcs7.ts`: SHA-256, RSA PKCS#1 v1.5, signed attributes
    contentType / signingTime / messageDigest, certificates = pass cert + WWDR G4) → zip.
 
@@ -176,7 +176,7 @@ bounded, and JSON is only parsed after authentication.
   conditional update, so concurrent replays lose); the assertion covers the exact body bytes.
 - *Tampering* — any change to the body invalidates the assertion.
 - *Brand impersonation via our certificate* — no user images, no arbitrary colours, `organizationName`/`logoText`
-  are always "Lens", the description says "created with Lens", and a back field disclaims affiliation. No
+  are always "Ojito", the description says "created with Ojito", and a back field disclaims affiliation. No
   `webServiceURL`/`authenticationToken`, so passes can't be pushed updates by anyone.
 - *Injection / parser attacks* — strict schema (unknown keys rejected, length limits, control and bidi-override
   characters rejected, IATA/date/time formats), JSON built with `JSON.stringify`, bounded CBOR decoder, body caps.
@@ -189,7 +189,7 @@ bounded, and JSON is only parsed after authentication.
 
 - *A genuine device can still request passes with any content* (within the schema and quotas). App Attest proves the
   app, not the user's intent — someone with a real iPhone and a jailbreak/instrumentation could drive the real app
-  to sign misleading-but-schema-valid text (e.g. a fake flight). Mitigated by the "Lens" branding, disclaimer and
+  to sign misleading-but-schema-valid text (e.g. a fake flight). Mitigated by the "Ojito" branding, disclaimer and
   quotas; not eliminated. Apple's App Attest **receipt / fraud metric** (risk counts per device) isn't used yet —
   adding it would bound how many keys one device can mint.
 - *Device-farm / key-minting abuse* — each reinstall yields a new key; per-IP attest limits slow this but a

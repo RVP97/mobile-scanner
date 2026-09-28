@@ -5,11 +5,11 @@ struct WelcomeStep: View {
 
     var body: some View {
         OnboardingPage(centered: true) {
-            VStack(spacing: 32) {
+            VStack(spacing: 24) {
                 WelcomeHero()
                 OnboardingTitle(
                     title: "Scan anything.\nKnow before you go.",
-                    subtitle: "Lens reads any code, shows you where it really leads, and hands you the one thing to do next."
+                    subtitle: "Ojito reads any code, shows you where it really leads, and hands you the one thing to do next."
                 )
             }
         } actions: {

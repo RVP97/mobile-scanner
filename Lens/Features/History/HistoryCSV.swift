@@ -56,7 +56,7 @@ nonisolated struct HistoryExport: Transferable {
     static var transferRepresentation: some TransferRepresentation {
         FileRepresentation(exportedContentType: .commaSeparatedText) { export in
             let rows = await export.rows()
-            let url = URL.temporaryDirectory.appending(path: String(localized: "Lens History") + ".csv")
+            let url = URL.temporaryDirectory.appending(path: String(localized: "Ojito History") + ".csv")
             try Data(HistoryCSV.document(rows).utf8).write(to: url, options: .atomic)
             return SentTransferredFile(url)
         }

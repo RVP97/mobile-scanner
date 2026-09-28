@@ -21,7 +21,7 @@ struct AnswersStep: View {
             VStack(spacing: 32) {
                 OnboardingTitle(
                     title: "Every code gets its own answer",
-                    subtitle: "Lens knows what it’s looking at, so the next step is always one tap."
+                    subtitle: "Ojito knows what it’s looking at, so the next step is always one tap."
                 )
                 VStack(spacing: 16) {
                     ForEach(Array(examples.enumerated()), id: \.offset) { index, item in

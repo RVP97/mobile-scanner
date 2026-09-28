@@ -144,7 +144,7 @@ struct IssueRow: View {
     }
 }
 
-/// Neutral "Lens did this for you" note (check digits, start/stop letters).
+/// Neutral "Ojito did this for you" note (check digits, start/stop letters).
 struct NoteRow: View {
     var note: LocalizedStringResource
 

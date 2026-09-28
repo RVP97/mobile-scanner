@@ -44,9 +44,8 @@ struct MultiScanLiveActivity: Widget {
                     .padding(.horizontal, 4)
                 }
             } compactLeading: {
-                LensMark()
-                    .foregroundStyle(Palette.accent)
-                    .frame(width: 18, height: 18)
+                OjitoMark()
+                    .frame(width: 24, height: 18)
             } compactTrailing: {
                 Text(context.state.count, format: .number)
                     .font(.subheadline.weight(.semibold))
@@ -72,9 +71,8 @@ struct MultiScanLockScreenView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 6) {
-                LensMark()
-                    .foregroundStyle(Palette.accent)
-                    .frame(width: 16, height: 16)
+                OjitoMark()
+                    .frame(width: 24, height: 16)
                 Text("Multi-scan")
                     .font(.footnote.weight(.semibold))
                 Spacer()

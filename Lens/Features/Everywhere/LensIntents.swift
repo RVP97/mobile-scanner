@@ -6,7 +6,7 @@ import UIKit
 
 struct ScanCodeIntent: AppIntent {
     static let title: LocalizedStringResource = "Scan Code"
-    static let description = IntentDescription("Opens Lens with the camera ready to scan.")
+    static let description = IntentDescription("Opens Ojito with the camera ready to scan.")
     static let openAppWhenRun = true
 
     func perform() async throws -> some IntentResult {
@@ -17,7 +17,7 @@ struct ScanCodeIntent: AppIntent {
 
 struct StartMultiScanIntent: AppIntent {
     static let title: LocalizedStringResource = "Start Multi-scan"
-    static let description = IntentDescription("Opens Lens to collect several codes in a row.")
+    static let description = IntentDescription("Opens Ojito to collect several codes in a row.")
     static let openAppWhenRun = true
 
     func perform() async throws -> some IntentResult {
@@ -28,7 +28,7 @@ struct StartMultiScanIntent: AppIntent {
 
 struct CreateCodeIntent: AppIntent {
     static let title: LocalizedStringResource = "Create Code"
-    static let description = IntentDescription("Opens the Lens code creator.")
+    static let description = IntentDescription("Opens the Ojito code creator.")
     static let openAppWhenRun = true
 
     func perform() async throws -> some IntentResult {

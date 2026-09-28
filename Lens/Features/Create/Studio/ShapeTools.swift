@@ -60,7 +60,7 @@ struct DotsTool: View {
     }
 
     private var correctionNote: LocalizedStringResource {
-        if model.style.logo != .none { return "A logo needs High, so Lens sets it for you." }
+        if model.style.logo != .none { return "A logo needs High, so Ojito sets it for you." }
         let level = model.style.effectiveCorrection
         let size = minimumPrintSize.formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(1))))
         return "Still scans with \(level.recoveryPercent)% of it covered or scuffed. Print it \(size) or larger."

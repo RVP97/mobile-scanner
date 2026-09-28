@@ -15,21 +15,31 @@ struct OnboardingStepTests {
     }
 }
 
-struct OnboardingQRMatrixTests {
-    @Test func trimsQuietZoneToTheSymbol() throws {
-        let matrix = try #require(QRMatrix("https://lens.app/welcome"))
-        // 24 bytes at error correction L is a version 2 symbol: 25 × 25 modules.
-        #expect(matrix.size == 25)
+struct OnboardingWelcomeMotionTests {
+    @Test func settlesOnTheIconPose() {
+        let pose = WelcomeMotion.pose(at: WelcomeMotion.duration)
+        #expect(pose.blades.allSatisfy { abs($0 - 1) < 0.0001 })
+        #expect(abs(pose.pupil - 1) < 0.0001)
+        #expect(abs(pose.openness - 1) < 0.0001)
+        #expect(pose.spin == .zero)
     }
 
-    @Test func findersAreInTheCorners() throws {
-        let matrix = try #require(QRMatrix("LENS"))
-        let last = matrix.size - 1
-        // Each finder pattern: dark outer ring, light ring, dark core.
-        for (row, column) in [(0, 0), (0, last - 6), (last - 6, 0)] {
-            #expect(matrix.isDark(row: row, column: column))
-            #expect(!matrix.isDark(row: row + 1, column: column + 1))
-            #expect(matrix.isDark(row: row + 3, column: column + 3))
-        }
+    @Test func startsShutWithTheIrisGathered() {
+        let pose = WelcomeMotion.pose(at: 0)
+        #expect(pose.openness < 0.05)
+        #expect(pose.blades.allSatisfy { abs($0) < 0.0001 })
+        #expect(abs(pose.pupil) < 0.0001)
+    }
+
+    @Test func blinksOnceAfterTheBloom() {
+        let closedMoment = WelcomeMotion.blinkStart + WelcomeMotion.blinkClose
+        #expect(WelcomeMotion.pose(at: closedMoment).openness < 0.1)
+        #expect(WelcomeMotion.pose(at: WelcomeMotion.blinkStart - 0.01).openness == 1)
+    }
+
+    @Test func idleDriftIsSlow() {
+        let later = WelcomeMotion.pose(at: WelcomeMotion.duration + 1)
+        #expect(abs(later.spin.degrees) > 0)
+        #expect(abs(later.spin.degrees) < 10)
     }
 }

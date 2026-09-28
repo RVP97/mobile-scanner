@@ -61,9 +61,10 @@ final class AppModel {
         }
     }
 
-    /// `lens://scan`, `lens://scan?mode=multi`, `lens://create`, `lens://history`, `lens://settings`.
+    /// `ojito://scan`, `ojito://scan?mode=multi`, `ojito://create`, `ojito://history`, `ojito://settings`
+    /// (`lens://` and `scanner://` route the same way).
     func handle(url: URL) {
-        guard url.scheme == "lens" || url.scheme == "scanner" else { return }
+        guard let scheme = url.scheme, LensShared.schemes.contains(scheme) else { return }
         modal = nil
         switch url.host() {
         case "create": modal = .create

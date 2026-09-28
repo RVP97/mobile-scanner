@@ -17,6 +17,8 @@ struct RedirectPathView: View {
         var caption: LocalizedStringKey
         var url: URL
         var isDestination: Bool
+        /// Shown verbatim instead of the host, so tricks like "trusted.com@evil.co" stay visible.
+        var printed: String? = nil
     }
 
     private var stops: [Stop] {
@@ -25,8 +27,9 @@ struct RedirectPathView: View {
         let shown = verdict.original.user(percentEncoded: false).map { "\($0)" }
         var result: [Stop] = []
         if verdict.redirectChain.isEmpty {
-            if let shown {
-                result.append(Stop(caption: "Looks like \(shown)", url: verdict.original, isDestination: false))
+            if shown != nil {
+                result.append(Stop(caption: "Printed on the code", url: verdict.original, isDestination: false,
+                                   printed: Self.printed(verdict.original)))
             }
             result.append(Stop(caption: "Actually opens", url: destination, isDestination: true))
             return result
@@ -40,6 +43,14 @@ struct RedirectPathView: View {
         }
         result.append(Stop(caption: "Actually opens", url: destination, isDestination: true))
         return result
+    }
+
+    /// The link as a person reads it off the code: no scheme, no trailing slash.
+    private static func printed(_ url: URL) -> String {
+        var text = url.absoluteString
+        if let scheme = url.scheme, text.hasPrefix(scheme + "://") { text.removeFirst(scheme.count + 3) }
+        if text.hasSuffix("/") { text.removeLast() }
+        return text
     }
 
     private struct PathStop: View {
@@ -67,7 +78,15 @@ struct RedirectPathView: View {
                     Text(stop.caption)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
-                    LookalikeHostText(url: stop.url, emphasized: stop.isDestination)
+                    if let printed = stop.printed {
+                        Text(printed)
+                            .font(.body)
+                            .fontDesign(.monospaced)
+                            .lineLimit(3)
+                            .textSelection(.enabled)
+                    } else {
+                        LookalikeHostText(url: stop.url, emphasized: stop.isDestination)
+                    }
                 }
                 .padding(.bottom, isLast ? 0 : 16)
                 .frame(maxWidth: .infinity, alignment: .leading)

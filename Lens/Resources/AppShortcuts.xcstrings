@@ -4,9 +4,72 @@
     "Create a code with ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "أنشئ رمزًا باستخدام ${applicationName}",
+              "أنشئ رمز QR باستخدام ${applicationName}"
+            ]
+          }
+        },
+        "ca" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Crea un codi amb ${applicationName}",
+              "Fes un codi QR amb ${applicationName}"
+            ]
+          }
+        },
+        "cs" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Vytvořit kód v ${applicationName}",
+              "Udělat QR kód v ${applicationName}"
+            ]
+          }
+        },
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Opret en kode med ${applicationName}",
+              "Lav en QR-kode med ${applicationName}"
+            ]
+          }
+        },
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Erstelle einen Code mit ${applicationName}",
+              "Erstelle einen QR-Code mit ${applicationName}"
+            ]
+          }
+        },
+        "el" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Δημιούργησε κωδικό με το ${applicationName}",
+              "Φτιάξε κωδικό QR με το ${applicationName}"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",
+            "values" : [
+              "Create a code with ${applicationName}",
+              "Make a QR code with ${applicationName}"
+            ]
+          }
+        },
+        "en-GB" : {
+          "stringSet" : {
+            "state" : "translated",
             "values" : [
               "Create a code with ${applicationName}",
               "Make a QR code with ${applicationName}"
@@ -22,6 +85,15 @@
             ]
           }
         },
+        "fi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Luo koodi ${applicationName}-apilla",
+              "Tee QR-koodi ${applicationName}-apilla"
+            ]
+          }
+        },
         "fr" : {
           "stringSet" : {
             "state" : "translated",
@@ -30,15 +102,287 @@
               "Créer un code QR avec ${applicationName}"
             ]
           }
+        },
+        "he" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "צור קוד עם ${applicationName}",
+              "צור קוד QR עם ${applicationName}"
+            ]
+          }
+        },
+        "hi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} से एक कोड बनाएँ",
+              "${applicationName} से QR कोड बनाएँ"
+            ]
+          }
+        },
+        "hr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Izradi kôd pomoću aplikacije ${applicationName}",
+              "Napravi QR kôd pomoću aplikacije ${applicationName}"
+            ]
+          }
+        },
+        "hu" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Hozz létre egy kódot a ${applicationName} appban",
+              "Készíts QR-kódot a ${applicationName} appban"
+            ]
+          }
+        },
+        "id" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Buat kode dengan ${applicationName}",
+              "Buat kode QR dengan ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Crea un codice con ${applicationName}",
+              "Crea un codice QR con ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}でコードを作成",
+              "${applicationName}でQRコードを作って"
+            ]
+          }
+        },
+        "ko" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}에서 코드 만들기",
+              "${applicationName}에서 QR 코드 만들기"
+            ]
+          }
+        },
+        "ms" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Cipta kod dengan ${applicationName}",
+              "Buat kod QR dengan ${applicationName}"
+            ]
+          }
+        },
+        "nb" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Opprett en kode med ${applicationName}",
+              "Lag en QR-kode med ${applicationName}"
+            ]
+          }
+        },
+        "nl" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Maak een code met ${applicationName}",
+              "Maak een QR-code met ${applicationName}"
+            ]
+          }
+        },
+        "pl" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Utwórz kod w ${applicationName}",
+              "Zrób kod QR w ${applicationName}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Crie um código com o ${applicationName}",
+              "Faça um código QR com o ${applicationName}"
+            ]
+          }
+        },
+        "pt-PT" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Crie um código com a ${applicationName}",
+              "Faça um código QR com a ${applicationName}"
+            ]
+          }
+        },
+        "ro" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Creează un cod cu ${applicationName}",
+              "Fă un cod QR cu ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Создай код в ${applicationName}",
+              "Сделай QR-код в ${applicationName}"
+            ]
+          }
+        },
+        "sk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Vytvor kód v aplikácii ${applicationName}",
+              "Vytvor QR kód v aplikácii ${applicationName}"
+            ]
+          }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Skapa en kod med ${applicationName}",
+              "Gör en QR-kod med ${applicationName}"
+            ]
+          }
+        },
+        "th" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "สร้างโค้ดด้วย ${applicationName}",
+              "สร้าง QR โค้ดด้วย ${applicationName}"
+            ]
+          }
+        },
+        "tr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} ile kod oluştur",
+              "${applicationName} ile QR kod yap"
+            ]
+          }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Створи код у ${applicationName}",
+              "Зроби QR-код у ${applicationName}"
+            ]
+          }
+        },
+        "vi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Tạo mã bằng ${applicationName}",
+              "Tạo mã QR bằng ${applicationName}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "用 ${applicationName} 创建码",
+              "用 ${applicationName} 制作 QR 码"
+            ]
+          }
+        },
+        "zh-Hant" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "用 ${applicationName} 建立條碼",
+              "用 ${applicationName} 製作 QR 碼"
+            ]
+          }
         }
       }
     },
     "Read a code in an image with ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "اقرأ رمزًا في صورة باستخدام ${applicationName}"
+            ]
+          }
+        },
+        "ca" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Llegeix un codi d’una imatge amb ${applicationName}"
+            ]
+          }
+        },
+        "cs" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Přečíst kód v obrázku v ${applicationName}"
+            ]
+          }
+        },
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Læs en kode i et billede med ${applicationName}"
+            ]
+          }
+        },
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Lies einen Code in einem Bild mit ${applicationName}"
+            ]
+          }
+        },
+        "el" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Διάβασε κωδικό σε εικόνα με το ${applicationName}"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",
+            "values" : [
+              "Read a code in an image with ${applicationName}"
+            ]
+          }
+        },
+        "en-GB" : {
+          "stringSet" : {
+            "state" : "translated",
             "values" : [
               "Read a code in an image with ${applicationName}"
             ]
@@ -52,11 +396,211 @@
             ]
           }
         },
+        "fi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Lue koodi kuvasta ${applicationName}-apilla"
+            ]
+          }
+        },
         "fr" : {
           "stringSet" : {
             "state" : "translated",
             "values" : [
               "Lire un code dans une image avec ${applicationName}"
+            ]
+          }
+        },
+        "he" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "קרא קוד בתמונה עם ${applicationName}"
+            ]
+          }
+        },
+        "hi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} से इमेज में कोड पढ़ें"
+            ]
+          }
+        },
+        "hr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Očitaj kôd sa slike pomoću aplikacije ${applicationName}"
+            ]
+          }
+        },
+        "hu" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Olvass be egy kódot képről a ${applicationName} appban"
+            ]
+          }
+        },
+        "id" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Baca kode di gambar dengan ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Leggi un codice in un’immagine con ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}で画像内のコードを読み取って"
+            ]
+          }
+        },
+        "ko" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}에서 이미지 속 코드 읽기"
+            ]
+          }
+        },
+        "ms" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Baca kod dalam imej dengan ${applicationName}"
+            ]
+          }
+        },
+        "nb" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Les en kode i et bilde med ${applicationName}"
+            ]
+          }
+        },
+        "nl" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Lees een code in een afbeelding met ${applicationName}"
+            ]
+          }
+        },
+        "pl" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Odczytaj kod z obrazka w ${applicationName}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Leia um código em uma imagem com o ${applicationName}"
+            ]
+          }
+        },
+        "pt-PT" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Leia um código numa imagem com a ${applicationName}"
+            ]
+          }
+        },
+        "ro" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Citește un cod dintr-o imagine cu ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Прочитай код на изображении в ${applicationName}"
+            ]
+          }
+        },
+        "sk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Prečítaj kód na obrázku v aplikácii ${applicationName}"
+            ]
+          }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Läs en kod i en bild med ${applicationName}"
+            ]
+          }
+        },
+        "th" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "อ่านโค้ดในภาพด้วย ${applicationName}"
+            ]
+          }
+        },
+        "tr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} ile görüntüdeki kodu oku"
+            ]
+          }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Зчитай код на зображенні в ${applicationName}"
+            ]
+          }
+        },
+        "vi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Đọc mã trong hình ảnh bằng ${applicationName}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "用 ${applicationName} 读取图像中的码"
+            ]
+          }
+        },
+        "zh-Hant" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "用 ${applicationName} 讀取影像中的條碼"
             ]
           }
         }
@@ -65,9 +609,79 @@
     "Scan a code with ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "امسح رمزًا باستخدام ${applicationName}",
+              "امسح باستخدام ${applicationName}",
+              "افتح كاميرا ${applicationName}"
+            ]
+          }
+        },
+        "ca" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Escaneja un codi amb ${applicationName}",
+              "Escaneja amb ${applicationName}",
+              "Obre la càmera de ${applicationName}"
+            ]
+          }
+        },
+        "cs" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Naskenovat kód v ${applicationName}",
+              "Skenovat v ${applicationName}",
+              "Otevřít fotoaparát ${applicationName}"
+            ]
+          }
+        },
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scan en kode med ${applicationName}",
+              "Scan med ${applicationName}",
+              "Åbn kameraet i ${applicationName}"
+            ]
+          }
+        },
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scanne einen Code mit ${applicationName}",
+              "Scanne mit ${applicationName}",
+              "Öffne die ${applicationName}-Kamera"
+            ]
+          }
+        },
+        "el" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Σάρωσε κωδικό με το ${applicationName}",
+              "Σάρωση με το ${applicationName}",
+              "Άνοιξε την κάμερα του ${applicationName}"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",
+            "values" : [
+              "Scan a code with ${applicationName}",
+              "Scan with ${applicationName}",
+              "Open the ${applicationName} camera"
+            ]
+          }
+        },
+        "en-GB" : {
+          "stringSet" : {
+            "state" : "translated",
             "values" : [
               "Scan a code with ${applicationName}",
               "Scan with ${applicationName}",
@@ -85,6 +699,16 @@
             ]
           }
         },
+        "fi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Skannaa koodi ${applicationName}-apilla",
+              "Skannaa ${applicationName}-apilla",
+              "Avaa ${applicationName}-kamera"
+            ]
+          }
+        },
         "fr" : {
           "stringSet" : {
             "state" : "translated",
@@ -94,15 +718,318 @@
               "Ouvrir l’appareil photo de ${applicationName}"
             ]
           }
+        },
+        "he" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "סרוק קוד עם ${applicationName}",
+              "סרוק עם ${applicationName}",
+              "פתח את המצלמה של ${applicationName}"
+            ]
+          }
+        },
+        "hi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} से कोड स्कैन करें",
+              "${applicationName} से स्कैन करें",
+              "${applicationName} कैमरा खोलें"
+            ]
+          }
+        },
+        "hr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Skeniraj kôd pomoću aplikacije ${applicationName}",
+              "Skeniraj pomoću aplikacije ${applicationName}",
+              "Otvori kameru aplikacije ${applicationName}"
+            ]
+          }
+        },
+        "hu" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Olvass be egy kódot a ${applicationName} appban",
+              "Szkennelj a ${applicationName} appban",
+              "Nyisd meg a kamerát a ${applicationName} appban"
+            ]
+          }
+        },
+        "id" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Pindai kode dengan ${applicationName}",
+              "Pindai dengan ${applicationName}",
+              "Buka kamera ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scansiona un codice con ${applicationName}",
+              "Scansiona con ${applicationName}",
+              "Apri la fotocamera di ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}でコードをスキャン",
+              "${applicationName}でスキャン",
+              "${applicationName}のカメラを開いて"
+            ]
+          }
+        },
+        "ko" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}에서 코드 스캔하기",
+              "${applicationName}에서 스캔하기",
+              "${applicationName} 카메라 열기"
+            ]
+          }
+        },
+        "ms" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Imbas kod dengan ${applicationName}",
+              "Imbas dengan ${applicationName}",
+              "Buka kamera ${applicationName}"
+            ]
+          }
+        },
+        "nb" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Skann en kode med ${applicationName}",
+              "Skann med ${applicationName}",
+              "Åpne ${applicationName}-kameraet"
+            ]
+          }
+        },
+        "nl" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scan een code met ${applicationName}",
+              "Scan met ${applicationName}",
+              "Open de ${applicationName}-camera"
+            ]
+          }
+        },
+        "pl" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Zeskanuj kod w ${applicationName}",
+              "Skanuj w ${applicationName}",
+              "Otwórz aparat ${applicationName}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Escaneie um código com o ${applicationName}",
+              "Escaneie com o ${applicationName}",
+              "Abra a câmera do ${applicationName}"
+            ]
+          }
+        },
+        "pt-PT" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Leia um código com a ${applicationName}",
+              "Leia com a ${applicationName}",
+              "Abra a câmara da ${applicationName}"
+            ]
+          }
+        },
+        "ro" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scanează un cod cu ${applicationName}",
+              "Scanează cu ${applicationName}",
+              "Deschide camera ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Отсканируй код в ${applicationName}",
+              "Сканируй в ${applicationName}",
+              "Открой камеру ${applicationName}"
+            ]
+          }
+        },
+        "sk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Naskenuj kód v aplikácii ${applicationName}",
+              "Skenuj v aplikácii ${applicationName}",
+              "Otvor kameru v aplikácii ${applicationName}"
+            ]
+          }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Skanna en kod med ${applicationName}",
+              "Skanna med ${applicationName}",
+              "Öppna kameran i ${applicationName}"
+            ]
+          }
+        },
+        "th" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "สแกนโค้ดด้วย ${applicationName}",
+              "สแกนด้วย ${applicationName}",
+              "เปิดกล้อง ${applicationName}"
+            ]
+          }
+        },
+        "tr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} ile kod tara",
+              "${applicationName} ile tara",
+              "${applicationName} kamerasını aç"
+            ]
+          }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Відскануй код у ${applicationName}",
+              "Скануй у ${applicationName}",
+              "Відкрий камеру ${applicationName}"
+            ]
+          }
+        },
+        "vi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Quét mã bằng ${applicationName}",
+              "Quét bằng ${applicationName}",
+              "Mở camera ${applicationName}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "用 ${applicationName} 扫描码",
+              "用 ${applicationName} 扫描",
+              "打开 ${applicationName} 相机"
+            ]
+          }
+        },
+        "zh-Hant" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "用 ${applicationName} 掃描條碼",
+              "用 ${applicationName} 掃描",
+              "打開 ${applicationName} 相機"
+            ]
+          }
         }
       }
     },
     "Scan several codes with ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "امسح عدة رموز باستخدام ${applicationName}",
+              "ابدأ مسحًا متعددًا في ${applicationName}"
+            ]
+          }
+        },
+        "ca" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Escaneja diversos codis amb ${applicationName}",
+              "Inicia un escaneig múltiple a ${applicationName}"
+            ]
+          }
+        },
+        "cs" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Naskenovat několik kódů v ${applicationName}",
+              "Spustit hromadné skenování v ${applicationName}"
+            ]
+          }
+        },
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scan flere koder med ${applicationName}",
+              "Start en multiscanning i ${applicationName}"
+            ]
+          }
+        },
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scanne mehrere Codes mit ${applicationName}",
+              "Starte einen Mehrfach-Scan in ${applicationName}"
+            ]
+          }
+        },
+        "el" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Σάρωσε πολλούς κωδικούς με το ${applicationName}",
+              "Ξεκίνα πολλαπλή σάρωση στο ${applicationName}"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",
+            "values" : [
+              "Scan several codes with ${applicationName}",
+              "Start a multi-scan in ${applicationName}"
+            ]
+          }
+        },
+        "en-GB" : {
+          "stringSet" : {
+            "state" : "translated",
             "values" : [
               "Scan several codes with ${applicationName}",
               "Start a multi-scan in ${applicationName}"
@@ -118,12 +1045,237 @@
             ]
           }
         },
+        "fi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Skannaa useita koodeja ${applicationName}-apilla",
+              "Aloita moniskannaus ${applicationName}-apissa"
+            ]
+          }
+        },
         "fr" : {
           "stringSet" : {
             "state" : "translated",
             "values" : [
               "Scanner plusieurs codes avec ${applicationName}",
               "Démarrer un scan multiple dans ${applicationName}"
+            ]
+          }
+        },
+        "he" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "סרוק כמה קודים עם ${applicationName}",
+              "התחל סריקה מרובה ב־${applicationName}"
+            ]
+          }
+        },
+        "hi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} से कई कोड स्कैन करें",
+              "${applicationName} में मल्टी-स्कैन शुरू करें"
+            ]
+          }
+        },
+        "hr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Skeniraj više kodova pomoću aplikacije ${applicationName}",
+              "Pokreni višestruko skeniranje u aplikaciji ${applicationName}"
+            ]
+          }
+        },
+        "hu" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Olvass be több kódot a ${applicationName} appban",
+              "Indíts többes beolvasást a ${applicationName} appban"
+            ]
+          }
+        },
+        "id" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Pindai beberapa kode dengan ${applicationName}",
+              "Mulai multi-pindai di ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scansiona più codici con ${applicationName}",
+              "Avvia una scansione multipla in ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}で複数のコードをスキャン",
+              "${applicationName}で連続スキャンを開始"
+            ]
+          }
+        },
+        "ko" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}에서 여러 코드 스캔하기",
+              "${applicationName}에서 다중 스캔 시작하기"
+            ]
+          }
+        },
+        "ms" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Imbas beberapa kod dengan ${applicationName}",
+              "Mulakan imbas berbilang dalam ${applicationName}"
+            ]
+          }
+        },
+        "nb" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Skann flere koder med ${applicationName}",
+              "Start flerskanning i ${applicationName}"
+            ]
+          }
+        },
+        "nl" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scan meerdere codes met ${applicationName}",
+              "Start een multiscan in ${applicationName}"
+            ]
+          }
+        },
+        "pl" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Zeskanuj kilka kodów w ${applicationName}",
+              "Rozpocznij wiele skanów w ${applicationName}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Escaneie vários códigos com o ${applicationName}",
+              "Inicie um escaneamento múltiplo no ${applicationName}"
+            ]
+          }
+        },
+        "pt-PT" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Leia vários códigos com a ${applicationName}",
+              "Inicie uma leitura múltipla na ${applicationName}"
+            ]
+          }
+        },
+        "ro" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Scanează mai multe coduri cu ${applicationName}",
+              "Începe o scanare multiplă în ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Отсканируй несколько кодов в ${applicationName}",
+              "Начни мультисканирование в ${applicationName}"
+            ]
+          }
+        },
+        "sk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Naskenuj viac kódov v aplikácii ${applicationName}",
+              "Spusti hromadné skenovanie v aplikácii ${applicationName}"
+            ]
+          }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Skanna flera koder med ${applicationName}",
+              "Starta en multiskanning i ${applicationName}"
+            ]
+          }
+        },
+        "th" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "สแกนหลายโค้ดด้วย ${applicationName}",
+              "เริ่มสแกนหลายรายการใน ${applicationName}"
+            ]
+          }
+        },
+        "tr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} ile birkaç kod tara",
+              "${applicationName} ile çoklu tarama başlat"
+            ]
+          }
+        },
+        "uk" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Відскануй кілька кодів у ${applicationName}",
+              "Почни мультисканування в ${applicationName}"
+            ]
+          }
+        },
+        "vi" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Quét nhiều mã bằng ${applicationName}",
+              "Bắt đầu quét nhiều mã trong ${applicationName}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "用 ${applicationName} 扫描多个码",
+              "在 ${applicationName} 中开始连续扫描"
+            ]
+          }
+        },
+        "zh-Hant" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "用 ${applicationName} 掃描多個條碼",
+              "在 ${applicationName} 中開始連續掃描"
             ]
           }
         }

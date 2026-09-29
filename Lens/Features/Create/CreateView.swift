@@ -194,7 +194,7 @@ private struct IntentRow<Icon: View>: View {
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: 8)
-            Image(systemName: "chevron.right")
+            Image(systemName: "chevron.forward")
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(.tertiary)
                 .accessibilityHidden(true)

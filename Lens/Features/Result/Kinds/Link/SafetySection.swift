@@ -45,6 +45,7 @@ struct FindingRow: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 12) {
             Image(systemName: finding.symbol)
+                .flipsForRightToLeftLayoutDirection(finding.symbol.hasSuffix(".right"))
                 .font(.body.weight(.semibold))
                 .foregroundStyle(finding.level.tint)
                 .frame(width: 24)

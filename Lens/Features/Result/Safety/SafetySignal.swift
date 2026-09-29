@@ -107,7 +107,7 @@ struct SafetySignal: Hashable {
     // MARK: Deep check
 
     static let noRedirects = SafetySignal(.noRedirects, .safe, String(localized: "No redirects"),
-                                          String(localized: "Opens as shown"), "arrow.right")
+                                          String(localized: "Opens as shown"), "arrow.forward")
 
     static func redirectsElsewhere(to host: String) -> SafetySignal {
         SafetySignal(.redirectsElsewhere, .caution, String(localized: "Redirects elsewhere"),

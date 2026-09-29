@@ -6,6 +6,7 @@ import SwiftUI
 ///
 ///     -qaScreen studio            Wi-Fi QR in the studio (Dots tool)
 ///     -qaScreen studio:<tool>     dots | corners | color | logo | frame
+///     -qaScreen studio -qaPreset lagoon -qaLogo YES -qaFrame card   a styled code
 ///     -qaScreen studio:barcode    an EAN-13 in the studio
 ///     -qaScreen create:<intent>   link | wifi | contact | text | email | sms | phone | event | location | product
 ///     -qaScreen create:formats    the Advanced format list
@@ -15,12 +16,15 @@ import SwiftUI
 ///                                 (launch-argument only: nothing is written to the real preferences)
 ///     -qaScreen restyle           the seeded Casa Chen Wi-Fi back in the studio (pass -qaSeed YES)
 ///
-/// Add `-qaFill YES` to `create:<intent>` to open the form with realistic content.
+/// Add `-qaFill YES` to `create:<intent>` to open the form with realistic content, and
+/// `-qaLargeSheet YES` to open a result sheet at the large detent.
 extension QAHarness {
     /// The Create modal's initial navigation path.
     @MainActor static var createPath: [CreateRoute] = []
     /// Studio tool to open with, if any.
     @MainActor static var studioTool: StudioTool?
+    /// Style to open the studio with, from `-qaPreset <id>`, `-qaLogo YES` and `-qaFrame <frame>`.
+    @MainActor static var studioStyle: CodeStyle?
     /// The Settings modal's initial navigation path.
     @MainActor static var settingsPath: [SettingsRoute] = []
 
@@ -28,6 +32,23 @@ extension QAHarness {
     @MainActor static var suppressesAuthPrompt = false
 
     static var fillsForms: Bool { UserDefaults.standard.bool(forKey: "qaFill") }
+
+    /// `-qaHistoryFilter <pinned|created|link|wifi|…>` and `-qaHistorySearch <text>` open History filtered.
+    static var historyCriteria: HistoryCriteria {
+        let defaults = UserDefaults.standard
+        var criteria = HistoryCriteria()
+        switch defaults.string(forKey: "qaHistoryFilter") {
+        case "pinned": criteria.filter = .pinned
+        case "created": criteria.filter = .created
+        case let raw?: if let kind = CodeKind(rawValue: raw) { criteria.filter = .kind(kind) }
+        case nil: break
+        }
+        criteria.search = defaults.string(forKey: "qaHistorySearch") ?? ""
+        return criteria
+    }
+
+    /// `-qaLargeSheet YES` opens a result sheet at the large detent, so a whole result is in view.
+    static var opensSheetsLarge: Bool { UserDefaults.standard.bool(forKey: "qaLargeSheet") }
 
     /// Handles the screens above. Returns false for names it doesn't know.
     @MainActor
@@ -42,6 +63,7 @@ extension QAHarness {
             } else {
                 createPath = [.studio(sampleWiFi)]
                 studioTool = argument.flatMap(StudioTool.init(rawValue:))
+                studioStyle = requestedStudioStyle
             }
             model.modal = .create()
         case "restyle":
@@ -74,6 +96,21 @@ extension QAHarness {
             return false
         }
         return true
+    }
+
+    private static var requestedStudioStyle: CodeStyle? {
+        let defaults = UserDefaults.standard
+        let preset = defaults.string(forKey: "qaPreset").flatMap { id in StylePreset.all.first { $0.id == id } }
+        let frame = defaults.string(forKey: "qaFrame").flatMap(CodeStyle.Frame.init(rawValue:))
+        let logo = defaults.bool(forKey: "qaLogo")
+        guard preset != nil || frame != nil || logo else { return nil }
+        var style = preset?.style ?? CodeStyle()
+        if logo { style.logo = .kindGlyph }
+        if let frame {
+            style.frame = frame
+            style.caption = sampleWiFi.caption
+        }
+        return style
     }
 
     /// Realistic content for a compose form when `-qaFill YES` is passed.

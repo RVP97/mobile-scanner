@@ -2383,16 +2383,58 @@
     },
     "Checks run on your iPhone. Lunet never collects what you scan." : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Checks run on your iPad. Lunet never collects what you scan."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Checks run on your iPhone. Lunet never collects what you scan."
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Las revisiones se hacen en tu iPhone. Lunet nunca recopila lo que escaneas."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Las revisiones se hacen en tu iPad. Lunet nunca recopila lo que escaneas."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Las revisiones se hacen en tu iPhone. Lunet nunca recopila lo que escaneas."
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les vérifications ont lieu sur votre iPhone. Lunet ne collecte jamais ce que vous scannez."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Les vérifications ont lieu sur votre iPad. Lunet ne collecte jamais ce que vous scannez."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Les vérifications ont lieu sur votre iPhone. Lunet ne collecte jamais ce que vous scannez."
+                }
+              }
+            }
           }
         }
       }
@@ -4211,16 +4253,58 @@
     },
     "Every scan and created code will be deleted from this iPhone. This can't be undone." : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Every scan and created code will be deleted from this iPad. This can't be undone."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Every scan and created code will be deleted from this iPhone. This can't be undone."
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se eliminarán de este iPhone todos los escaneos y códigos creados. Esta acción no se puede deshacer."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Se eliminarán de este iPad todos los escaneos y códigos creados. Esta acción no se puede deshacer."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Se eliminarán de este iPhone todos los escaneos y códigos creados. Esta acción no se puede deshacer."
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tous les scans et codes créés seront supprimés de cet iPhone. Cette action est irréversible."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tous les scans et codes créés seront supprimés de cet iPad. Cette action est irréversible."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tous les scans et codes créés seront supprimés de cet iPhone. Cette action est irréversible."
+                }
+              }
+            }
           }
         }
       }
@@ -4937,16 +5021,58 @@
     },
     "History, created codes and settings are stored only on this iPhone." : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "History, created codes and settings are stored only on this iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "History, created codes and settings are stored only on this iPhone."
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El historial, los códigos creados y la configuración se guardan solo en este iPhone."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "El historial, los códigos creados y la configuración se guardan solo en este iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "El historial, los códigos creados y la configuración se guardan solo en este iPhone."
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L’historique, les codes créés et les réglages sont stockés uniquement sur cet iPhone."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "L’historique, les codes créés et les réglages sont stockés uniquement sur cet iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "L’historique, les codes créés et les réglages sont stockés uniquement sur cet iPhone."
+                }
+              }
+            }
           }
         }
       }
@@ -6201,16 +6327,58 @@
     },
     "Lunet follows your iPhone's language. You can choose a different one for Lunet in the Settings app." : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Lunet follows your iPad's language. You can choose a different one for Lunet in the Settings app."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Lunet follows your iPhone's language. You can choose a different one for Lunet in the Settings app."
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lunet usa el idioma de tu iPhone. Puedes elegir otro para Lunet en la app Configuración."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Lunet usa el idioma de tu iPad. Puedes elegir otro para Lunet en la app Configuración."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Lunet usa el idioma de tu iPhone. Puedes elegir otro para Lunet en la app Configuración."
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lunet suit la langue de votre iPhone. Vous pouvez en choisir une autre pour Lunet dans l’app Réglages."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Lunet suit la langue de votre iPad. Vous pouvez en choisir une autre pour Lunet dans l’app Réglages."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Lunet suit la langue de votre iPhone. Vous pouvez en choisir une autre pour Lunet dans l’app Réglages."
+                }
+              }
+            }
           }
         }
       }
@@ -8617,16 +8785,58 @@
     },
     "Place names only, kept on this iPhone" : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Place names only, kept on this iPad"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Place names only, kept on this iPhone"
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo nombres de lugares, guardados en este iPhone"
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Solo nombres de lugares, guardados en este iPad"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Solo nombres de lugares, guardados en este iPhone"
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Noms de lieux uniquement, conservés sur cet iPhone"
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Noms de lieux uniquement, conservés sur cet iPad"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Noms de lieux uniquement, conservés sur cet iPhone"
+                }
+              }
+            }
           }
         }
       }
@@ -9039,16 +9249,58 @@
     },
     "Put Lunet one press away, even when your iPhone is locked." : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Put Lunet one press away, even when your iPad is locked."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Put Lunet one press away, even when your iPhone is locked."
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ten Lunet a un botón de distancia, incluso con el iPhone bloqueado."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ten Lunet a un botón de distancia, incluso con el iPad bloqueado."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ten Lunet a un botón de distancia, incluso con el iPhone bloqueado."
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accédez à Lunet d’une simple pression, même quand l’iPhone est verrouillé."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Accédez à Lunet d’une simple pression, même quand l’iPad est verrouillé."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Accédez à Lunet d’une simple pression, même quand l’iPhone est verrouillé."
+                }
+              }
+            }
           }
         }
       }
@@ -12417,16 +12669,58 @@
     },
     "They'll be removed from this iPhone." : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "They'll be removed from this iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "They'll be removed from this iPhone."
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se eliminarán de este iPhone."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Se eliminarán de este iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Se eliminarán de este iPhone."
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ils seront supprimés de cet iPhone."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ils seront supprimés de cet iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ils seront supprimés de cet iPhone."
+                }
+              }
+            }
           }
         }
       }
@@ -12573,16 +12867,58 @@
     },
     "This code has a network name iPhone can't use." : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "This code has a network name iPad can't use."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "This code has a network name iPhone can't use."
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este código tiene un nombre de red que el iPhone no puede usar."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Este código tiene un nombre de red que el iPad no puede usar."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Este código tiene un nombre de red que el iPhone no puede usar."
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ce code contient un nom de réseau que l’iPhone ne peut pas utiliser."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ce code contient un nom de réseau que l’iPad ne peut pas utiliser."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ce code contient un nom de réseau que l’iPhone ne peut pas utiliser."
+                }
+              }
+            }
           }
         }
       }
@@ -12813,16 +13149,58 @@
     },
     "To lock History, set a passcode or Face ID on this iPhone first." : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "To lock History, set a passcode or Face ID on this iPad first."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "To lock History, set a passcode or Face ID on this iPhone first."
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para bloquear el historial, primero configura un código o Face ID en este iPhone."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Para bloquear el historial, primero configura un código o Face ID en este iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Para bloquear el historial, primero configura un código o Face ID en este iPhone."
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pour verrouiller l’historique, configurez d’abord un code ou Face ID sur cet iPhone."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Pour verrouiller l’historique, configurez d’abord un code ou Face ID sur cet iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Pour verrouiller l’historique, configurez d’abord un code ou Face ID sur cet iPhone."
+                }
+              }
+            }
           }
         }
       }
@@ -13101,16 +13479,58 @@
     },
     "Turn on Save History to keep the codes you scan on this iPhone." : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Turn on Save History to keep the codes you scan on this iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Turn on Save History to keep the codes you scan on this iPhone."
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activa Guardar historial para conservar en este iPhone los códigos que escaneas."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Activa Guardar historial para conservar en este iPad los códigos que escaneas."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Activa Guardar historial para conservar en este iPhone los códigos que escaneas."
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activez Enregistrer l’historique pour conserver sur cet iPhone les codes que vous scannez."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Activez Enregistrer l’historique pour conserver sur cet iPad les codes que vous scannez."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Activez Enregistrer l’historique pour conserver sur cet iPhone les codes que vous scannez."
+                }
+              }
+            }
           }
         }
       }
@@ -14093,16 +14513,58 @@
     },
     "Your iPhone will join automatically next time." : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Your iPad will join automatically next time."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Your iPhone will join automatically next time."
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tu iPhone se conectará automáticamente la próxima vez."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tu iPad se conectará automáticamente la próxima vez."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tu iPhone se conectará automáticamente la próxima vez."
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Votre iPhone se connectera automatiquement la prochaine fois."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Votre iPad se connectera automatiquement la prochaine fois."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Votre iPhone se connectera automatiquement la prochaine fois."
+                }
+              }
+            }
           }
         }
       }
@@ -14125,16 +14587,58 @@
     },
     "Your scans stay on your iPhone." : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Your scans stay on your iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Your scans stay on your iPhone."
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tus escaneos se quedan en tu iPhone."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tus escaneos se quedan en tu iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tus escaneos se quedan en tu iPhone."
+                }
+              }
+            }
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vos scans restent sur votre iPhone."
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vos scans restent sur votre iPad."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vos scans restent sur votre iPhone."
+                }
+              }
+            }
           }
         }
       }

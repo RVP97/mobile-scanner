@@ -23,8 +23,8 @@ struct RootView: View {
         .sheet(item: homeSheet) { SheetContent(sheet: $0) }
         .sheet(item: $model.modal) { modal in
             switch modal {
-            case .create(let route): CreateView(route: route)
-            case .settings: SettingsView()
+            case .create(let route): CreateView(route: route).pageSizedSheet()
+            case .settings: SettingsView().pageSizedSheet()
             }
         }
         .fullScreenCover(item: $model.codeOnDisplay) { ShowCodeView(item: $0) }

@@ -7,6 +7,7 @@ struct YourCodesSection: View {
     @Environment(AppModel.self) private var model
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.horizontalSizeClass) private var sizeClass
     @Query(CodeShelf.descriptor) private var records: [ScanRecord]
 
     var body: some View {
@@ -29,6 +30,8 @@ struct YourCodesSection: View {
                     ForEach(codes) { card(for: $0) }
                 }
                 .padding(.horizontal, 20)
+            } else if sizeClass == .regular {
+                grid(codes)
             } else {
                 carousel(codes)
             }
@@ -53,6 +56,17 @@ struct YourCodesSection: View {
         .scrollTargetBehavior(.viewAligned)
         .contentMargins(.horizontal, 20, for: .scrollContent)
         .scrollClipDisabled()
+    }
+
+    /// iPad: every card in view, two to a row, like passes laid out on a table.
+    private func grid(_ codes: [ScanRecord]) -> some View {
+        LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
+            ForEach(codes) { record in
+                card(for: record)
+                    .aspectRatio(1.586, contentMode: .fit)
+            }
+        }
+        .padding(.horizontal, 20)
     }
 
     private func card(for record: ScanRecord) -> some View {

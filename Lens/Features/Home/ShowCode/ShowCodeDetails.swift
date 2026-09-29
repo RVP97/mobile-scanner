@@ -148,7 +148,7 @@ struct PassFace: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(pass.flightDesignator)
                         .font(.headline)
-                        .fontDesign(.monospaced)
+                        .monospacedDigit()
                     Text(pass.airlineName ?? String(localized: CodeKind.travel.title))
                         .font(.footnote)
                         .foregroundStyle(.white.opacity(0.88))

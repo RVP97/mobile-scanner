@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://lunet.vallepinto.com/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lunet.vallepinto.com/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://lunet.vallepinto.com/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lunet.vallepinto.com/"/>
+  </url>
+  <url>
+    <loc>https://lunet.vallepinto.com/es/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lunet.vallepinto.com/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://lunet.vallepinto.com/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lunet.vallepinto.com/"/>
+  </url>
+  <url>
+    <loc>https://lunet.vallepinto.com/support</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lunet.vallepinto.com/support"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://lunet.vallepinto.com/es/support"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lunet.vallepinto.com/support"/>
+  </url>
+  <url>
+    <loc>https://lunet.vallepinto.com/es/support</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lunet.vallepinto.com/support"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://lunet.vallepinto.com/es/support"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lunet.vallepinto.com/support"/>
+  </url>
+  <url>
+    <loc>https://lunet.vallepinto.com/privacy</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lunet.vallepinto.com/privacy"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://lunet.vallepinto.com/es/privacy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lunet.vallepinto.com/privacy"/>
+  </url>
+  <url>
+    <loc>https://lunet.vallepinto.com/es/privacy</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lunet.vallepinto.com/privacy"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://lunet.vallepinto.com/es/privacy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lunet.vallepinto.com/privacy"/>
+  </url>
+</urlset>

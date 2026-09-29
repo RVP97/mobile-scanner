@@ -10,6 +10,10 @@ struct ShowCodeView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var brightness = BrightnessBoost()
     @State private var image: UIImage?
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    /// iPad shows the code larger, for scanning from across a counter.
+    private var columnWidth: CGFloat { sizeClass == .regular ? 680 : 560 }
 
     var body: some View {
         ScrollView {
@@ -27,7 +31,7 @@ struct ShowCodeView: View {
             .padding(.horizontal, 20)
             .padding(.top, 12)
             .padding(.bottom, 24)
-            .frame(maxWidth: 560)
+            .frame(maxWidth: columnWidth)
             .frame(maxWidth: .infinity)
         }
         .scrollBounceBehavior(.basedOnSize)
@@ -35,7 +39,8 @@ struct ShowCodeView: View {
         .background(Color(.systemGroupedBackground))
         .safeAreaInset(edge: .bottom, spacing: 0) { bottomBar }
         .task(id: item.id) {
-            image = CodeArtwork.image(for: item, dimension: item.symbology.isTwoDimensional && item.symbology != .pdf417 ? 300 : 340)
+            let side: CGFloat = item.symbology.isTwoDimensional && item.symbology != .pdf417 ? 300 : 340
+            image = CodeArtwork.image(for: item, dimension: sizeClass == .regular ? side * 1.5 : side)
         }
         .onAppear(perform: stayBright)
         .onDisappear(perform: restore)
@@ -81,7 +86,7 @@ struct ShowCodeView: View {
         .padding(.horizontal, 20)
         .padding(.top, 12)
         .padding(.bottom, 8)
-        .frame(maxWidth: 560)
+        .frame(maxWidth: columnWidth)
         .background(alignment: .top) {
             LinearGradient(
                 colors: [Color(.systemGroupedBackground).opacity(0), Color(.systemGroupedBackground)],
@@ -147,9 +152,11 @@ struct CodePlate: View {
     var label: Text
 
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         let isSquare = symbology.isTwoDimensional && symbology != .pdf417
+        let scale: CGFloat = sizeClass == .regular ? 1.5 : 1
         Group {
             if let image {
                 Image(uiImage: image)
@@ -160,7 +167,7 @@ struct CodePlate: View {
                 Color.white
             }
         }
-        .frame(maxWidth: isSquare ? 300 : 340)
+        .frame(maxWidth: (isSquare ? 300 : 340) * scale)
         .aspectRatio(image.map { $0.size.width / max($0.size.height, 1) } ?? 1, contentMode: .fit)
         .padding(isSquare ? 24 : 20)
         .background {

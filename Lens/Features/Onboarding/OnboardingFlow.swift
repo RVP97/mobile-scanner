@@ -55,6 +55,8 @@ struct OnboardingFlow: View {
         }
     }
 
+    private var hidesSkip: Bool { step == .everywhere || step == .camera }
+
     private var header: some View {
         HStack(spacing: 16) {
             OnboardingProgress(count: steps.count, current: index)
@@ -62,8 +64,9 @@ struct OnboardingFlow: View {
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .frame(minWidth: 44, minHeight: 44)
-                .opacity(step == .everywhere ? 0 : 1)
-                .disabled(step == .everywhere)
+                // No skipping past the camera explanation: it must always lead to the system prompt.
+                .opacity(hidesSkip ? 0 : 1)
+                .disabled(hidesSkip)
         }
         .padding(.leading, 24)
         .padding(.trailing, 12)

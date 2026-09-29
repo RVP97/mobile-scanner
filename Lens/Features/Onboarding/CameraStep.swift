@@ -25,13 +25,10 @@ struct CameraStep: View {
                 .background(Color(.secondarySystemBackground), in: .rect(cornerRadius: 20, style: .continuous))
             }
         } actions: {
-            Button("Allow Camera", action: requestAccess)
+            // App Review 5.1.1(iv): a neutral label, and the only way forward is the system prompt.
+            Button("Continue", action: requestAccess)
                 .buttonStyle(.primaryAction())
                 .disabled(isRequesting)
-            Button("Not Now", action: onContinue)
-                .font(.body.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, minHeight: 44)
         }
     }
 

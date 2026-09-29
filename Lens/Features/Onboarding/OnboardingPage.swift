@@ -6,10 +6,12 @@ struct OnboardingPage<Content: View, Actions: View>: View {
     var centered = false
     @ViewBuilder var content: Content
     @ViewBuilder var actions: Actions
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         ViewThatFits(in: .vertical) {
-            if centered {
+            // iPad has the room: every page sits in the middle rather than hugging the top.
+            if centered || sizeClass == .regular {
                 padded
                     .frame(maxHeight: .infinity)
                     .offset(y: -16)

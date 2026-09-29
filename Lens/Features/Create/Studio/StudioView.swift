@@ -13,6 +13,7 @@ struct StudioView: View {
         let model = StudioModel(document: document, style: style, record: record)
 #if DEBUG
         if let tool = QAHarness.studioTool, model.tools.contains(tool) { model.tool = tool }
+        if let style = QAHarness.studioStyle { model.style = style }
 #endif
         _model = State(initialValue: model)
     }

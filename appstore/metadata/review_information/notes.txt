@@ -1,0 +1,35 @@
+Thank you for reviewing Lunet (version 2.0; formerly listed as "Fast QR & Barcode").
+
+NO LOGIN NEEDED
+Lunet has no accounts, sign-in, subscriptions or in-app purchases. Every feature is available on first launch.
+
+SAMPLE CODES (attached)
+The attachment contains four sample codes. Open them on a second screen and point the camera at them, or save them to Photos on the test device and use the Photos button on Home to scan from an image. No special hardware is needed.
+1-boarding-pass-pdf417.png  A sample IATA boarding pass barcode (fictional passenger "APPLESEED/JOHNNY").
+2-danger-link-qr.png        https://atlas-coffee.co@n0rthbank-login.co/pay (a phishing-style link).
+3-safe-link-qr.png          https://www.apple.com
+4-wifi-qr.png               Wi-Fi network "Lunet Review" (WPA).
+
+HOW TO TEST LINK SAFETY
+1. Scan 2-danger-link-qr.png. Lunet shows a red Danger verdict and explains in plain words that the text before "@" is a decoy and the link really goes to n0rthbank-login.co, a lookalike of a bank domain. "Don't Open" is the default button; the link can only be opened by an explicit extra step.
+2. Scan 3-safe-link-qr.png. Lunet follows any redirects, checks the domain, and shows a Safe verdict with the real destination before offering to open it.
+The link check contacts only the scanned link's own server (to read redirects without loading the page) and the public RDAP registry (rdap.org) for the domain's registration date. If the device is offline, Lunet still gives an on-device verdict.
+
+HOW TO TEST ADD TO APPLE WALLET
+1. Scan 1-boarding-pass-pdf417.png. Lunet recognizes it as a boarding pass (flight NR 412, MEX to SFO) and shows it as a pass card.
+2. Tap "Add to Apple Wallet". The standard PassKit "Add" sheet appears with a pass branded "Lunet", showing the flight details and the same barcode.
+3. The pass is also available from Home > Your codes, where tapping it shows the barcode full screen at maximum brightness.
+About the passes: Lunet does not impersonate airlines or venues. Each pass is signed with the developer's own Pass Type ID (pass.com.rvp97.scanner, team JWDA82S3B5), its organization name and logo text are "Lunet", it uses Lunet's own icon and colors, and the back of the pass states that it was created in Lunet and is not issued by the carrier or venue. The pass carries the exact barcode the user scanned, so it works at the gate the same way the paper or screenshot would.
+Signing happens on our small signing service because signing keys cannot ship inside an app. Requests are protected by App Attest, the service returns the signed .pkpass immediately, and it does not store the pass or its contents. App Attest requires a physical device, so please test this step on a device rather than in Simulator.
+
+OTHER FEATURES
+- Wi-Fi: scan 4-wifi-qr.png and tap Join. iOS shows its own confirmation to join "Lunet Review" (the network does not need to exist to see the flow).
+- History: every scan appears in History with search and filters. Settings > History lets you lock History with Face ID (or the device passcode) and export it as CSV.
+- Location of scans is off by default and only requested if the user turns it on in Settings; it stays on the device.
+- Create: tap Create on Home to make a Wi-Fi, link, contact or other code, then open Studio to style it.
+- Control Center, Lock Screen and Action button controls, widgets, and Shortcuts actions can be added from their standard iOS editors; they open the scanner.
+
+PRIVACY
+No ads, no analytics, no tracking, no third-party SDKs. Scan history is stored only on the device. Network use is limited to the link check above, product lookups on Open Food Facts / Open Products Facts (only the barcode number is sent), and Wallet pass signing.
+
+Contact: https://lunet.vallepinto.com/support

@@ -65,12 +65,12 @@ enum HistorySamples {
 
         let parking = ScanRecord(raw: "https://bit.ly/3xQpark", symbology: .qr, kind: .link,
                                  title: "n0rthbank-login.co", subtitle: "Parking meter · looks like northbank",
-                                 createdAt: at(daysAgo: 2, 18, 34))
+                                 createdAt: at(daysAgo: 1, 18, 34))
         parking.safetyRaw = SafetyVerdict.Level.danger.rawValue
 
         let flyer = ScanRecord(raw: "https://tinyurl.com/yoga-roma", symbology: .qr, kind: .link,
                                title: "Sunrise Yoga — Parque México", subtitle: "tinyurl.com · redirects twice",
-                               createdAt: at(daysAgo: 3, 8, 15))
+                               createdAt: at(daysAgo: 1, 8, 15))
         flyer.safetyRaw = SafetyVerdict.Level.caution.rawValue
 
         return [menu, pen, wifi, maya, parking, flyer, locker, shipment, flight, home, card]

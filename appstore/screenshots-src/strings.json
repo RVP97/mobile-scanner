@@ -1,0 +1,39 @@
+{
+  "_comment": "Headlines and sublines per App Store locale. `app` is the language the app is launched in for captures. In a headline, \\n forces a line break and *text* takes the scene's highlight color. Keep headlines to about 28 characters.",
+  "en-US": {
+    "app": "en",
+    "hero":       { "title": "Scan anything.\n*Know before you go.*", "sub": "Any QR code or barcode. Every link checked first." },
+    "safety":     { "title": "Catches *scam*\nQR codes", "sub": "Lookalike links are stopped before anything opens." },
+    "answers":    { "title": "Every code,\nits own answer", "sub": "Join the Wi-Fi. Save the flight. Add the contact." },
+    "show":       { "title": "Your codes,\none tap away", "sub": "Share your Wi-Fi at full brightness." },
+    "studio":     { "title": "Make it yours", "sub": "Style your QR codes. Lunet checks they still scan." },
+    "everywhere": { "title": "Scan from\nanywhere", "sub": "Control Center, Lock Screen, Action button and widgets." },
+    "everywhere_ipad": { "title": "Scan from\nanywhere", "sub": "Control Center, Lock Screen, widgets and Siri." },
+    "history":    { "title": "History that\nkeeps you safe", "sub": "Every scan, searchable, with its safety check." },
+    "privacy":    { "title": "Private\nby design", "sub": "No account. No ads. No tracking." }
+  },
+  "es-MX": {
+    "app": "es",
+    "hero":       { "title": "Escanea lo que sea.\n*Sabe a dónde vas.*", "sub": "Cualquier QR o código de barras. Cada enlace, revisado antes." },
+    "safety":     { "title": "Detecta QR\n*fraudulentos*", "sub": "Los enlaces que imitan a otros se detienen antes de abrirse." },
+    "answers":    { "title": "Cada código,\nsu respuesta", "sub": "Únete al Wi-Fi. Guarda el vuelo. Agrega el contacto." },
+    "show":       { "title": "Tus códigos,\na un toque", "sub": "Comparte tu Wi-Fi con el brillo al máximo." },
+    "studio":     { "title": "Hazlo tuyo", "sub": "Dale estilo a tus QR. Lunet comprueba que se lean." },
+    "everywhere": { "title": "Escanea desde\ndonde sea", "sub": "Centro de control, pantalla bloqueada, botón de acción y widgets." },
+    "everywhere_ipad": { "title": "Escanea desde\ndonde sea", "sub": "Centro de control, pantalla bloqueada, widgets y Siri." },
+    "history":    { "title": "Un historial\nque te cuida", "sub": "Cada escaneo, con búsqueda y su revisión de seguridad." },
+    "privacy":    { "title": "Privado\npor diseño", "sub": "Sin cuenta. Sin anuncios. Sin rastreo." }
+  },
+  "fr-FR": {
+    "app": "fr",
+    "hero":       { "title": "Scannez tout.\n*Sachez où vous allez.*", "sub": "Tout QR code ou code-barres. Chaque lien vérifié d’abord." },
+    "safety":     { "title": "Démasque les\nQR codes *piégés*", "sub": "Les liens imitateurs sont bloqués avant de s’ouvrir." },
+    "answers":    { "title": "À chaque code\nsa réponse", "sub": "Rejoignez le Wi-Fi. Gardez le vol. Ajoutez le contact." },
+    "show":       { "title": "Vos codes,\nen un geste", "sub": "Partagez votre Wi-Fi en pleine luminosité." },
+    "studio":     { "title": "À votre image", "sub": "Personnalisez vos QR codes. Lunet vérifie qu’ils se scannent." },
+    "everywhere": { "title": "Scannez\nde partout", "sub": "Centre de contrôle, écran verrouillé, bouton Action et widgets." },
+    "everywhere_ipad": { "title": "Scannez\nde partout", "sub": "Centre de contrôle, écran verrouillé, widgets et Siri." },
+    "history":    { "title": "Un historique\nqui vous protège", "sub": "Chaque scan, consultable, avec sa vérification." },
+    "privacy":    { "title": "Privé\npar conception", "sub": "Sans compte. Sans pub. Sans pistage." }
+  }
+}

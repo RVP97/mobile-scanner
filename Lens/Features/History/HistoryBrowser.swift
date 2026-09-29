@@ -9,7 +9,7 @@ struct HistoryBrowser: View {
     @AppStorage(Pref.requireFaceID) private var requireFaceID = Pref.Default.requireFaceID
     @Query(HistoryBrowser.anyRecord) private var anyRecord: [ScanRecord]
 
-    @State private var criteria = HistoryCriteria()
+    @State private var criteria = HistoryBrowser.initialCriteria
     @State private var editMode: EditMode = .inactive
     @State private var selection = Set<UUID>()
     @State private var confirmingDelete = false
@@ -21,6 +21,14 @@ struct HistoryBrowser: View {
     }
 
     private let lock = HistoryLock.shared
+
+    private static var initialCriteria: HistoryCriteria {
+        #if DEBUG
+        return QAHarness.historyCriteria
+        #else
+        return HistoryCriteria()
+        #endif
+    }
 
     private var isEditing: Bool { editMode.isEditing }
     private var isLocked: Bool { requireFaceID && !lock.isUnlocked }

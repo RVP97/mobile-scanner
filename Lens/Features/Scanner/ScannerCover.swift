@@ -356,6 +356,7 @@ private struct ScannerScrims: View {
 struct SheetContent: View {
     let sheet: AppModel.Sheet
     var overCamera = false
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         Group {
@@ -363,14 +364,24 @@ struct SheetContent: View {
             case .result(let result):
                 ResultView(result: result, offersScanAnother: overCamera)
                     .id(result.id)
-                    .presentationDetents([AppModel.resultDetent, .large])
+                    .presentationDetents(resultDetents)
             case .multiReview:
                 MultiScanReview()
                     .presentationDetents([.medium, .large])
             }
         }
         .presentationDragIndicator(.visible)
+        // On iPad, room for a whole result; the default form sheet would cut a flagged link short.
+        .pageSizedSheet()
         .modifier(CameraSheetSurface(isOverCamera: overCamera))
+    }
+
+    private var resultDetents: Set<PresentationDetent> {
+        #if DEBUG
+        if QAHarness.opensSheetsLarge { return [.large] }
+        #endif
+        // On iPad the sheet is already sized to the page; a fraction of it would cut the result short.
+        return sizeClass == .regular ? [.large] : [AppModel.resultDetent, .large]
     }
 }
 

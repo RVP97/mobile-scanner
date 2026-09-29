@@ -1,0 +1,63 @@
+# Lunet release lanes. Auth: App Store Connect API key from env
+# ASC_KEY_ID / ASC_ISSUER_ID / ASC_KEY_PATH (e.g. `set -a; source ~/.appstoreconnect/trail.env`).
+default_platform(:ios)
+
+REPO = File.expand_path("../..", __dir__)
+
+platform :ios do
+  before_all do
+    app_store_connect_api_key(
+      key_id: ENV.fetch("ASC_KEY_ID"),
+      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      key_filepath: File.expand_path(ENV.fetch("ASC_KEY_PATH"))
+    )
+  end
+
+  desc "Archive the app and upload it to App Store Connect"
+  lane :upload_build do
+    sh("cd #{REPO}/Lens && xcodegen generate")
+    build_app(
+      project: "#{REPO}/Lens/Lens.xcodeproj",
+      scheme: "Lens",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "#{REPO}/Lens/build/release",
+      xcargs: "-allowProvisioningUpdates"
+    )
+    upload_to_app_store(skip_metadata: true, skip_screenshots: true, precheck_include_in_app_purchases: false)
+  end
+
+  desc "Push listing text + screenshots for the version being edited (no submission)"
+  lane :metadata do |options|
+    deliver(
+      app_version: options[:version] || "2.0.0",
+      metadata_path: "#{REPO}/appstore/metadata",
+      screenshots_path: "#{REPO}/appstore/screenshots",
+      overwrite_screenshots: true,
+      skip_binary_upload: true,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      run_precheck_before_submit: false
+    )
+  end
+
+  desc "Attach the build and submit the version for review"
+  lane :submit do |options|
+    deliver(
+      app_version: options[:version] || "2.0.0",
+      build_number: options[:build] || "100",
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_screenshots: true,
+      submit_for_review: true,
+      automatic_release: false,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: false,
+        content_rights_contains_third_party_content: false
+      }
+    )
+  end
+end

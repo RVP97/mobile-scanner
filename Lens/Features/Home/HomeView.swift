@@ -12,6 +12,7 @@ struct HomeView: View {
     @AppStorage(Pref.requireFaceID) private var requireFaceID = Pref.Default.requireFaceID
     @AppStorage(Pref.successfulScans) private var successfulScans = 0
     @AppStorage(Pref.lastReviewPromptScans) private var lastReviewPromptScans = 0
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     /// Reads codes from photos picked on Home.
     @State private var importer = ScanCoordinator()
@@ -39,6 +40,9 @@ struct HomeView: View {
             }
             .padding(.top, 8)
             .padding(.bottom, 24)
+            // On iPad, a readable column rather than a row stretched across the screen.
+            .frame(maxWidth: sizeClass == .regular ? 820 : .infinity)
+            .frame(maxWidth: .infinity)
         }
         .scrollIndicators(.hidden)
         .background(Color(.systemGroupedBackground))

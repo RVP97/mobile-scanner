@@ -7,6 +7,7 @@ struct YourCodesSection: View {
     @Environment(AppModel.self) private var model
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.horizontalSizeClass) private var sizeClass
     @Query(CodeShelf.descriptor) private var records: [ScanRecord]
 
     var body: some View {
@@ -29,10 +30,21 @@ struct YourCodesSection: View {
                     ForEach(codes) { card(for: $0) }
                 }
                 .padding(.horizontal, 20)
+            } else if sizeClass == .regular {
+                grid(codes)
             } else {
                 carousel(codes)
             }
         }
+        // The "My Code" widget mirrors the front card of the shelf.
+        .task(id: codes.first.map { "\($0.id)\($0.raw)" }) { syncWidget(with: codes.first) }
+    }
+
+    private func syncWidget(with record: ScanRecord?) {
+        guard let record,
+              let image = CodeRenderer.image(raw: record.raw, symbology: record.symbology, dimension: 240)
+        else { return SharedCodeStore.clearPinnedCode() }
+        SharedCodeStore.setPinnedCode(image: image, title: record.historyTitle)
     }
 
     private func carousel(_ codes: [ScanRecord]) -> some View {
@@ -53,6 +65,17 @@ struct YourCodesSection: View {
         .scrollTargetBehavior(.viewAligned)
         .contentMargins(.horizontal, 20, for: .scrollContent)
         .scrollClipDisabled()
+    }
+
+    /// iPad: every card in view, two to a row, like passes laid out on a table.
+    private func grid(_ codes: [ScanRecord]) -> some View {
+        LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
+            ForEach(codes) { record in
+                card(for: record)
+                    .aspectRatio(1.586, contentMode: .fit)
+            }
+        }
+        .padding(.horizontal, 20)
     }
 
     private func card(for record: ScanRecord) -> some View {

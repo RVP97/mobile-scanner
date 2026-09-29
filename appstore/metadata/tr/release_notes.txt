@@ -1,0 +1,12 @@
+Yepyeni Fast QR & Barcode ile tanış: Lunet.
+
+Uygulamayı iPhone ve iPad için yerel bir uygulama olarak sıfırdan yeniden geliştirdik ve ona yakışan yeni bir isim verdik.
+
+- Link güvenliği: her link açılmadan önce kontrol edilir; gerçek adres, taklit alan adları ve kısaltılmış linkler sade bir dille işaretlenir
+- Her koda doğru işlem: Wi-Fi’ye bağlan, biniş kartlarını Apple Cüzdan’a ekle, kişileri ve etkinlikleri kaydet, ürünlere bak, kargoları takip et
+- Kodların: Wi-Fi’n, kartvizitin ve kartların ana ekranda, tek dokunuşla tam ekran
+- Studio: QR kodları özel stiller, renkler, logolar ve çerçevelerle tasarla
+- Denetim Merkezi, Kilitli Ekran, Eylem düğmesi, widget’lar ve Siri ile tarama
+- Liquid Glass, koyu mod ve tam erişilebilirlikle yenilenmiş tasarım
+
+Tarama geçmişin seninle geliyor. Kaydettiğin her şey bıraktığın yerde.

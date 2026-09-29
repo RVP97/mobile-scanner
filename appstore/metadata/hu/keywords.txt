@@ -1,0 +1,1 @@
+kód,beolvasó,wifi,generátor,wallet,beszállókártya,adathalászat,csalás,termék,ean,upc,pdf417

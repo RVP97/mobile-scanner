@@ -1,0 +1,1 @@
+код,wifi,генератор,товар,фишинг,билет,ean,upc,pdf417,aztec,datamatrix

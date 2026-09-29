@@ -1,0 +1,1 @@
+scanner,barcode,reader,code,scan,wifi,generator,wallet,ticket,phishing,scam,product,pdf417,ean

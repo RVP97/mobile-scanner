@@ -1,0 +1,36 @@
+Namierte fotoaparát na akýkoľvek kód a Lunet vám povie, čo to je, kam naozaj vedie a čo s ním môžete urobiť. Rýchla čítačka QR kódov a skener čiarových kódov bez účtu, bez reklám a bez sledovania.
+
+OVERENÉ SKÔR, NEŽ ŤUKNETE
+Phishing cez QR kódy prudko rastie: nálepka na parkovacom automate, falošné menu, leták o „nedoručenom balíku“. Lunet preverí každý odkaz skôr, než sa čokoľvek otvorí.
+- Sleduje presmerovania a ukáže skutočný cieľ, nie ten vytlačený na tabuľke
+- Odhalí klamlivo podobné domény, napríklad n0rthbank.com, ktorá sa vydáva za northbank.com
+- Upozorní na úplne nové domény, skryté triky so zavináčom, skracovače odkazov a nezabezpečené stránky
+- Vydá jasný verdikt – Bezpečné, Buďte opatrní alebo Nebezpečenstvo – s vysvetlením ľudskou rečou
+- Pri nebezpečných kódoch je predvolenou voľbou Neotvárať
+
+SPRÁVNA ODPOVEĎ NA KAŽDÝ KÓD
+Lunet číta 19 formátov vrátane QR, EAN, UPC, Code 128, PDF417, Aztec a Data Matrix a vie, na čo ktorý slúži.
+- Wi-Fi: pripojte sa k sieti jedným ťuknutím
+- Palubné lístky: pridajte ich do Apple Wallet alebo kalendára
+- Kontakty a udalosti: uložte ich rovno do iPhonu
+- Produkty: zistite zloženie a podrobnosti
+- Zásielky: sledujte balík
+- E-maily, správy, mapy a kryptoadresy, každé spracované správne
+Skenujte z fotiek a snímok obrazovky alebo zachyťte viac kódov naraz hromadným skenovaním.
+
+VAŠE KÓDY NA JEDNO ŤUKNUTIE
+Majte domácu Wi-Fi, svoju vizitku a nadchádzajúce palubné lístky ako karty v štýle Walletu na domovskej obrazovke aplikácie. Jedno ťuknutie zobrazí kód na celej obrazovke s maximálnym jasom, pripravený pri letiskovej bráne alebo pre telefón kamaráta.
+História si pamätá všetko, čo naskenujete, s vyhľadávaním, filtrami a pripínaním. Zamknite ju pomocou Face ID, exportujte do CSV a ak chcete, uvidíte, kde ste ktorý kód naskenovali.
+
+VYTVÁRAJTE KRÁSNE KÓDY
+Vytvárajte kódy pre Wi-Fi, odkazy, kontakty, text, e-maily, SMS, hovory, udalosti, miesta a čiarové kódy produktov v 15 symbológiách. V Studiu upravíte QR kódom bodky, rohy, farby, prechody, logo a rámčeky a Lunet priamo v zariadení overí, že sa návrh dá stále naskenovať.
+
+VŽDY PO RUKE
+Spustite skenovanie z Ovládacieho centra, zamknutej obrazovky, Akčného tlačidla, widgetu alebo cez Siri. Hromadné skenovanie ukazuje priebeh v Živej aktivite a Skratky dokážu naskenovať kódy v ľubovoľnom obrázku.
+
+SÚKROMIE OD ZÁKLADOV
+Vaša história nikdy neopustí zariadenie. Lunet sa pripojí k internetu, len keď musí: aby overil odkaz na jeho vlastnom serveri, vyhľadal produkt v Open Food Facts alebo podpísal kartu, ktorú pridávate do Apple Wallet. Nič sa neukladá a nič sa nesleduje.
+
+Natívne pre iPhone a iPad, s Liquid Glass, svetlým aj tmavým vzhľadom, Dynamickým písmom a VoiceOverom.
+
+Naskenujte čokoľvek. Otvorte len to, čo je bezpečné.

@@ -1,0 +1,36 @@
+Apunta la càmera a qualsevol codi i Lunet et diu què és, on porta de veritat i què pots fer tot seguit. Un lector QR i escàner de codis de barres que posa la teva seguretat per davant. Sense compte, sense anuncis, sense seguiment.
+
+COMPROVAT ABANS DE TOCAR
+El phishing amb QR no para de créixer: un adhesiu sobre el parquímetre, una carta falsa al restaurant, un fulletó de «paquet no lliurat». Lunet examina cada enllaç abans d'obrir res.
+- Segueix les redireccions per mostrar-te la destinació real, no la que hi ha impresa al cartell
+- Detecta dominis que n'imiten d'altres, com n0rthbank.com fent-se passar per northbank.com
+- Avisa de dominis acabats de crear, trucs amagats amb @, escurçadors d'enllaços i pàgines no segures
+- Et dona un veredicte clar: Segur, Compte o Perill, amb els motius explicats en paraules planeres
+- Amb els codis perillosos, «No obrir» és l'opció per defecte
+
+LA RESPOSTA ADEQUADA PER A CADA CODI
+Lunet llegeix 19 formats, entre els quals QR, EAN, UPC, Code 128, PDF417, Aztec i Data Matrix, i sap per a què serveix cadascun.
+- Wifi: connecta't a la xarxa amb un toc
+- Targetes d'embarcament: afegeix-les a Apple Wallet o al calendari
+- Contactes i esdeveniments: desa'ls directament a l'iPhone
+- Productes: consulta'n els ingredients i els detalls
+- Paquets: fes el seguiment d'un enviament
+- Correus, missatges, mapes i adreces de criptomonedes, cadascun tractat com cal
+Escaneja des de fotos i captures de pantalla, o llegeix diversos codis alhora amb l'escaneig múltiple.
+
+ELS TEUS CODIS, A UN TOC
+Guarda la wifi de casa, la teva targeta de contacte i les properes targetes d'embarcament com a targetes d'estil Wallet a l'Inici. Un toc mostra el codi a pantalla completa i amb la brillantor al màxim, a punt per a la porta d'embarcament o per al mòbil d'un amic.
+L'historial recorda tot el que escaneges, amb cerca, filtres i elements fixats. Protegeix-lo amb Face ID, exporta'l en CSV i, si vols, consulta on vas escanejar cada codi.
+
+CREA CODIS AMB ESTIL
+Genera codis per a wifi, enllaços, contactes, text, correu, SMS, trucades, esdeveniments, ubicacions i codis de barres de productes en 15 simbologies. A Studio, personalitza els QR amb punts, cantonades, colors, degradats, logotip i marcs, i deixa que Lunet comprovi al mateix dispositiu que el disseny encara es pot escanejar.
+
+SEMPRE A L'ABAST
+Comença a escanejar des del centre de control, la pantalla bloquejada, el botó d'acció, un widget o Siri. L'escaneig múltiple mostra el progrés en una activitat en directe, i Dreceres pot llegir els codis de qualsevol imatge.
+
+PRIVAT PER DISSENY
+L'historial no surt mai del teu dispositiu. Lunet només es connecta quan és imprescindible: per comprovar un enllaç amb el servidor d'aquell mateix enllaç, per buscar un producte a Open Food Facts o per signar un passi que afegeixes a Apple Wallet. No es desa res i no es fa cap seguiment.
+
+Creat de manera nativa per a iPhone i iPad, amb Liquid Glass, aspecte clar i fosc, text dinàmic i VoiceOver.
+
+Escaneja-ho tot. Obre només el que és segur.

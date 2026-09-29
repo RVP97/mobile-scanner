@@ -1,0 +1,1 @@
+Penipuan QR ada di mana-mana. Lunet mengecek tujuan asli tiap link sebelum Anda ketuk, lalu memberi aksi yang tepat: sambung Wi-Fi, simpan tiket ke Wallet, dan lainnya.

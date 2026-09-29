@@ -1,0 +1,1 @@
+Podvodné QR kódy jsou všude. Lunet před klepnutím ověří, kam každý odkaz opravdu vede, a pro každý kód nabídne správnou akci: připojení k Wi-Fi, Wallet a další.

@@ -1,0 +1,36 @@
+Richte die Kamera auf einen Code und Lunet sagt dir, was er ist, wohin er wirklich führt und was als Nächstes zu tun ist. QR-Code-Scanner und Barcode-Leser in einem, gebaut für Sicherheit. Kein Konto, keine Werbung, kein Tracking.
+
+GEPRÜFT, BEVOR DU TIPPST
+QR-Phishing nimmt rasant zu: ein Aufkleber auf dem Parkautomaten, eine gefälschte Speisekarte, ein Zettel wegen einer „verpassten Zustellung“. Lunet prüft jeden Link, bevor sich irgendetwas öffnet.
+- Folgt Weiterleitungen und zeigt das echte Ziel, nicht das, was auf dem Schild steht
+- Erkennt Doppelgänger-Domains, etwa n0rthbank.com, das sich als northbank.com ausgibt
+- Warnt vor brandneuen Domains, versteckten @-Tricks, Kurzlinks und unsicheren Seiten
+- Gibt ein klares Urteil: Sicher, Vorsicht oder Gefahr, mit verständlichen Gründen
+- Bei gefährlichen Codes ist „Nicht öffnen“ die Voreinstellung
+
+DIE RICHTIGE ANTWORT FÜR JEDEN CODE
+Lunet liest 19 Formate, darunter QR, EAN, UPC, Code 128, PDF417, Aztec und Data Matrix, und weiß, wofür jedes davon gedacht ist.
+- WLAN: mit einem Tippen dem Netzwerk beitreten
+- Bordkarten: zu Apple Wallet oder deinem Kalender hinzufügen
+- Kontakte und Termine: direkt auf deinem iPhone sichern
+- Produkte: Zutaten und Details nachschlagen
+- Pakete: Sendungen verfolgen
+- E-Mails, Nachrichten, Karten und Krypto-Adressen, jeweils richtig behandelt
+Scanne aus Fotos und Screenshots oder erfasse mit dem Mehrfach-Scan mehrere Codes auf einmal.
+
+DEINE CODES, EINEN TIPP ENTFERNT
+Bewahre dein WLAN zu Hause, deine Visitenkarte und anstehende Bordkarten als Karten im Wallet-Stil auf dem Home-Bildschirm auf. Ein Tippen zeigt den Code im Vollbild bei maximaler Helligkeit, bereit fürs Gate oder das Handy eines Freundes.
+Der Verlauf merkt sich alles, was du scannst, mit Suche, Filtern und Pins. Sperre ihn mit Face ID, exportiere ihn als CSV und sieh auf Wunsch, wo jeder Code gescannt wurde.
+
+SCHÖNE CODES ERSTELLEN
+Erstelle Codes für WLAN, Links, Kontakte, Text, E-Mail, SMS, Anrufe, Termine, Orte und Produkt-Barcodes in 15 Symbologien. Im Studio gestaltest du QR-Codes mit eigenen Punkten, Ecken, Farben, Verläufen, Logo und Rahmen, und Lunet prüft direkt auf dem Gerät, ob dein Design noch scannbar ist.
+
+IMMER GRIFFBEREIT
+Starte einen Scan aus dem Kontrollzentrum, vom Sperrbildschirm, mit der Aktionstaste, per Widget oder mit Siri. Der Mehrfach-Scan zeigt seinen Fortschritt in einer Live-Aktivität, und mit Kurzbefehlen lassen sich Codes in jedem Bild auslesen.
+
+PRIVAT AUS PRINZIP
+Dein Verlauf verlässt nie dein Gerät. Lunet geht nur online, wenn es nötig ist: um einen Link bei dessen eigenem Server zu prüfen, um ein Produkt bei Open Food Facts nachzuschlagen oder um einen Pass zu signieren, den du zu Apple Wallet hinzufügst. Nichts wird gespeichert, nichts wird getrackt.
+
+Nativ entwickelt für iPhone und iPad, mit Liquid Glass, hellem und dunklem Erscheinungsbild, dynamischer Schriftgröße und VoiceOver.
+
+Alles scannen. Nur Sicheres öffnen.

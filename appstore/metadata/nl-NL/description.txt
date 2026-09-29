@@ -1,0 +1,36 @@
+Richt je camera op een code en Lunet vertelt je wat het is, waar het echt naartoe gaat en wat je ermee kunt. Een QR-codescanner en barcodelezer in één, gebouwd rond veiligheid. Geen account, geen advertenties, geen tracking.
+
+GECONTROLEERD VOORDAT JE TIKT
+QR-phishing rukt op: een sticker op een parkeerautomaat, een nepmenukaart, een briefje over een 'gemiste bezorging'. Lunet controleert elke link voordat er iets opengaat.
+- Volgt doorverwijzingen en toont de echte bestemming, niet die op het bordje
+- Herkent lookalike-domeinen, zoals n0rthbank.com dat zich voordoet als northbank.com
+- Waarschuwt voor gloednieuwe domeinen, verborgen @-trucs, verkorte links en onbeveiligde pagina's
+- Geeft een helder oordeel: Veilig, Pas op of Gevaar, met redenen in gewone taal
+- Bij gevaarlijke codes staat 'Niet openen' standaard ingesteld
+
+HET JUISTE ANTWOORD OP ELKE CODE
+Lunet leest 19 formaten, waaronder QR, EAN, UPC, Code 128, PDF417, Aztec en Data Matrix, en weet waar elk formaat voor dient.
+- Wifi: maak met één tik verbinding met het netwerk
+- Instapkaarten: voeg ze toe aan Apple Wallet of je agenda
+- Contacten en afspraken: bewaar ze direct op je iPhone
+- Producten: bekijk ingrediënten en details
+- Pakketten: volg een zending
+- E-mail, berichten, kaarten en crypto-adressen, elk op de juiste manier afgehandeld
+Scan vanuit foto's en screenshots, of pak meerdere codes tegelijk met multiscan.
+
+JE CODES, ÉÉN TIK VERDER
+Bewaar je wifi thuis, je contactkaart en je volgende instapkaarten als kaarten in Wallet-stijl op het beginscherm. Eén tik toont de code schermvullend op maximale helderheid, klaar voor de gate of de telefoon van een vriend.
+De geschiedenis onthoudt alles wat je scant, met zoeken, filters en vastzetten. Vergrendel hem met Face ID, exporteer als CSV en zie desgewenst waar je elke code hebt gescand.
+
+MAAK MOOIE CODES
+Maak codes voor wifi, links, contacten, tekst, e-mail, sms, telefoontjes, afspraken, locaties en productbarcodes in 15 symbologieën. In Studio geef je QR-codes eigen stippen, hoeken, kleuren, verlopen, een logo en kaders, waarna Lunet op het apparaat controleert of je ontwerp nog scant.
+
+ALTIJD BINNEN HANDBEREIK
+Start een scan vanuit het bedieningspaneel, het toegangsscherm, de actieknop, een widget of Siri. Multiscan toont de voortgang in een live activiteit, en met Opdrachten scan je codes in elke afbeelding.
+
+PRIVÉ VANAF HET ONTWERP
+Je geschiedenis verlaat nooit je apparaat. Lunet gaat alleen online als het moet: om een link te controleren bij de eigen server van die link, om een product op te zoeken bij Open Food Facts, of om een pas te ondertekenen die je aan Apple Wallet toevoegt. Er wordt niets bewaard en niets gevolgd.
+
+Native gebouwd voor iPhone en iPad, met Liquid Glass, lichte en donkere weergave, dynamische tekst en VoiceOver.
+
+Scan alles. Open alleen wat veilig is.

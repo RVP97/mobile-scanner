@@ -1,0 +1,1 @@
+QR scams are everywhere. Lunet checks where every link really goes before you tap, then gives each code the right answer: join Wi-Fi, add a pass to Wallet, and more.

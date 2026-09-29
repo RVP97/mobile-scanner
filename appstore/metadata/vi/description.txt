@@ -1,0 +1,36 @@
+Hướng camera vào bất kỳ mã nào, Lunet sẽ cho bạn biết đó là gì, thực sự dẫn đến đâu và nên làm gì tiếp theo. Ứng dụng quét mã QR và đọc mã vạch không cần tài khoản, không quảng cáo, không theo dõi.
+
+KIỂM TRA TRƯỚC KHI CHẠM
+Lừa đảo qua mã QR đang gia tăng: một nhãn dán đè lên máy thu phí đỗ xe, một thực đơn giả, một tờ rơi "giao hàng không thành công". Lunet kiểm tra mọi đường link trước khi bất cứ thứ gì được mở.
+- Lần theo các chuyển hướng để hiện địa chỉ thật, không phải địa chỉ in trên biển
+- Phát hiện tên miền giả mạo, như n0rthbank.com đội lốt northbank.com
+- Cảnh báo tên miền mới tạo, mẹo @ ẩn, link rút gọn và trang không bảo mật
+- Đưa ra kết luận rõ ràng: An toàn, Cẩn thận hoặc Nguy hiểm, kèm lý do dễ hiểu
+- Với mã nguy hiểm, "Không mở" là lựa chọn mặc định
+
+CÂU TRẢ LỜI ĐÚNG CHO MỌI MÃ
+Lunet đọc 19 định dạng, gồm QR, EAN, UPC, Code 128, PDF417, Aztec và Data Matrix, và biết mỗi loại dùng để làm gì.
+- Wi-Fi: kết nối mạng chỉ với một chạm
+- Thẻ lên máy bay: thêm vào Apple Wallet hoặc Lịch
+- Danh bạ và sự kiện: lưu thẳng vào iPhone
+- Sản phẩm: tra thành phần và thông tin chi tiết
+- Bưu kiện: theo dõi đơn hàng
+- Email, tin nhắn, bản đồ và địa chỉ ví tiền mã hóa, mỗi loại được xử lý đúng cách
+Quét từ ảnh và ảnh chụp màn hình, hoặc bắt nhiều mã cùng lúc với tính năng quét nhiều mã.
+
+MÃ CỦA BẠN, CHỈ MỘT CHẠM
+Giữ Wi-Fi nhà, danh thiếp và thẻ lên máy bay sắp tới dưới dạng thẻ kiểu Wallet ngay trên màn hình chính. Một chạm là mã hiện toàn màn hình với độ sáng tối đa, sẵn sàng ở cửa lên máy bay hay cho điện thoại của bạn bè.
+Lịch sử ghi nhớ mọi thứ bạn đã quét, có tìm kiếm, bộ lọc và ghim. Khóa bằng Face ID, xuất ra CSV và, nếu muốn, xem từng mã được quét ở đâu.
+
+TẠO MÃ ĐẸP
+Tạo mã cho Wi-Fi, link, danh bạ, văn bản, email, SMS, cuộc gọi, sự kiện, vị trí và mã vạch sản phẩm với 15 chuẩn mã. Trong Studio, tùy biến mã QR với chấm, góc, màu sắc, dải màu, logo và khung, rồi để Lunet kiểm tra ngay trên máy rằng thiết kế của bạn vẫn quét được.
+
+LUÔN TRONG TẦM TAY
+Bắt đầu quét từ Trung tâm điều khiển, Màn hình khóa, nút Tác vụ, tiện ích hoặc Siri. Quét nhiều mã hiển thị tiến trình trong Hoạt động trực tiếp, và Phím tắt có thể quét mã bên trong bất kỳ hình ảnh nào.
+
+RIÊNG TƯ NGAY TỪ THIẾT KẾ
+Lịch sử của bạn không bao giờ rời khỏi thiết bị. Lunet chỉ kết nối mạng khi thật cần: để kiểm tra link với chính máy chủ của link đó, tra cứu sản phẩm trên Open Food Facts, hoặc ký thẻ bạn thêm vào Apple Wallet. Không lưu trữ gì và không theo dõi gì.
+
+Xây dựng nguyên bản cho iPhone và iPad, với Liquid Glass, giao diện sáng và tối, Dynamic Type và VoiceOver.
+
+Quét mọi thứ. Chỉ mở những gì an toàn.

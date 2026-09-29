@@ -1,0 +1,36 @@
+Arahkan kamera ke kode apa pun, dan Lunet memberi tahu apa isinya, ke mana sebenarnya mengarah, dan apa langkah berikutnya. Aplikasi scan QR dan pembaca barcode tanpa akun, tanpa iklan, tanpa pelacakan.
+
+DICEK SEBELUM ANDA KETUK
+Penipuan lewat kode QR terus meningkat: stiker yang ditempel di mesin parkir, menu palsu, selebaran "paket gagal dikirim". Lunet memeriksa setiap link sebelum apa pun terbuka.
+- Mengikuti pengalihan untuk menunjukkan tujuan asli, bukan yang tercetak di papan
+- Mendeteksi domain tiruan, seperti n0rthbank.com yang menyamar sebagai northbank.com
+- Menandai domain yang baru dibuat, trik @ tersembunyi, pemendek link, dan halaman tidak aman
+- Memberi penilaian jelas: Aman, Hati-hati, atau Bahaya, dengan alasan yang mudah dipahami
+- Untuk kode berbahaya, Jangan Buka adalah pilihan default
+
+JAWABAN TEPAT UNTUK SETIAP KODE
+Lunet membaca 19 format, termasuk QR, EAN, UPC, Code 128, PDF417, Aztec, dan Data Matrix, dan tahu fungsi masing-masing.
+- Wi-Fi: sambungkan ke jaringan dengan sekali ketuk
+- Boarding pass: tambahkan ke Apple Wallet atau kalender
+- Kontak dan acara: simpan langsung ke iPhone
+- Produk: cek komposisi dan detailnya
+- Paket: lacak pengiriman
+- Email, pesan, peta, dan alamat kripto, masing-masing ditangani dengan benar
+Scan dari foto dan tangkapan layar, atau tangkap beberapa kode sekaligus dengan multi-scan.
+
+KODE ANDA, SEKALI KETUK
+Simpan Wi-Fi rumah, kartu kontak, dan boarding pass mendatang sebagai kartu bergaya Wallet di layar Beranda. Sekali ketuk, kode tampil layar penuh dengan kecerahan maksimum, siap di gerbang atau untuk ponsel teman.
+Riwayat mengingat semua yang Anda scan, lengkap dengan pencarian, filter, dan sematan. Kunci dengan Face ID, ekspor sebagai CSV, dan jika mau, lihat di mana setiap kode di-scan.
+
+BUAT KODE YANG MEMIKAT
+Buat kode untuk Wi-Fi, link, kontak, teks, email, SMS, panggilan telepon, acara, lokasi, dan barcode produk dalam 15 simbologi. Di Studio, percantik kode QR dengan titik, sudut, warna, gradien, logo, dan bingkai kustom, lalu biarkan Lunet memverifikasi di perangkat bahwa desain Anda tetap bisa di-scan.
+
+SELALU DALAM JANGKAUAN
+Mulai scan dari Pusat Kontrol, Layar Terkunci, tombol Tindakan, widget, atau Siri. Multi-scan menampilkan progresnya di Aktivitas Langsung, dan Pintasan dapat memindai kode di dalam gambar apa pun.
+
+PRIVAT SEJAK AWAL
+Riwayat Anda tidak pernah meninggalkan perangkat. Lunet hanya online saat benar-benar perlu: untuk memeriksa link dengan server link itu sendiri, mencari produk di Open Food Facts, atau menandatangani pass yang Anda tambahkan ke Apple Wallet. Tidak ada yang disimpan dan tidak ada yang dilacak.
+
+Dibuat secara native untuk iPhone dan iPad, dengan Liquid Glass, tampilan terang dan gelap, Dynamic Type, dan VoiceOver.
+
+Scan apa saja. Buka hanya yang aman.

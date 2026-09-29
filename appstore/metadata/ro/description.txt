@@ -1,0 +1,36 @@
+Îndreaptă camera spre orice cod QR sau cod de bare, iar Lunet îți spune ce este, unde duce cu adevărat și ce poți face mai departe. Un scanner QR și cititor de coduri de bare rapid, fără cont, fără reclame, fără urmărire.
+
+VERIFICAT ÎNAINTE SĂ ATINGI
+Phishingul prin coduri QR e în creștere: un autocolant lipit pe parcometru, un meniu fals, un fluturaș cu „colet neridicat”. Lunet inspectează fiecare link înainte să se deschidă ceva.
+- Urmărește redirecționările și îți arată destinația reală, nu pe cea tipărită pe afiș
+- Depistează domeniile care imită altele, cum ar fi n0rthbank.com dându-se drept northbank.com
+- Semnalează domeniile abia create, trucurile ascunse cu @, linkurile scurtate și paginile nesecurizate
+- Îți dă un verdict clar: Sigur, Atenție sau Pericol, cu motive explicate pe înțeles
+- Pentru codurile periculoase, opțiunea implicită este Nu deschide
+
+RĂSPUNSUL POTRIVIT PENTRU FIECARE COD
+Lunet citește 19 formate, printre care QR, EAN, UPC, Code 128, PDF417, Aztec și Data Matrix, și știe la ce folosește fiecare.
+- Wi-Fi: te conectezi la rețea dintr-o atingere
+- Cărți de îmbarcare: le adaugi în Apple Wallet sau în calendar
+- Contacte și evenimente: le salvezi direct pe iPhone
+- Produse: afli ingredientele și detaliile
+- Colete: urmărești livrarea
+- E-mailuri, mesaje, locații pe hartă și adrese crypto, fiecare tratate cum se cuvine
+Scanează din poze și capturi de ecran sau prinde mai multe coduri deodată cu scanarea multiplă.
+
+CODURILE TALE, LA O ATINGERE
+Păstrează Wi-Fi-ul de acasă, cartea ta de vizită și cărțile de îmbarcare următoare ca niște carduri în stil Wallet pe ecranul principal. O atingere afișează codul pe tot ecranul, la luminozitate maximă, gata pentru poarta de îmbarcare sau pentru telefonul unui prieten.
+Istoricul ține minte tot ce scanezi, cu căutare, filtre și fixare. Blochează-l cu Face ID, exportă-l în CSV și, dacă vrei, vezi unde a fost scanat fiecare cod.
+
+CREEAZĂ CODURI FRUMOASE
+Generator de coduri pentru Wi-Fi, linkuri, contacte, text, e-mail, SMS, apeluri, evenimente, locații și coduri de bare pentru produse, în 15 simbologii. În Studio îți personalizezi codurile QR cu puncte, colțuri, culori, degradeuri, logo și rame, iar Lunet verifică direct pe dispozitiv că designul tău se scanează în continuare.
+
+MEREU LA ÎNDEMÂNĂ
+Pornește o scanare din Centrul de control, de pe ecranul de blocare, cu butonul Acțiune, dintr-un widget sau cu Siri. Scanarea multiplă își arată progresul într-o activitate live, iar Scurtăturile pot scana codurile din orice imagine.
+
+CONFIDENȚIALITATE ÎNCĂ DIN PROIECTARE
+Istoricul tău nu părăsește niciodată dispozitivul. Lunet se conectează la internet doar când e nevoie: ca să verifice un link chiar cu serverul acelui link, ca să caute un produs în Open Food Facts sau ca să semneze un permis pe care îl adaugi în Apple Wallet. Nimic nu este stocat și nimic nu este urmărit.
+
+Construit nativ pentru iPhone și iPad, cu Liquid Glass, aspect luminos și întunecat, text dinamic și VoiceOver.
+
+Scanează orice. Deschide doar ce e sigur.

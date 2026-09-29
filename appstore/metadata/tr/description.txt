@@ -1,0 +1,36 @@
+Kamerayı herhangi bir koda tut; Lunet sana onun ne olduğunu, gerçekte nereye gittiğini ve sonra ne yapabileceğini söylesin. Hızlı bir QR kod okuyucu ve barkod tarayıcı: hesap yok, reklam yok, takip yok.
+
+DOKUNMADAN ÖNCE KONTROL
+QR kod dolandırıcılığı artıyor: park ödeme makinesine yapıştırılmış bir etiket, sahte bir menü, “teslim edilemeyen kargo” broşürü. Lunet hiçbir şey açılmadan önce her linki inceler.
+- Yönlendirmeleri takip eder ve tabelada yazanı değil, gerçek adresi gösterir
+- Taklit alan adlarını yakalar; örneğin northbank.com gibi görünen n0rthbank.com
+- Yeni açılmış alan adlarını, gizli @ hilelerini, kısaltılmış linkleri ve güvenli olmayan sayfaları işaretler
+- Açık bir karar verir: Güvenli, Dikkat veya Tehlike, nedenleri de sade bir dille
+- Tehlikeli kodlarda varsayılan seçenek Açma’dır
+
+HER KOD İÇİN DOĞRU CEVAP
+Lunet; QR, EAN, UPC, Code 128, PDF417, Aztec ve Data Matrix dahil 19 formatı okur ve her birinin ne işe yaradığını bilir.
+- Wi-Fi: tek dokunuşla ağa bağlan
+- Biniş kartları: Apple Cüzdan’a veya takvime ekle
+- Kişiler ve etkinlikler: doğrudan iPhone’una kaydet
+- Ürünler: içeriklere ve ayrıntılara bak
+- Kargolar: gönderini takip et
+- E-posta, mesaj, harita ve kripto adresleri, her biri doğru şekilde
+Fotoğraflardan ve ekran görüntülerinden tara ya da çoklu taramayla birden fazla kodu aynı anda yakala.
+
+KODLARIN, TEK DOKUNUŞ UZAĞINDA
+Ev Wi-Fi’ni, kartvizitini ve yaklaşan biniş kartlarını ana ekranda Cüzdan tarzı kartlar olarak tut. Tek dokunuş, kodu en yüksek parlaklıkta tam ekran gösterir; kapıda ya da bir arkadaşının telefonunda okutmaya hazır.
+Geçmiş, taradığın her şeyi arama, filtreler ve sabitleme ile hatırlar. Face ID ile kilitle, CSV olarak dışa aktar ve istersen her kodun nerede tarandığını gör.
+
+GÜZEL KODLAR OLUŞTUR
+Wi-Fi, link, kişi, metin, e-posta, SMS, telefon araması, etkinlik, konum ve 15 simgelemde ürün barkodu için kod oluştur. Studio’da QR kodları özel noktalar, köşeler, renkler, geçişler, logo ve çerçevelerle tasarla; Lunet tasarımının hâlâ okunduğunu cihaz üzerinde doğrulasın.
+
+HER ZAMAN ELİNİN ALTINDA
+Taramayı Denetim Merkezi’nden, Kilitli Ekran’dan, Eylem düğmesinden, bir widget’tan veya Siri ile başlat. Çoklu tarama ilerlemesini Canlı Etkinlik’te gösterir; Kestirmeler ise herhangi bir görüntüdeki kodları tarayabilir.
+
+TASARIMI GEREĞİ GİZLİ
+Geçmişin cihazından hiç çıkmaz. Lunet yalnızca gerektiğinde internete bağlanır: bir linki o linkin kendi sunucusuyla kontrol etmek, Open Food Facts’te ürün aramak ya da Apple Cüzdan’a eklediğin bir kartı imzalamak için. Hiçbir şey saklanmaz, hiçbir şey takip edilmez.
+
+iPhone ve iPad için yerel olarak geliştirildi; Liquid Glass, açık ve koyu görünüm, Dinamik Yazı ve VoiceOver desteğiyle.
+
+Her şeyi tara. Yalnızca güvenli olanı aç.

@@ -1,0 +1,1 @@
+Los timos con QR están por todas partes. Lunet comprueba adónde lleva cada enlace antes de abrirlo y da a cada código su acción: unirte al wifi, añadir a Wallet y más.

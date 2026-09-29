@@ -1,0 +1,36 @@
+Irányítsd a kamerát bármilyen kódra, és a Lunet megmondja, mi az, valójában hová vezet, és mit tehetsz vele. Gyors QR-kód-olvasó és vonalkódolvasó fiók, reklámok és követés nélkül.
+
+ELLENŐRIZVE, MIELŐTT KOPPINTASZ
+Egyre terjed a QR-kódos adathalászat: matrica a parkolóautomatán, hamis étlap, szórólap egy „kézbesítetlen csomagról”. A Lunet minden linket megvizsgál, mielőtt bármi megnyílna.
+- Követi az átirányításokat, és a valódi célt mutatja, nem azt, ami a táblára van nyomtatva
+- Kiszúrja a megtévesztően hasonló domaineket, például a northbank.com-nak álcázott n0rthbank.com-ot
+- Figyelmeztet a vadonatúj domainekre, a rejtett @-trükkökre, a linkrövidítőkre és a nem biztonságos oldalakra
+- Egyértelmű ítéletet ad – Biztonságos, Légy óvatos vagy Veszélyes –, közérthető indoklással
+- Veszélyes kódoknál az alapértelmezés: Ne nyisd meg
+
+MINDEN KÓDRA A JÓ VÁLASZ
+A Lunet 19 formátumot olvas, köztük a QR, EAN, UPC, Code 128, PDF417, Aztec és Data Matrix kódokat, és tudja, melyik mire való.
+- Wi-Fi: csatlakozz a hálózathoz egyetlen koppintással
+- Beszállókártyák: add hozzá az Apple Wallethez vagy a naptáradhoz
+- Névjegyek és események: mentsd őket egyenesen az iPhone-odra
+- Termékek: nézd meg az összetevőket és a részleteket
+- Csomagok: kövesd a küldeményt
+- E-mailek, üzenetek, térképek és kriptocímek – mindegyik a maga módján
+Olvass be kódokat fotókról és képernyőképekről, vagy fogj egyszerre több kódot a többszörös beolvasással.
+
+A KÓDJAID EGY KOPPINTÁSNYIRA
+Tartsd az otthoni Wi-Fi-t, a névjegykártyádat és a közelgő beszállókártyáidat Wallet-stílusú kártyaként az app kezdőlapján. Egy koppintás teljes képernyőn, maximális fényerővel mutatja a kódot, készen a beszállókapuhoz vagy egy barát telefonjához.
+Az előzmények mindent megjegyeznek, amit beolvasol, kereséssel, szűrőkkel és kitűzéssel. Zárold le Face ID-val, exportáld CSV-be, és ha szeretnéd, lásd, hol olvastad be az egyes kódokat.
+
+KÉSZÍTS SZÉP KÓDOKAT
+Készíts kódot Wi-Fi-hez, linkhez, névjegyhez, szöveghez, e-mailhez, SMS-hez, hívásokhoz, eseményekhez, helyekhez, és termékvonalkódot 15 szimbológiában. A Studióban egyedi pontokkal, sarkokkal, színekkel, színátmenetekkel, logóval és kerettel formázhatod a QR-kódokat, a Lunet pedig az eszközön ellenőrzi, hogy a terv továbbra is beolvasható-e.
+
+MINDIG KÉZNÉL
+Indíts beolvasást a Vezérlőközpontból, a zárolási képernyőről, a Műveletgombbal, egy widgetről vagy a Sirivel. A többszörös beolvasás állapota Élő tevékenységként látszik, a Parancsok pedig bármilyen képen be tudják olvasni a kódokat.
+
+ADATVÉDELEM AZ ALAPOKTÓL
+Az előzményeid sosem hagyják el az eszközt. A Lunet csak akkor megy online, ha muszáj: hogy a link saját szerverén ellenőrizze a linket, hogy megkeressen egy terméket az Open Food Factsben, vagy hogy aláírjon egy kártyát, amelyet az Apple Wallethez adsz. Semmit nem tárolunk, és semmit nem követünk.
+
+Natívan iPhone-ra és iPadre készült, Liquid Glass dizájnnal, világos és sötét megjelenéssel, dinamikus betűmérettel és VoiceOverrel.
+
+Olvass be bármit. Csak azt nyisd meg, ami biztonságos.

@@ -1,0 +1,36 @@
+Skieruj aparat na dowolny kod, a Lunet powie Ci, czym jest, dokąd naprawdę prowadzi i co możesz z nim zrobić. Szybki skaner kodów QR i czytnik kodów kreskowych – bez konta, bez reklam, bez śledzenia.
+
+SPRAWDZONE, ZANIM STUKNIESZ
+Phishing przez kody QR szybko się szerzy: naklejka na parkometrze, fałszywe menu, ulotka o „nieodebranej przesyłce”. Lunet sprawdza każdy link, zanim cokolwiek się otworzy.
+- Śledzi przekierowania i pokazuje prawdziwy adres docelowy, a nie ten wydrukowany na tabliczce
+- Wykrywa łudząco podobne domeny, np. n0rthbank.com podszywającą się pod northbank.com
+- Ostrzega przed zupełnie nowymi domenami, ukrytymi sztuczkami z @, skracaczami linków i niezabezpieczonymi stronami
+- Wydaje jasny werdykt – Bezpieczny, Uważaj lub Niebezpieczny – z wyjaśnieniem prostymi słowami
+- Przy niebezpiecznych kodach domyślną opcją jest Nie otwieraj
+
+WŁAŚCIWA ODPOWIEDŹ NA KAŻDY KOD
+Lunet odczytuje 19 formatów, w tym QR, EAN, UPC, Code 128, PDF417, Aztec i Data Matrix, i wie, do czego służy każdy z nich.
+- Wi-Fi: połącz się z siecią jednym stuknięciem
+- Karty pokładowe: dodaj do Apple Wallet lub kalendarza
+- Kontakty i wydarzenia: zapisz je od razu na iPhonie
+- Produkty: sprawdź skład i szczegóły
+- Przesyłki: śledź paczkę
+- E-maile, wiadomości, mapy i adresy kryptowalut – każde obsłużone we właściwy sposób
+Skanuj ze zdjęć i zrzutów ekranu albo łap kilka kodów naraz dzięki skanowaniu wielu kodów.
+
+TWOJE KODY JEDNO STUKNIĘCIE DALEJ
+Trzymaj domowe Wi-Fi, swoją wizytówkę i nadchodzące karty pokładowe jako karty w stylu Wallet na ekranie głównym aplikacji. Jedno stuknięcie wyświetla kod na pełnym ekranie z maksymalną jasnością – gotowy przy bramce na lotnisku lub dla telefonu znajomego.
+Historia zapamiętuje wszystko, co zeskanujesz, z wyszukiwaniem, filtrami i przypinaniem. Zablokuj ją za pomocą Face ID, wyeksportuj do CSV i, jeśli chcesz, sprawdzaj, gdzie zeskanowano każdy kod.
+
+TWÓRZ PIĘKNE KODY
+Twórz kody dla Wi-Fi, linków, kontaktów, tekstu, e-maili, SMS-ów, połączeń, wydarzeń, lokalizacji i kodów kreskowych produktów w 15 symbologiach. W Studio nadasz kodom QR własne kropki, narożniki, kolory, gradienty, logo i ramki, a Lunet sprawdzi na urządzeniu, czy projekt nadal daje się zeskanować.
+
+ZAWSZE POD RĘKĄ
+Rozpocznij skanowanie z Centrum sterowania, ekranu blokady, przycisku czynności, widżetu lub Siri. Skanowanie wielu kodów pokazuje postęp w Aktywności na żywo, a Skróty potrafią skanować kody na dowolnym obrazie.
+
+PRYWATNOŚĆ OD PODSTAW
+Twoja historia nigdy nie opuszcza urządzenia. Lunet łączy się z internetem tylko wtedy, gdy musi: by sprawdzić link na jego własnym serwerze, wyszukać produkt w Open Food Facts lub podpisać kartę dodawaną do Apple Wallet. Nic nie jest przechowywane ani śledzone.
+
+Natywna aplikacja na iPhone’a i iPada z Liquid Glass, jasnym i ciemnym wyglądem, Dynamiczną czcionką i VoiceOver.
+
+Skanuj wszystko. Otwieraj tylko to, co bezpieczne.

@@ -1,0 +1,36 @@
+Usmjeri kameru prema bilo kojem kodu i Lunet će ti reći što je, kamo zaista vodi i što možeš dalje. Brz QR skener i čitač barkodova, bez računa, bez oglasa, bez praćenja.
+
+PROVJERENO PRIJE DODIRA
+QR phishing je u porastu: naljepnica preko parkirnog automata, lažni jelovnik, letak o „neuručenoj pošiljci”. Lunet provjerava svaki link prije nego što se išta otvori.
+- Prati preusmjeravanja i pokazuje stvarno odredište, a ne ono otisnuto na natpisu
+- Otkriva domene koje se lažno predstavljaju, poput n0rthbank.com umjesto northbank.com
+- Upozorava na tek registrirane domene, skrivene @-trikove, skraćene linkove i nesigurne stranice
+- Daje jasnu ocjenu: Sigurno, Oprez ili Opasno, uz razloge objašnjene jednostavnim riječima
+- Za opasne kodove zadana je opcija Ne otvaraj
+
+PRAVI ODGOVOR ZA SVAKI KOD
+Lunet čita 19 formata, uključujući QR, EAN, UPC, Code 128, PDF417, Aztec i Data Matrix, i zna čemu koji služi.
+- Wi-Fi: spoji se na mrežu jednim dodirom
+- Ukrcajne karte: dodaj ih u Apple Wallet ili u kalendar
+- Kontakti i događaji: spremi ih izravno na iPhone
+- Proizvodi: pogledaj sastojke i pojedinosti
+- Pošiljke: prati paket
+- E-pošta, poruke, karte i kripto adrese, svaki na pravi način
+Skeniraj iz fotografija i snimki zaslona ili uhvati više kodova odjednom uz višestruko skeniranje.
+
+TVOJI KODOVI, NA JEDAN DODIR
+Drži kućni Wi-Fi, svoju posjetnicu i nadolazeće ukrcajne karte kao kartice u stilu Walleta na početnom zaslonu. Jedan dodir prikazuje kod preko cijelog zaslona uz najveću svjetlinu, spreman za izlaz na aerodromu ili prijateljev mobitel.
+Povijest pamti sve što skeniraš, uz pretraživanje, filtre i prikvačivanje. Zaključaj je pomoću Face ID-ja, izvezi je kao CSV i, ako želiš, vidi gdje je koji kod skeniran.
+
+IZRADI LIJEPE KODOVE
+Generator kodova za Wi-Fi, linkove, kontakte, tekst, e-poštu, SMS, pozive, događaje, lokacije i barkodove proizvoda u 15 simbologija. U Studiju uredi QR kodove s vlastitim točkicama, kutovima, bojama, prijelazima, logotipom i okvirima, a Lunet će na samom uređaju provjeriti da se tvoj dizajn i dalje može skenirati.
+
+UVIJEK PRI RUCI
+Pokreni skeniranje iz Kontrolnog centra, sa zaključanog zaslona, tipkom Radnja, iz widgeta ili pomoću Siri. Višestruko skeniranje prikazuje napredak u aktivnosti uživo, a Prečaci mogu skenirati kodove unutar bilo koje slike.
+
+PRIVATNOST OD PRVOG DANA
+Tvoja povijest nikad ne napušta uređaj. Lunet se spaja na internet samo kad mora: da provjeri link na poslužitelju tog linka, da potraži proizvod u bazi Open Food Facts ili da potpiše propusnicu koju dodaješ u Apple Wallet. Ništa se ne sprema i ništa se ne prati.
+
+Izrađen nativno za iPhone i iPad, s Liquid Glass dizajnom, svijetlim i tamnim izgledom, dinamičnom veličinom teksta i podrškom za VoiceOver.
+
+Skeniraj sve. Otvaraj samo ono što je sigurno.

@@ -1,0 +1,1 @@
+Golpes com QR Code estão por toda parte. O Lunet verifica para onde cada link leva antes de abrir e dá a cada código a ação certa: entrar no Wi-Fi, usar a Wallet e mais.

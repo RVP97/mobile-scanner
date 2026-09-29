@@ -1,0 +1,1 @@
+Les fraudes par code QR explosent. Lunet vérifie où mène chaque lien avant l'ouverture, puis propose la bonne action : se joindre au Wi-Fi, ajouter un billet à Wallet.

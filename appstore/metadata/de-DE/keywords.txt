@@ -1,0 +1,1 @@
+code,qrcode,scannen,wlan,generator,wallet,ticket,phishing,betrug,produkt,ean,upc,pdf417,datamatrix

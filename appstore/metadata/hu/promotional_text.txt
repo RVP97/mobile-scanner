@@ -1,0 +1,1 @@
+A QR-csalások mindenhol ott vannak. A Lunet még a koppintás előtt ellenőrzi, hová vezet valójában a link, és minden kódhoz a jó lépést kínálja: Wi-Fi, Wallet és más.

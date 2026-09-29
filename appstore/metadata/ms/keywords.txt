@@ -1,0 +1,1 @@
+barcode,scanner,pembaca,wifi,penjana,dompet,tiket,phishing,penipuan,scam,produk,ean,pdf417,aztec

@@ -1,0 +1,1 @@
+kode,skann,wifi,generator,wallet,billett,boardingkort,svindel,phishing,produkt,ean,upc,pdf417,aztec

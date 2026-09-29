@@ -1,0 +1,1 @@
+Le truffe con QR code sono ovunque. Lunet controlla dove porta ogni link prima di aprirlo e dà a ogni codice l'azione giusta: entra nel Wi-Fi, aggiungi a Wallet e altro.

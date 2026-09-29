@@ -1,0 +1,36 @@
+Osoita kameralla mitä tahansa koodia, niin Lunet kertoo, mikä se on, minne se oikeasti vie ja mitä voit tehdä seuraavaksi. Nopea QR-koodin lukija ja viivakoodinlukija ilman tiliä, mainoksia tai seurantaa.
+
+TARKISTETTU ENNEN NAPAUTUSTA
+QR-tietojenkalastelu yleistyy: tarra pysäköintiautomaatissa, väärennetty ruokalista, lappu ”noutamattomasta paketista”. Lunet tutkii jokaisen linkin ennen kuin mitään avataan.
+- Seuraa uudelleenohjauksia ja näyttää todellisen kohteen, ei kylttiin painettua
+- Tunnistaa harhaanjohtavat samannäköiset verkkotunnukset, kuten n0rthbank.com, joka esiintyy northbank.comina
+- Varoittaa aivan uusista verkkotunnuksista, piilotetuista @-tempuista, lyhennetyistä linkeistä ja suojaamattomista sivuista
+- Antaa selvän arvion – Turvallinen, Ole varovainen tai Vaara – ja perustelut selkokielellä
+- Vaarallisissa koodeissa oletuksena on Älä avaa
+
+OIKEA VASTAUS JOKAISEEN KOODIIN
+Lunet lukee 19 formaattia, kuten QR, EAN, UPC, Code 128, PDF417, Aztec ja Data Matrix, ja tietää, mihin kutakin käytetään.
+- Wi-Fi: liity verkkoon yhdellä napautuksella
+- Tarkastuskortit: lisää Apple Walletiin tai kalenteriin
+- Yhteystiedot ja tapahtumat: tallenna suoraan iPhoneen
+- Tuotteet: katso ainesosat ja tiedot
+- Paketit: seuraa lähetystä
+- Sähköpostit, viestit, kartat ja kryptovaluuttaosoitteet, kukin oikealla tavalla
+Skannaa kuvista ja kuvakaappauksista tai poimi monta koodia kerralla monikoodiskannauksella.
+
+KOODISI YHDEN NAPAUTUKSEN PÄÄSSÄ
+Pidä kodin Wi-Fi, yhteystietokorttisi ja tulevat tarkastuskortit Wallet-tyylisinä kortteina sovelluksen aloitusnäkymässä. Yksi napautus näyttää koodin koko näytöllä suurimmalla kirkkaudella, valmiina lähtöportille tai ystävän puhelimelle.
+Historia muistaa kaiken, mitä skannaat, ja siinä on haku, suodattimet ja kiinnitys. Lukitse se Face ID:llä, vie se CSV-tiedostona ja katso halutessasi, missä kukin koodi skannattiin.
+
+TEE KAUNIITA KOODEJA
+Luo koodeja Wi-Fi-verkoille, linkeille, yhteystiedoille, tekstille, sähköpostille, tekstiviesteille, puheluille, tapahtumille, sijainneille ja tuotteiden viivakoodeille 15 eri symbologialla. Studiossa muotoilet QR-koodin pisteet, kulmat, värit, liukuvärit, logon ja kehykset, ja Lunet varmistaa laitteella, että koodi toimii yhä.
+
+AINA ULOTTUVILLA
+Aloita skannaus Ohjauskeskuksesta, lukitusnäytöltä, Toimintopainikkeella, widgetistä tai Sirillä. Monikoodiskannauksen edistyminen näkyy Live Activity -näkymässä, ja Pikakomennot voi skannata koodit mistä tahansa kuvasta.
+
+YKSITYISYYS ENSIN
+Historiasi ei koskaan poistu laitteeltasi. Lunet käyttää verkkoa vain silloin, kun on pakko: tarkistaakseen linkin sen omalta palvelimelta, hakeakseen tuotteen tiedot Open Food Factsista tai allekirjoittaakseen kortin, jonka lisäät Apple Walletiin. Mitään ei tallenneta eikä mitään seurata.
+
+Rakennettu natiivisti iPhonelle ja iPadille: Liquid Glass, vaalea ja tumma ulkoasu, dynaaminen tekstikoko ja VoiceOver.
+
+Skannaa mitä vain. Avaa vain turvallinen.

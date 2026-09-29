@@ -1,0 +1,12 @@
+Seznamte se s Lunetem – zcela novou podobou Fast QR & Barcode.
+
+Aplikaci jsme od základu přestavěli jako nativní aplikaci pro iPhone a iPad a dali jí nové jméno.
+
+- Bezpečnost odkazů: každý odkaz se před otevřením ověří a skutečný cíl, podobné domény i zkracovače vysvětlíme srozumitelně
+- Správná akce pro každý kód: připojení k Wi-Fi, palubní vstupenky do Apple Wallet, uložení kontaktů a událostí, vyhledání produktů, sledování zásilek
+- Vaše kódy: Wi-Fi, vizitka a vstupenky na domovské obrazovce, přes celou obrazovku jedním klepnutím
+- Studio: navrhujte QR kódy s vlastními styly, barvami, logy a rámečky
+- Skenování z Ovládacího centra, zamčené obrazovky, Akčního tlačítka, widgetů a Siri
+- Nový vzhled s Liquid Glass, tmavým režimem a plnou přístupností
+
+Historie skenování jde s vámi. Vše, co jste si uložili, najdete tam, kde jste to nechali.

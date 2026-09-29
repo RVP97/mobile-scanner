@@ -1,0 +1,1 @@
+Lừa đảo qua mã QR ở khắp nơi. Lunet kiểm tra link thực sự dẫn đến đâu trước khi bạn chạm, rồi xử lý đúng từng mã: kết nối Wi-Fi, thêm vé vào Wallet và hơn thế nữa.

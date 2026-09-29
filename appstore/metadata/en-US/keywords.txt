@@ -1,0 +1,1 @@
+code,scan,wifi,generator,maker,wallet,ticket,phishing,scam,product,upc,ean,pdf417,aztec,datamatrix

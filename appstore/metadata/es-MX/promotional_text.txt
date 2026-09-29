@@ -1,0 +1,1 @@
+Las estafas con QR están por todas partes. Lunet revisa a dónde lleva cada enlace antes de abrirlo y da a cada código su acción: unirte al Wi-Fi, agregar a Wallet y más.

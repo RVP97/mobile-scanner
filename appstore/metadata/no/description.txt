@@ -1,0 +1,36 @@
+Rett kameraet mot en hvilken som helst kode, så forteller Lunet deg hva den er, hvor den egentlig fører, og hva du kan gjøre videre. En rask QR-leser og strekkodeskanner uten konto, reklame eller sporing.
+
+SJEKKET FØR DU TRYKKER
+QR-svindel øker kraftig: et klistremerke på parkeringsautomaten, en falsk meny, en lapp om en «tapt pakke». Lunet undersøker hver lenke før noe åpnes.
+- Følger videresendinger og viser den virkelige adressen, ikke den som står på skiltet
+- Avslører forvekslingsdomener, som n0rthbank.com som utgir seg for å være northbank.com
+- Varsler om helt nye domener, skjulte @-triks, lenkeforkortere og usikre sider
+- Gir en tydelig vurdering – Trygg, Vær forsiktig eller Fare – med begrunnelser i klartekst
+- For farlige koder er Ikke åpne standardvalget
+
+RIKTIG SVAR FOR HVER KODE
+Lunet leser 19 formater, blant annet QR, EAN, UPC, Code 128, PDF417, Aztec og Data Matrix, og vet hva hvert av dem er til.
+- Wifi: koble til nettverket med ett trykk
+- Boardingkort: legg til i Apple Wallet eller kalenderen
+- Kontakter og hendelser: lagre dem rett på iPhonen
+- Produkter: slå opp ingredienser og detaljer
+- Pakker: spor en sending
+- E-post, meldinger, kart og kryptoadresser håndteres hver på riktig måte
+Skann fra bilder og skjermbilder, eller fang flere koder på en gang med multiskanning.
+
+KODENE DINE, ETT TRYKK UNNA
+Ha wifi-en hjemme, kontaktkortet ditt og kommende boardingkort som kort i Wallet-stil på appens startside. Ett trykk viser koden i fullskjerm med maksimal lysstyrke, klar for gaten eller en venns telefon.
+Historikken husker alt du skanner, med søk, filtre og festing. Lås den med Face ID, eksporter den som CSV, og se, hvis du vil, hvor hver kode ble skannet.
+
+LAG PENE KODER
+Lag koder for wifi, lenker, kontakter, tekst, e-post, SMS, telefonsamtaler, hendelser, steder og produktstrekkoder i 15 symbologier. I Studio gir du QR-koder egne prikker, hjørner, farger, fargeoverganger, logo og rammer – så sjekker Lunet på enheten at designet fortsatt lar seg skanne.
+
+ALLTID INNEN REKKEVIDDE
+Start en skanning fra Kontrollsenter, låst skjerm, Handlingsknappen, en widget eller Siri. Multiskanning viser fremdriften i en Live-aktivitet, og Snarveier kan skanne koder i et hvilket som helst bilde.
+
+PRIVAT FRA GRUNNEN AV
+Historikken forlater aldri enheten din. Lunet går bare på nett når det må: for å sjekke en lenke mot lenkens egen server, slå opp et produkt i Open Food Facts eller signere et kort du legger til i Apple Wallet. Ingenting lagres, og ingenting spores.
+
+Bygget helt native for iPhone og iPad, med Liquid Glass, lyst og mørkt utseende, Dynamisk tekst og VoiceOver.
+
+Skann alt. Åpne bare det som er trygt.

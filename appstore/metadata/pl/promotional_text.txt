@@ -1,0 +1,1 @@
+Oszustwa z kodami QR są wszędzie. Lunet sprawdza, dokąd naprawdę prowadzi każdy link, zanim go stukniesz, i podpowiada, co zrobić z kodem: Wi-Fi, Wallet i nie tylko.

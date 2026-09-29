@@ -1,0 +1,1 @@
+QR-bedrägerier finns överallt. Lunet kollar vart varje länk verkligen leder innan du trycker, och ger varje kod rätt svar: anslut till wifi, lägg kort i Wallet med mera.

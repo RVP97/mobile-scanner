@@ -1,0 +1,12 @@
+Chào đón Lunet, Fast QR & Barcode hoàn toàn mới.
+
+Chúng tôi đã xây dựng lại ứng dụng từ đầu thành ứng dụng gốc cho iPhone và iPad, cùng một cái tên mới tương xứng.
+
+- An toàn link: mọi link đều được kiểm tra trước khi mở, chỉ rõ địa chỉ thật, tên miền giả mạo và link rút gọn bằng lời dễ hiểu
+- Hành động đúng cho mọi mã: kết nối Wi-Fi, thêm thẻ lên máy bay vào Apple Wallet, lưu danh bạ và sự kiện, tra cứu sản phẩm, theo dõi bưu kiện
+- Mã của bạn: giữ Wi-Fi, danh thiếp và các loại thẻ trên màn hình chính, hiện toàn màn hình chỉ với một chạm
+- Studio: thiết kế mã QR với kiểu dáng, màu sắc, logo và khung riêng
+- Quét từ Trung tâm điều khiển, Màn hình khóa, nút Tác vụ, tiện ích và Siri
+- Thiết kế mới với Liquid Glass, chế độ tối và trợ năng đầy đủ
+
+Lịch sử quét đi cùng bạn. Mọi thứ bạn đã lưu vẫn ở nguyên chỗ cũ.

@@ -1,0 +1,1 @@
+kod,skeniranje,wifi,generator,proizvod,phishing,ulaznica,wallet,ean,upc,pdf417,aztec,datamatrix

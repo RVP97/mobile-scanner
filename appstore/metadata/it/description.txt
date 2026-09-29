@@ -1,0 +1,36 @@
+Inquadra un codice qualsiasi e Lunet ti dice cos'è, dove porta davvero e cosa fare subito dopo. Un lettore QR e di codici a barre che mette al primo posto la tua sicurezza. Nessun account, nessuna pubblicità, nessun tracciamento.
+
+CONTROLLATO PRIMA DEL TOCCO
+Il phishing tramite QR code è in forte crescita: un adesivo sul parchimetro, un menu falso, un volantino di "consegna non riuscita". Lunet esamina ogni link prima di aprire qualsiasi cosa.
+- Segue i reindirizzamenti per mostrarti la destinazione reale, non quella stampata sul cartello
+- Riconosce i domini che ne imitano altri, come n0rthbank.com spacciato per northbank.com
+- Segnala domini appena registrati, trucchi nascosti con la @, link abbreviati e pagine non sicure
+- Ti dà un verdetto chiaro: Sicuro, Attenzione o Pericolo, con i motivi spiegati in parole semplici
+- Per i codici pericolosi, "Non aprire" è l'opzione predefinita
+
+LA RISPOSTA GIUSTA PER OGNI CODICE
+Lunet legge 19 formati, tra cui QR, EAN, UPC, Code 128, PDF417, Aztec e Data Matrix, e sa a cosa serve ciascuno.
+- Wi-Fi: connettiti alla rete con un tocco
+- Carte d'imbarco: aggiungile ad Apple Wallet o al calendario
+- Contatti ed eventi: salvali direttamente su iPhone
+- Prodotti: scopri ingredienti e dettagli
+- Pacchi: segui la tua spedizione
+- Email, messaggi, mappe e indirizzi di criptovalute, ognuno gestito nel modo giusto
+Scansiona da foto e screenshot, oppure leggi più codici insieme con la scansione multipla.
+
+I TUOI CODICI, A PORTATA DI TOCCO
+Tieni il Wi-Fi di casa, il tuo biglietto da visita e le prossime carte d'imbarco come carte in stile Wallet nella schermata Home. Un tocco mostra il codice a tutto schermo e alla massima luminosità, pronto per il gate o per il telefono di un amico.
+La cronologia ricorda tutto ciò che scansioni, con ricerca, filtri ed elementi fissati. Proteggila con Face ID, esportala in CSV e, se vuoi, scopri dove hai scansionato ogni codice.
+
+CREA CODICI BELLISSIMI
+Genera codici per Wi-Fi, link, contatti, testo, email, SMS, chiamate, eventi, luoghi e codici a barre di prodotti in 15 simbologie. In Studio personalizzi i tuoi QR con punti, angoli, colori, sfumature, logo e cornici, e Lunet verifica direttamente sul dispositivo che il design si legga ancora.
+
+SEMPRE A PORTATA DI MANO
+Avvia una scansione dal Centro di Controllo, dalla schermata di blocco, dal tasto Azione, da un widget o con Siri. La scansione multipla mostra i progressi in un'Attività Live e Comandi Rapidi può leggere i codici in qualsiasi immagine.
+
+PRIVACY FIN DAL PROGETTO
+La tua cronologia non lascia mai il dispositivo. Lunet si collega a internet solo quando serve: per controllare un link con il server di quel link, per cercare un prodotto su Open Food Facts o per firmare un pass che aggiungi ad Apple Wallet. Niente viene memorizzato e niente viene tracciato.
+
+Progettato in modo nativo per iPhone e iPad, con Liquid Glass, aspetto chiaro e scuro, testo dinamico e VoiceOver.
+
+Scansiona tutto. Apri solo ciò che è sicuro.

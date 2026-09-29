@@ -1,0 +1,12 @@
+Et presentem Lunet, la nova Fast QR & Barcode.
+
+Hem refet l'app de dalt a baix com una app nativa per a iPhone i iPad, i li hem donat un nom nou a l'altura.
+
+- Enllaços segurs: cada enllaç es comprova abans d'obrir-se, amb la destinació real a la vista i avisos clars de dominis que n'imiten d'altres i d'escurçadors
+- L'acció adequada per a cada codi: connecta't a la wifi, afegeix targetes d'embarcament a Apple Wallet, desa contactes i esdeveniments, consulta productes i fes el seguiment de paquets
+- Els teus codis: tingues la wifi, la targeta de contacte i els passis a l'Inici, a pantalla completa amb un toc
+- Studio: dissenya codis QR amb estils, colors, logotips i marcs personalitzats
+- Escaneja des del centre de control, la pantalla bloquejada, el botó d'acció, els widgets i Siri
+- Un disseny renovat amb Liquid Glass, mode fosc i accessibilitat completa
+
+L'historial d'escanejos ve amb tu. Tot el que havies desat és just on ho vas deixar.

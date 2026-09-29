@@ -1,0 +1,36 @@
+Rikta kameran mot vilken kod som helst så berättar Lunet vad den är, vart den verkligen leder och vad du kan göra härnäst. En snabb QR-läsare och streckkodsskanner utan konto, reklam eller spårning.
+
+KOLLAD INNAN DU TRYCKER
+QR-bedrägerier ökar: en dekal på parkeringsautomaten, en falsk meny, en lapp om ett ”missat paket”. Lunet granskar varje länk innan något öppnas.
+- Följer omdirigeringar och visar den verkliga adressen, inte den som står på skylten
+- Upptäcker förväxlingsdomäner, som n0rthbank.com som utger sig för att vara northbank.com
+- Flaggar helt nya domäner, dolda @-knep, länkförkortare och osäkra sidor
+- Ger ett tydligt besked – Säker, Var försiktig eller Fara – med skälen i klartext
+- För farliga koder är Öppna inte förvalt
+
+RÄTT SVAR FÖR VARJE KOD
+Lunet läser 19 format, bland annat QR, EAN, UPC, Code 128, PDF417, Aztec och Data Matrix, och vet vad vart och ett är till för.
+- Wifi: anslut till nätverket med ett tryck
+- Boardingkort: lägg till i Apple Wallet eller kalendern
+- Kontakter och händelser: spara dem direkt på din iPhone
+- Produkter: se ingredienser och detaljer
+- Paket: spåra en försändelse
+- E-post, meddelanden, kartor och kryptoadresser hanteras var och en på rätt sätt
+Skanna från bilder och skärmavbilder, eller fånga flera koder på en gång med multiskanning.
+
+DINA KODER, ETT TRYCK BORT
+Spara hemmets wifi, ditt kontaktkort och kommande boardingkort som kort i Wallet-stil på appens startsida. Ett tryck visar koden i helskärm med maximal ljusstyrka, redo för gaten eller en väns telefon.
+Historiken minns allt du skannar, med sökning, filter och fästa koder. Lås den med Face ID, exportera den som CSV och se, om du vill, var varje kod skannades.
+
+SKAPA SNYGGA KODER
+Skapa koder för wifi, länkar, kontakter, text, e-post, sms, samtal, händelser, platser och produktstreckkoder i 15 symbologier. I Studio ger du QR-koder egna punkter, hörn, färger, toningar, logotyp och ramar – sedan kontrollerar Lunet direkt på enheten att designen fortfarande går att skanna.
+
+ALLTID NÄRA TILL HANDS
+Starta en skanning från Kontrollcenter, låsskärmen, Åtgärdsknappen, en widget eller Siri. Multiskanning visar förloppet i en Live-aktivitet, och Genvägar kan skanna koder i vilken bild som helst.
+
+PRIVAT FRÅN GRUNDEN
+Din historik lämnar aldrig enheten. Lunet går bara ut på nätet när det behövs: för att kontrollera en länk mot länkens egen server, slå upp en produkt i Open Food Facts eller signera ett kort du lägger till i Apple Wallet. Ingenting sparas och ingenting spåras.
+
+Byggd helt inbyggt för iPhone och iPad, med Liquid Glass, ljust och mörkt utseende, Dynamisk text och VoiceOver.
+
+Skanna allt. Öppna bara det som är säkert.

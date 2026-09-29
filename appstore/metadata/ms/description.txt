@@ -1,0 +1,36 @@
+Halakan kamera ke mana-mana kod dan Lunet akan memberitahu apa kandungannya, ke mana ia sebenarnya menuju dan apa yang perlu dibuat seterusnya. Pengimbas QR dan pembaca kod bar tanpa akaun, tanpa iklan, tanpa penjejakan.
+
+DISEMAK SEBELUM ANDA KETIK
+Penipuan kod QR semakin menjadi-jadi: pelekat pada meter letak kereta, menu palsu, risalah "bungkusan gagal dihantar". Lunet memeriksa setiap pautan sebelum apa-apa dibuka.
+- Mengikut ubah hala untuk menunjukkan destinasi sebenar, bukan yang tercetak pada papan tanda
+- Mengesan domain tiruan, seperti n0rthbank.com yang menyamar sebagai northbank.com
+- Menanda domain yang baru didaftarkan, helah @ tersembunyi, pemendek pautan dan halaman tidak selamat
+- Memberi keputusan yang jelas: Selamat, Berhati-hati atau Bahaya, dengan sebab dalam bahasa mudah
+- Untuk kod berbahaya, Jangan Buka ialah pilihan lalai
+
+JAWAPAN TEPAT UNTUK SETIAP KOD
+Lunet membaca 19 format, termasuk QR, EAN, UPC, Code 128, PDF417, Aztec dan Data Matrix, dan tahu fungsi setiap satunya.
+- Wi-Fi: sertai rangkaian dengan satu ketikan
+- Pas masuk pesawat: tambah ke Apple Wallet atau kalendar
+- Kenalan dan acara: simpan terus ke iPhone
+- Produk: semak ramuan dan butirannya
+- Bungkusan: jejak penghantaran
+- E-mel, mesej, peta dan alamat kripto, setiap satu dikendalikan dengan betul
+Imbas daripada foto dan tangkapan skrin, atau tangkap beberapa kod serentak dengan imbasan berbilang.
+
+KOD ANDA, SATU KETIKAN SAHAJA
+Simpan Wi-Fi rumah, kad kenalan dan pas masuk pesawat yang akan datang sebagai kad gaya Wallet di skrin Utama. Satu ketikan memaparkan kod skrin penuh pada kecerahan maksimum, sedia di pintu berlepas atau untuk telefon rakan.
+Sejarah mengingati semua yang anda imbas, dengan carian, penapis dan pin. Kuncinya dengan Face ID, eksport sebagai CSV dan, jika mahu, lihat di mana setiap kod diimbas.
+
+CIPTA KOD YANG MENARIK
+Cipta kod untuk Wi-Fi, pautan, kenalan, teks, e-mel, SMS, panggilan telefon, acara, lokasi dan kod bar produk dalam 15 simbologi. Dalam Studio, gayakan kod QR dengan titik, bucu, warna, gradien, logo dan bingkai tersuai, kemudian biar Lunet mengesahkan pada peranti bahawa reka bentuk anda masih boleh diimbas.
+
+SENTIASA DEKAT
+Mulakan imbasan dari Pusat Kawalan, Skrin Kunci, butang Tindakan, widget atau Siri. Imbasan berbilang menunjukkan kemajuannya dalam Aktiviti Langsung, dan Pintasan boleh mengimbas kod di dalam mana-mana imej.
+
+PRIVASI SEJAK AWAL
+Sejarah anda tidak pernah meninggalkan peranti. Lunet hanya pergi ke dalam talian apabila perlu: untuk menyemak pautan dengan pelayan pautan itu sendiri, mencari produk di Open Food Facts, atau menandatangani pas yang anda tambah ke Apple Wallet. Tiada apa yang disimpan dan tiada apa yang dijejak.
+
+Dibina secara asli untuk iPhone dan iPad, dengan Liquid Glass, penampilan cerah dan gelap, Dynamic Type dan VoiceOver.
+
+Imbas apa sahaja. Buka hanya yang selamat.

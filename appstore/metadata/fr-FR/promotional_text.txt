@@ -1,0 +1,1 @@
+Les arnaques au QR code explosent. Lunet vérifie où mène chaque lien avant de l'ouvrir, puis propose la bonne action : rejoindre un Wi-Fi, ajouter un billet à Wallet.

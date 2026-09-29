@@ -1,0 +1,1 @@
+qrcode,flashcode,scan,wifi,générateur,wallet,billet,phishing,arnaque,produit,ean,upc,pdf417,aztec

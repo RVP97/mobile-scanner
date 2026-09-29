@@ -1,0 +1,1 @@
+As burlas com QR estão por todo o lado. O Lunet verifica para onde vai cada ligação antes de abrir e dá a cada código a ação certa: aderir ao Wi-Fi, usar a Wallet e mais.

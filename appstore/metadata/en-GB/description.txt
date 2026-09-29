@@ -1,0 +1,36 @@
+Point your camera at any code and Lunet tells you what it is, where it really goes and what to do next. A QR code reader and barcode scanner built around safety. No account, no ads, no tracking.
+
+CHECKED BEFORE YOU TAP
+QR phishing is on the rise: a sticker on a pay-and-display machine, a fake menu, a ‘missed delivery’ card. Lunet inspects every link before anything opens.
+- Follows redirects to show the real destination, not the one printed on the sign
+- Spots lookalike domains, like n0rthbank.com posing as northbank.com
+- Flags brand-new domains, hidden @-tricks, link shorteners and insecure pages
+- Gives a clear verdict: Safe, Be careful or Danger, with reasons in plain words
+- For dangerous codes, Don't Open is the default
+
+THE RIGHT ANSWER FOR EVERY CODE
+Lunet reads 19 formats, including QR, EAN, UPC, Code 128, PDF417, Aztec and Data Matrix, and knows what each one is for.
+- Wi-Fi: join the network in one tap
+- Boarding passes: add to Apple Wallet or your calendar
+- Contacts and events: save them straight to your iPhone
+- Products: look up ingredients and details
+- Parcels: track a delivery
+- Email, messages, maps and crypto addresses, each handled the right way
+Scan from photos and screenshots, or catch several codes at once with multi-scan.
+
+YOUR CODES, ONE TAP AWAY
+Keep your home Wi-Fi, your contact card and upcoming boarding passes as Wallet-style cards on the Home screen. One tap shows the code full screen at maximum brightness, ready for the gate or a friend's phone.
+History remembers everything you scan, with search, filters and pins. Lock it with Face ID, export it as CSV and, if you choose, see where each code was scanned.
+
+MAKE BEAUTIFUL CODES
+Create codes for Wi-Fi, links, contacts, text, email, SMS, phone calls, events, locations and product barcodes in 15 symbologies. In Studio, style QR codes with custom dots, corners, colours, gradients, a logo and frames, then let Lunet verify on device that your design still scans.
+
+ALWAYS WITHIN REACH
+Start a scan from Control Centre, the Lock Screen, the Action button, a widget or Siri. Multi-scan shows its progress in a Live Activity, and Shortcuts can scan codes inside any image.
+
+PRIVATE BY DESIGN
+Your history never leaves your device. Lunet goes online only when it has to: to check a link with that link's own server, to look up a product on Open Food Facts, or to sign a pass you add to Apple Wallet. Nothing is stored and nothing is tracked.
+
+Built natively for iPhone and iPad, with Liquid Glass, light and dark appearance, Dynamic Type and VoiceOver.
+
+Scan anything. Open only what's safe.

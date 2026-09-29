@@ -3,6 +3,8 @@ options:
   bundleIdPrefix: com.rvp97
   deploymentTarget:
     iOS: "17.0"
+  # knownRegions are derived by XcodeGen from the String Catalogs; ship languages are listed in
+  # CFBundleLocalizations (App/Info.plist, Widgets/Info.plist). Check with Scripts/validate_strings.py.
   developmentLanguage: en
   createIntermediateGroups: true
   groupSortPosition: top

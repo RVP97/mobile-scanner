@@ -31,9 +31,51 @@
       "comment" : "Privacy - Camera Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستخدم Lunet الكاميرا لقراءة رموز QR والرموز الشريطية. لا يتم تسجيل أو رفع أي شيء."
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet fa servir la càmera per llegir codis QR i codis de barres. No es grava ni es puja res."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet používá fotoaparát ke čtení QR kódů a čárových kódů. Nic se nenahrává ani neodesílá."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet bruger kameraet til at læse QR-koder og stregkoder. Intet optages eller uploades."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet verwendet die Kamera, um QR-Codes und Barcodes zu lesen. Nichts wird aufgezeichnet oder hochgeladen."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το Lunet χρησιμοποιεί την κάμερα για να διαβάζει κωδικούς QR και γραμμωτούς κωδικούς. Τίποτα δεν καταγράφεται ή αποστέλλεται."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Lunet uses the camera to read QR codes and barcodes. Nothing is recorded or uploaded."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Lunet uses the camera to read QR codes and barcodes. Nothing is recorded or uploaded."
           }
         },
@@ -43,10 +85,160 @@
             "value" : "Lunet usa la cámara para leer códigos QR y de barras. No se graba ni se sube nada."
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet käyttää kameraa QR- ja viivakoodien lukemiseen. Mitään ei tallenneta eikä lähetetä."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lunet utilise l’appareil photo pour lire les codes QR et les codes-barres. Rien n’est enregistré ni envoyé."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‏Lunet משתמש במצלמה כדי לקרוא קודי QR וברקודים. שום דבר לא מוקלט או מועלה."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet QR कोड और बारकोड पढ़ने के लिए कैमरा का उपयोग करता है। कुछ भी रिकॉर्ड या अपलोड नहीं किया जाता।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet koristi kameru za očitavanje QR kodova i crtičnih kodova. Ništa se ne snima niti prenosi."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Lunet a kamerát QR-kódok és vonalkódok beolvasására használja. Semmit sem rögzít vagy tölt fel."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet menggunakan kamera untuk membaca kode QR dan barcode. Tidak ada yang direkam atau diunggah."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet usa la fotocamera per leggere codici QR e codici a barre. Nulla viene registrato o caricato."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LunetはQRコードやバーコードを読み取るためにカメラを使用します。記録やアップロードは一切されません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet은 QR 코드와 바코드를 읽기 위해 카메라를 사용합니다. 아무것도 녹화하거나 업로드하지 않습니다."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet menggunakan kamera untuk membaca kod QR dan kod bar. Tiada apa-apa dirakam atau dimuat naik."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet bruker kameraet til å lese QR-koder og strekkoder. Ingenting tas opp eller lastes opp."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet gebruikt de camera om QR-codes en barcodes te lezen. Er wordt niets vastgelegd of geüpload."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet używa aparatu do odczytywania kodów QR i kodów kreskowych. Nic nie jest nagrywane ani wysyłane."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Lunet usa a câmera para ler códigos QR e de barras. Nada é gravado nem enviado."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Lunet usa a câmara para ler códigos QR e de barras. Nada é gravado nem enviado."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet folosește camera pentru a citi coduri QR și coduri de bare. Nimic nu este înregistrat sau încărcat."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet использует камеру, чтобы читать QR-коды и штрихкоды. Ничего не записывается и не загружается."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet používa kameru na čítanie QR kódov a čiarových kódov. Nič sa nezaznamenáva ani neodosiela."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet använder kameran för att läsa QR-koder och streckkoder. Inget spelas in eller laddas upp."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet ใช้กล้องเพื่ออ่าน QR โค้ดและบาร์โค้ด ไม่มีการบันทึกหรืออัปโหลดใดๆ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet, QR kodları ve barkodları okumak için kamerayı kullanır. Hiçbir şey kaydedilmez veya yüklenmez."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet використовує камеру, щоб зчитувати QR-коди та штрихкоди. Нічого не записується і не вивантажується."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet dùng camera để đọc mã QR và mã vạch. Không có gì được ghi lại hay tải lên."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet 使用相机读取 QR 码和条形码。不会录制或上传任何内容。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet 使用相機來讀取 QR 碼和條碼。不會錄製或上傳任何內容。"
           }
         }
       }
@@ -55,9 +247,51 @@
       "comment" : "Privacy - Face ID Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستخدم Lunet Face ID للحفاظ على خصوصية سجل المسح."
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet fa servir Face ID per mantenir privat el teu historial d’escaneigs."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet používá Face ID, aby vaše historie skenování zůstala soukromá."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet bruger Face ID til at holde din scanningshistorik privat."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet verwendet Face ID, um deinen Scanverlauf privat zu halten."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το Lunet χρησιμοποιεί το Face ID για να διατηρεί ιδιωτικό το ιστορικό σαρώσεών σας."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Lunet uses Face ID to keep your scan history private."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Lunet uses Face ID to keep your scan history private."
           }
         },
@@ -67,10 +301,160 @@
             "value" : "Lunet usa Face ID para mantener privado tu historial de escaneos."
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet käyttää Face ID:tä pitääkseen skannaushistoriasi yksityisenä."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lunet utilise Face ID pour protéger la confidentialité de votre historique de scans."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‏Lunet משתמש ב־Face ID כדי לשמור על פרטיות היסטוריית הסריקות שלך."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet आपके स्कैन इतिहास को निजी रखने के लिए Face ID का उपयोग करता है।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet koristi Face ID kako bi povijest skeniranja ostala privatna."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Lunet a Face ID-t a beolvasási előzmények védelmére használja."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet menggunakan Face ID untuk menjaga privasi riwayat pindaian Anda."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet usa Face ID per mantenere privata la cronologia delle scansioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunetはスキャン履歴を非公開にするためにFace IDを使用します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet은 스캔 기록을 비공개로 유지하기 위해 Face ID를 사용합니다."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet menggunakan Face ID untuk memastikan sejarah imbasan anda peribadi."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet bruker Face ID for å holde skanneloggen din privat."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet gebruikt Face ID om je scangeschiedenis privé te houden."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet używa Face ID, aby chronić prywatność historii skanów."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Lunet usa o Face ID para manter seu histórico de escaneamentos privado."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Lunet usa o Face ID para manter privado o histórico de leituras."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet folosește Face ID pentru a păstra privat istoricul scanărilor."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet использует Face ID, чтобы защитить историю сканирования."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet používa Face ID na ochranu súkromia vašej histórie skenovania."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet använder Face ID för att hålla din skanningshistorik privat."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet ใช้ Face ID เพื่อรักษาประวัติการสแกนของคุณให้เป็นส่วนตัว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet, tarama geçmişinizi gizli tutmak için Face ID’yi kullanır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet використовує Face ID, щоб захистити історію сканування."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet dùng Face ID để giữ riêng tư cho lịch sử quét của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet 使用面容 ID 来保护你的扫描历史记录隐私。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet 使用 Face ID 來保護你的掃描記錄隱私。"
           }
         }
       }
@@ -79,9 +463,51 @@
       "comment" : "Privacy - Location When In Use Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمكن لـ Lunet تذكّر المكان الذي مسحت فيه كل رمز. تبقى المواقع على الـ iPhone."
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet pot recordar on has escanejat cada codi. Les ubicacions es queden al teu iPhone."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet si může pamatovat, kde jste který kód naskenovali. Polohy zůstávají na vašem iPhonu."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet kan huske, hvor du scannede hver kode. Lokaliteterne bliver på din iPhone."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet kann sich merken, wo du jeden Code gescannt hast. Standorte bleiben auf deinem iPhone."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το Lunet μπορεί να απομνημονεύει πού σαρώσατε κάθε κωδικό. Οι τοποθεσίες παραμένουν στο iPhone σας."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Lunet can remember where you scanned each code. Locations stay on your iPhone."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Lunet can remember where you scanned each code. Locations stay on your iPhone."
           }
         },
@@ -91,10 +517,160 @@
             "value" : "Lunet puede recordar dónde escaneaste cada código. Las ubicaciones se quedan en tu iPhone."
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet voi muistaa, missä skannasit kunkin koodin. Sijainnit pysyvät iPhonessasi."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lunet peut mémoriser l’endroit où vous avez scanné chaque code. Les positions restent sur votre iPhone."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‏Lunet יכול לזכור איפה סרקת כל קוד. המיקומים נשארים ב־iPhone שלך."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet याद रख सकता है कि आपने हर कोड कहाँ स्कैन किया। स्थान आपके iPhone पर ही रहते हैं।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet može pamtiti gdje ste skenirali svaki kôd. Lokacije ostaju na vašem iPhoneu."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Lunet megjegyezheti, hol olvasta be az egyes kódokat. A helyadatok az iPhone-on maradnak."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet dapat mengingat lokasi tempat Anda memindai setiap kode. Lokasi tetap berada di iPhone Anda."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet può ricordare dove hai scansionato ogni codice. Le posizioni restano sul tuo iPhone."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunetは各コードをスキャンした場所を記録できます。位置情報はiPhoneに保存されたままです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet은 각 코드를 스캔한 위치를 기억할 수 있습니다. 위치 정보는 iPhone에만 보관됩니다."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet boleh mengingati tempat anda mengimbas setiap kod. Lokasi kekal pada iPhone anda."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet kan huske hvor du skannet hver kode. Stedene blir på iPhonen din."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet kan onthouden waar je elke code hebt gescand. Locaties blijven op je iPhone."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet może zapamiętywać, gdzie zeskanowano każdy kod. Lokalizacje pozostają na iPhonie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Lunet pode lembrar onde você escaneou cada código. As localizações ficam no seu iPhone."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Lunet pode lembrar onde leu cada código. As localizações ficam no iPhone."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet poate reține unde ați scanat fiecare cod. Locațiile rămân pe iPhone."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet может запоминать, где вы отсканировали каждый код. Данные о местоположении остаются на вашем iPhone."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet si môže pamätať, kde ste jednotlivé kódy naskenovali. Polohy zostávajú vo vašom iPhone."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet kan komma ihåg var du skannade varje kod. Platserna stannar på din iPhone."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet สามารถจดจำตำแหน่งที่คุณสแกนแต่ละโค้ดได้ ตำแหน่งจะอยู่บน iPhone ของคุณเท่านั้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet, her kodu nerede taradığınızı hatırlayabilir. Konumlar iPhone’unuzda kalır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet може запам’ятовувати, де ви відсканували кожен код. Дані про розташування залишаються на вашому iPhone."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet có thể ghi nhớ nơi bạn quét từng mã. Vị trí được lưu trên iPhone của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet 可以记住你扫描每个码的地点。位置信息保留在你的 iPhone 上。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet 可以記住你掃描每個條碼的地點。位置資料會保留在你的 iPhone 上。"
           }
         }
       }
@@ -103,9 +679,51 @@
       "comment" : "Privacy - Photo Library Additions Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحفظ Lunet الرموز التي تنشئها في مكتبة الصور."
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet desa a la fototeca els codis que crees."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet ukládá vytvořené kódy do vaší knihovny fotek."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet gemmer de koder, du opretter, i dit fotobibliotek."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet sichert die Codes, die du erstellst, in deiner Fotomediathek."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το Lunet αποθηκεύει τους κωδικούς που δημιουργείτε στη βιβλιοθήκη φωτογραφιών σας."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Lunet saves the codes you create to your photo library."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Lunet saves the codes you create to your photo library."
           }
         },
@@ -115,10 +733,160 @@
             "value" : "Lunet guarda en tu fototeca los códigos que creas."
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet tallentaa luomasi koodit kuvakirjastoosi."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lunet enregistre dans votre photothèque les codes que vous créez."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‏Lunet שומר בספריית התמונות שלך את הקודים שאתה יוצר."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet आपके बनाए कोड आपकी फ़ोटो लाइब्रेरी में सहेजता है।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet sprema kodove koje izradite u vašu fototeku."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Lunet a létrehozott kódokat a fotókönyvtárba menti."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet menyimpan kode yang Anda buat ke perpustakaan foto Anda."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet salva nella tua libreria foto i codici che crei."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunetは作成したコードを写真ライブラリに保存します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet은 생성한 코드를 사진 보관함에 저장합니다."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet menyimpan kod yang anda cipta ke pustaka foto anda."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet lagrer kodene du oppretter, i bildebiblioteket ditt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet bewaart de codes die je aanmaakt in je fotobibliotheek."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet zachowuje utworzone kody w bibliotece zdjęć."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Lunet salva na sua fototeca os códigos que você cria."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Lunet guarda na fototeca os códigos que cria."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet salvează în biblioteca de poze codurile pe care le creați."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet сохраняет созданные вами коды в медиатеку."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet ukladá kódy, ktoré vytvoríte, do vašej fotoknižnice."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet sparar koderna du skapar i ditt bildbibliotek."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet บันทึกโค้ดที่คุณสร้างลงในคลังรูปภาพของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet, oluşturduğunuz kodları fotoğraf arşivinize kaydeder."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet зберігає створені вами коди в медіатеку."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet lưu các mã bạn tạo vào thư viện ảnh của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet 会将你创建的码存储到你的照片图库。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunet 會將你建立的條碼儲存到你的照片圖庫。"
           }
         }
       }

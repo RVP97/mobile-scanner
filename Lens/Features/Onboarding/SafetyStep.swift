@@ -127,6 +127,8 @@ private struct DangerReplayCard: View {
                 .background(Palette.danger.opacity(stage >= 3 ? 0.18 : 0), in: .rect(cornerRadius: 4))
             Text(verbatim: "rthbank-login.co")
         }
+        // A domain always reads left to right, even in Arabic and Hebrew.
+        .environment(\.layoutDirection, .leftToRight)
     }
 
     private func hop<Value: View>(
@@ -141,6 +143,7 @@ private struct DangerReplayCard: View {
         return HStack(alignment: .top, spacing: 12) {
             VStack(spacing: 0) {
                 Image(systemName: symbol)
+                    .flipsForRightToLeftLayoutDirection(symbol.hasSuffix(".right"))
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(tint)
                     .frame(width: 28, height: 28)
@@ -189,7 +192,7 @@ private struct SafeLinkCard: View {
             HStack(spacing: 8) {
                 fact("HTTPS", symbol: "lock.fill")
                 fact("Since 2019", symbol: "calendar")
-                fact("No redirects", symbol: "arrow.right")
+                fact("No redirects", symbol: "arrow.forward")
             }
         }
         .padding(16)

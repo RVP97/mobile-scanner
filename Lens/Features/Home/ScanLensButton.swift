@@ -86,7 +86,9 @@ private struct LensFace: View {
                     .font(.headline)
                     .foregroundStyle(.white)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.7)
+                    .minimumScaleFactor(0.6)
+                    // Stay inside the lens: "Сканировать", "Skannaa", "Σάρωση" are wider than "Scan".
+                    .frame(maxWidth: diameter * 0.78)
             }
             .dynamicTypeSize(...DynamicTypeSize.xxLarge)
             .offset(y: 2)

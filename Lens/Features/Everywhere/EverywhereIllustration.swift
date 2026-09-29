@@ -49,6 +49,8 @@ struct EverywhereIllustration: View {
                     .offset(x: 26 * unit, y: -12 * unit)
             }
             .frame(width: size, height: size, alignment: .leading)
+            // Hardware: the Action button is on the left edge in every language.
+            .environment(\.layoutDirection, .leftToRight)
         case .lockScreen:
             // Time at the top, the two bottom buttons; Lunet in the left one.
             VStack(spacing: 0) {

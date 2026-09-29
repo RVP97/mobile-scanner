@@ -3,6 +3,7 @@ import SwiftData
 import SwiftUI
 
 /// A real first scan over the live camera, with a sample code for when nothing is nearby.
+/// Only shown once camera access is granted (see `OnboardingStep.steps`).
 struct FirstScanStep: View {
     /// Called with the real scan (nil for the sample) when the user continues.
     var onFinish: (ScanResult?) -> Void
@@ -52,11 +53,6 @@ struct FirstScanStep: View {
         } else {
             Color.black
                 .ignoresSafeArea()
-                .overlay {
-                    if phase == .looking {
-                        CameraOffNotice().padding(.horizontal, 32)
-                    }
-                }
         }
     }
 
@@ -174,34 +170,11 @@ private struct SampleOffer: View {
             .padding(16)
             .lensGlass(.regular, in: .rect(cornerRadius: 24, style: .continuous))
 
-            Button("Scan Later", action: onSkip)
+            Button("Skip", action: onSkip)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .frame(minHeight: 44)
         }
-    }
-}
-
-/// Shown when the camera is off, so the step still works.
-private struct CameraOffNotice: View {
-    var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "video.slash")
-                .font(.largeTitle)
-                .foregroundStyle(.secondary)
-            Text("Camera access is off")
-                .font(.headline)
-            Text("You can still try the sample, or turn on the camera for Lunet in Settings.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-            if let url = URL(string: UIApplication.openSettingsURLString) {
-                Link("Open Settings", destination: url)
-                    .font(.subheadline.weight(.semibold))
-                    .frame(minHeight: 44)
-            }
-        }
-        .offset(y: -40)
     }
 }
 

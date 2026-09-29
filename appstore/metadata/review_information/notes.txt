@@ -1,4 +1,4 @@
-Update for 5.1.1(iv): the camera explanation screen now has one "Continue" button that always opens the system permission request; "Not Now" and "Skip" were removed there.
+Update for 5.1.1(iv), build 103: after "Don't Allow", onboarding never mentions the camera again (no custom message, no Settings link). The first-scan screen only appears once access is granted, and the explanation screen's only button opens the system request.
 
 Thank you for reviewing Lunet (version 2.0; formerly listed as "Fast QR & Barcode").
 
@@ -6,7 +6,7 @@ NO LOGIN NEEDED
 Lunet has no accounts, sign-in, subscriptions or in-app purchases. Every feature is available on first launch.
 
 SAMPLE CODES (attached)
-The attachment contains four sample codes. Open them on a second screen and point the camera at them, or save them to Photos on the test device and use the Photos button on Home to scan from an image. No special hardware is needed.
+The attachment contains four sample codes. Show them on a second screen, or save them to Photos and use the Photos button on Home.
 1-boarding-pass-pdf417.png  A sample IATA boarding pass barcode (fictional passenger "APPLESEED/JOHNNY").
 2-danger-link-qr.png        https://atlas-coffee.co@n0rthbank-login.co/pay (a phishing-style link).
 3-safe-link-qr.png          https://www.apple.com

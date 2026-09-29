@@ -42,7 +42,13 @@ struct OnboardingFlow: View {
         case .safety:
             SafetyStep(onContinue: advance)
         case .camera:
-            CameraStep(onContinue: advance)
+            CameraStep {
+                // Declined: drop the first scan instead of explaining the missing access.
+                if AVCaptureDevice.authorizationStatus(for: .video) != .authorized {
+                    steps.removeAll { $0 == .firstScan }
+                }
+                advance()
+            }
         case .firstScan:
             FirstScanStep { result in
                 firstScan = result

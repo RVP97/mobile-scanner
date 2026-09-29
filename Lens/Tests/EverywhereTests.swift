@@ -28,7 +28,7 @@ struct EverywhereDeepLinkTests {
     @Test func appStillRoutesOjitoScheme() throws {
         let model = AppModel()
         model.handle(url: try #require(URL(string: "ojito://create")))
-        #expect(model.modal == .create)
+        #expect(model.modal == .create())
     }
 
     @Test func foreignURLsAreIgnored() throws {

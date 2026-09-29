@@ -41,11 +41,27 @@ enum HistorySamples {
         let shipment = ScanRecord(raw: "SHIP-88213-XK", symbology: .code128, kind: .shipment,
                                   title: "SHIP-88213-XK", subtitle: "Shipment label", createdAt: at(daysAgo: 9, 14, 5))
 
-        let flight = ScanRecord(raw: "M1CHEN/MAYA EABC123 MEXSFONR 0412 275Y014A0003 100", symbology: .pdf417, kind: .travel,
+        let flight = ScanRecord(raw: "M1CHEN/MAYA           EABC123 MEXSFONR 0412 275Y014A0025 100", symbology: .pdf417, kind: .travel,
                                 title: "NR 412 · MEX → SFO", subtitle: "Norte Air · Seat 14A", createdAt: at(daysAgo: 11, 6, 50))
 
-        let shared = ScanRecord(raw: "WIFI:T:WPA;S:Studio Norte;P:linea-4;;", symbology: .qr, kind: .wifi, origin: .created,
-                                title: "Studio Norte", subtitle: "Wi-Fi · WPA2", createdAt: at(daysAgo: 14, 10, 0))
+        flight.isPinned = true
+
+        let home = ScanRecord(raw: "WIFI:T:WPA;S:Casa Chen;P:limonada-azul-27;;", symbology: .qr, kind: .wifi, origin: .created,
+                              title: "Casa Chen", subtitle: "Home network · WPA2", createdAt: at(daysAgo: 14, 10, 0))
+        var homeStyle = CodeStyle()
+        homeStyle.dots = .rounded
+        homeStyle.eyeFrame = .rounded
+        homeStyle.eyePupil = .rounded
+        homeStyle.foreground = RGBAColor(hex: 0x14532A)
+        homeStyle.logo = .kindGlyph
+        homeStyle.paletteID = nil
+        home.styleData = homeStyle.encoded()
+
+        let card = ScanRecord(
+            raw: "BEGIN:VCARD\nVERSION:3.0\nN:Chen;Maya\nFN:Maya Chen\nORG:Studio Norte\nTEL:+52 55 1234 5678\nEMAIL:maya@studionorte.mx\nEND:VCARD",
+            symbology: .qr, kind: .contact, origin: .created,
+            title: "Maya Chen", subtitle: "My card · Studio Norte", createdAt: at(daysAgo: 20, 9, 0)
+        )
 
         let parking = ScanRecord(raw: "https://bit.ly/3xQpark", symbology: .qr, kind: .link,
                                  title: "n0rthbank-login.co", subtitle: "Parking meter · looks like northbank",
@@ -57,7 +73,7 @@ enum HistorySamples {
                                createdAt: at(daysAgo: 3, 8, 15))
         flyer.safetyRaw = SafetyVerdict.Level.caution.rawValue
 
-        return [menu, pen, wifi, maya, parking, flyer, locker, shipment, flight, shared]
+        return [menu, pen, wifi, maya, parking, flyer, locker, shipment, flight, home, card]
     }
 }
 #endif

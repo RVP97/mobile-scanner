@@ -7,6 +7,8 @@ enum CreateRoute: Hashable {
     case compose(CreateIntent)
     case advanced(Symbology)
     case studio(CodeDocument)
+    /// A code made earlier, back in the studio with its saved style.
+    case restyle(ScanRecord)
     case formats
 }
 
@@ -23,7 +25,12 @@ struct DismissCreateAction {
 /// Intent-first creation: pick what to share, fill it in, then make it yours.
 struct CreateView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var path: [CreateRoute] = CreateView.initialPath
+    @State private var path: [CreateRoute]
+
+    /// - Parameter route: A screen to open straight onto (a Wi-Fi form, a saved code's studio).
+    init(route: CreateRoute? = nil) {
+        _path = State(initialValue: route.map { [$0] } ?? CreateView.initialPath)
+    }
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -36,6 +43,8 @@ struct CreateView: View {
                         ComposeView(draft: CreateDraft(format: format))
                     case .studio(let document):
                         StudioView(document: document)
+                    case .restyle(let record):
+                        StudioView(record: record)
                     case .formats:
                         FormatPicker()
                     }

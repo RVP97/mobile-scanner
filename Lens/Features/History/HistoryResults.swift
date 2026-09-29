@@ -88,7 +88,7 @@ struct HistoryResults: View {
                 ContentUnavailableView {
                     Label("No Pinned Codes", systemImage: "pin")
                 } description: {
-                    Text("Swipe right on a code to keep it at the top.")
+                    Text("Swipe right on a scan to pin it. Pinned codes also wait for you on Home.")
                 }
             case .created:
                 ContentUnavailableView {

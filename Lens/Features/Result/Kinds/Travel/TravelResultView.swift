@@ -1,4 +1,3 @@
-import PassKit
 import SwiftUI
 
 /// Boarding pass: the pass card, "Add to Calendar", a bright full-screen pass for the gate, flight tracking.
@@ -8,11 +7,7 @@ struct TravelResultView: View {
     var result: ScanResult
 
     @Environment(\.openURL) private var openURL
-    @Environment(\.colorScheme) private var colorScheme
     @State private var calendarDraft: CalendarDraft?
-    @State private var walletPass: PKPass?
-    @State private var walletError: String?
-    @State private var isPreparingPass = false
 
     var body: some View {
         let date = pass.date()
@@ -20,25 +15,7 @@ struct TravelResultView: View {
         VStack(alignment: .leading, spacing: 16) {
             BoardingPassCard(pass: pass, date: date)
 
-            if WalletPassService.isAvailable, PKAddPassesViewController.canAddPasses() {
-                // Apple's own badge, as Wallet's branding guidelines require.
-                AddPassButton(style: colorScheme == .dark ? .blackOutline : .black) {
-                    guard !isPreparingPass else { return }
-                    Task { await prepareWalletPass() }
-                }
-                .frame(height: 54)
-                .opacity(isPreparingPass ? 0.5 : 1)
-                .overlay { if isPreparingPass { ProgressView().tint(.white) } }
-                .accessibilityLabel("Add to Apple Wallet")
-                Text("Pass details are sent to Lunet's signing service to create your pass. Nothing is stored.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                if let walletError {
-                    Label(walletError, systemImage: "exclamationmark.triangle.fill")
-                        .font(.footnote)
-                        .foregroundStyle(Palette.caution)
-                }
-            }
+            WalletPassButton(pass: pass, raw: result.code.raw, symbology: result.code.symbology)
 
             ResultPrimaryButton(title: "Add to Calendar", symbol: "calendar.badge.plus", tint: CodeKind.travel.tint) {
                 calendarDraft = draft(on: date ?? .now)
@@ -53,9 +30,6 @@ struct TravelResultView: View {
             }
         }
         .sheet(item: $calendarDraft) { EventEditor(draft: $0).ignoresSafeArea() }
-        .sheet(isPresented: Binding(get: { walletPass != nil }, set: { if !$0 { walletPass = nil } })) {
-            if let walletPass { AddPassSheet(pass: walletPass).ignoresSafeArea() }
-        }
     }
 
     private func draft(on date: Date) -> CalendarDraft {
@@ -71,18 +45,6 @@ struct TravelResultView: View {
             location: TravelDirectory.city(for: pass.from).map { "\($0) (\(pass.from))" } ?? pass.from,
             notes: notes.joined(separator: "\n")
         )
-    }
-
-    private func prepareWalletPass() async {
-        isPreparingPass = true
-        defer { isPreparingPass = false }
-        do {
-            let data = try await WalletPassService.makePass(for: pass, raw: result.code.raw, symbology: result.code.symbology)
-            walletPass = try PKPass(data: data)
-            walletError = nil
-        } catch {
-            walletError = String(localized: "Couldn't create a Wallet pass for this flight.")
-        }
     }
 }
 

@@ -36,18 +36,23 @@ struct CameraStatusView: View {
     }
 
     private var blocked: some View {
-        VStack(spacing: 16) {
-            Image(systemName: kind == .unavailable ? "camera" : "video.slash")
-                .font(.system(size: 40, weight: .regular))
-                .foregroundStyle(.secondary)
-                .accessibilityHidden(true)
+        VStack(spacing: 20) {
+            ZStack {
+                ViewfinderBrackets()
+                    .fill(.white.opacity(0.28))
+                    .frame(width: 96, height: 96)
+                Image(systemName: kind == .unavailable ? "camera" : "video.slash")
+                    .font(.system(size: 30, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.85))
+            }
+            .accessibilityHidden(true)
 
             VStack(spacing: 8) {
                 Text(title)
                     .font(.title3.weight(.semibold))
                 Text(message)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.7))
             }
             .multilineTextAlignment(.center)
 

@@ -9,12 +9,25 @@ struct StudioView: View {
     @Environment(\.dismissCreate) private var dismissCreate
     @Environment(\.modelContext) private var modelContext
 
-    init(document: CodeDocument) {
-        let model = StudioModel(document: document)
+    init(document: CodeDocument, style: CodeStyle = CodeStyle(), record: ScanRecord? = nil) {
+        let model = StudioModel(document: document, style: style, record: record)
 #if DEBUG
         if let tool = QAHarness.studioTool, model.tools.contains(tool) { model.tool = tool }
 #endif
         _model = State(initialValue: model)
+    }
+
+    /// Reopens a code made earlier with its saved style; changes update that same entry.
+    init(record: ScanRecord) {
+        let style = CodeStyle.decoded(from: record.styleData) ?? CodeStyle()
+        let document = CodeDocument(
+            raw: record.raw,
+            symbology: record.symbology,
+            payload: PayloadParser.parse(record.raw, symbology: record.symbology),
+            title: record.historyTitle,
+            caption: style.caption
+        )
+        self.init(document: document, style: style, record: record)
     }
 
     var body: some View {
@@ -58,7 +71,11 @@ struct StudioView: View {
                 .accessibilityElement(children: .combine)
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button("Done") { dismissCreate() }
+                Button("Done") {
+                    // A finished code lives on Home under "Your codes".
+                    model.recordCreation()
+                    dismissCreate()
+                }
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
@@ -71,6 +88,7 @@ struct StudioView: View {
             await model.verify()
         }
         .onAppear { model.modelContext = modelContext }
+        .onDisappear { if model.editsSavedCode { model.recordCreation() } }
     }
 
     private var stage: some View {

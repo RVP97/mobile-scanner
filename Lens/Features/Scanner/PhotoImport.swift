@@ -2,13 +2,17 @@ import PhotosUI
 import UIKit
 import UniformTypeIdentifiers
 
-/// Presents the system photo picker from whatever is frontmost in the scanner's window.
+/// Presents the system photo picker from whatever is frontmost in the window.
 ///
-/// The scanner sits underneath the app's persistent sheet, so a SwiftUI `photosPicker` attached here
+/// Home and the scanner cover can each be under a sheet, so a SwiftUI `photosPicker` attached to them
 /// would try to present from a controller that is already presenting. Going through UIKit lets it
-/// present on top of the sheet (or a modal over the sheet) instead.
+/// present on top of whatever is showing instead.
 enum PhotoImport {
+    /// - Parameter window: The window to present in; nil uses the app's key window.
     static func pickImage(from window: UIWindow?) async -> Data? {
+        let window = window ?? UIApplication.shared.connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+            .first
         guard var presenter = window?.rootViewController else { return nil }
         while let next = presenter.presentedViewController, !next.isBeingDismissed {
             presenter = next

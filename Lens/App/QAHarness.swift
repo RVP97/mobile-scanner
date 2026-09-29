@@ -5,15 +5,25 @@ import SwiftUI
 /// Debug-only launch arguments that open any screen with realistic data, so every state can be
 /// reviewed (and screenshotted) in both appearances without a camera:
 ///
-///     xcrun simctl launch <udid> com.rvp97.scanner -qaAppearance dark -qaSeed YES -qaScreen result:wifi
+///     xcrun simctl launch <udid> com.rvp97.scanner -qaAppearance dark -qaSeed YES -qaScreen show:wifi
 ///
-/// `-qaScreen`: `home`, `history`, `create`, `settings`, `multi`, `result:<link|caution|danger|wifi|openwifi|
-/// product|travel|contact|event|location|crypto|shipment|text|email|sms|phone>`.
+/// `-qaScreen`:
+/// - `home` (add `-qaSeed YES` for sample codes and scans), `home:empty` (wipes the store first)
+/// - `scan`, `scan:multi`, `scan:result:<name>` (a result over the camera), `multi` (the multi-scan review)
+/// - `show:<wifi|travel|contact|link>` a code full screen, `result:<name>` a result over Home, where
+///   `<name>` is `link|caution|danger|wifi|openwifi|product|travel|contact|event|location|crypto|shipment|
+///   text|email|sms|phone`
+/// - `history`, `create`, `settings`, and the deeper screens in `QAHarness+Screens.swift`
+///
 /// `-qaOnboarding <welcome|answers|safety|camera|firstScan|everywhere>`. `-qaCodeCover YES` opens a result's
-/// full-screen code. `-qaDetent large` opens the sheet expanded. `-qaWelcomeTime 0.6` freezes the Welcome
-/// animation at that moment.
+/// full-screen code. `-qaWelcomeTime 0.6` freezes the Welcome animation at that moment.
 enum QAHarness {
     private static var arguments: UserDefaults { .standard }
+
+    /// A QA launch: don't apply launch-time preferences like "Open to camera".
+    static var isActive: Bool {
+        arguments.string(forKey: "qaScreen") != nil || arguments.string(forKey: "qaOnboarding") != nil
+    }
 
     static var welcomeTime: Double? {
         arguments.object(forKey: "qaWelcomeTime") == nil ? nil : arguments.double(forKey: "qaWelcomeTime")
@@ -36,29 +46,58 @@ enum QAHarness {
         guard let screen = arguments.string(forKey: "qaScreen") else { return }
         UserDefaults.standard.set(true, forKey: Pref.onboardingDone)
 
-        if arguments.bool(forKey: "qaSeed"),
-           (try? context.fetchCount(FetchDescriptor<ScanRecord>())) == 0 {
+        if screen.hasSuffix(":empty") || arguments.bool(forKey: "qaSeed") {
+            try? context.delete(model: ScanRecord.self)
+        }
+        if arguments.bool(forKey: "qaSeed") && !screen.hasSuffix(":empty") {
             HistorySamples.records().forEach(context.insert)
         }
+        try? context.save()
 
         switch screen {
-        case "history": model.openHistory()
-        case "create": model.modal = .create
+        case "home", "home:empty": break
+        case "history", "history:empty": model.path = [.history]
+        case "create": model.modal = .create()
         case "settings": model.modal = .settings
+        case "scan": model.openScanner(multi: false)
+        case "scan:multi":
+            model.openScanner(multi: true)
+            model.multiScanCodes = [.sampleLink, .sampleProduct]
         case "multi":
+            model.openScanner(multi: true)
             model.multiScanCodes = [.sampleLink, .sampleProduct, .sampleWiFi]
-            model.isMultiScanActive = true
-            model.sheetContent = .multiReview
-            model.detent = .large
+            model.sheet = .multiReview
         default:
-            if applyExtended(screen, model: model) { return }
-            if screen.hasPrefix("result:"), let result = sample(named: String(screen.dropFirst(7))) {
+            if applyExtended(screen, model: model, context: context) { return }
+            if screen.hasPrefix("scan:result:"), let result = sample(named: String(screen.dropFirst(12))) {
+                model.openScanner(multi: false)
+                Task {
+                    try? await Task.sleep(for: .seconds(1))
+                    model.show(result)
+                }
+            } else if screen.hasPrefix("result:"), let result = sample(named: String(screen.dropFirst(7))) {
                 model.show(result)
+            } else if screen.hasPrefix("show:") {
+                model.codeOnDisplay = showItem(named: String(screen.dropFirst(5)), context: context)
             }
         }
-        if arguments.string(forKey: "qaDetent") == "large" {
-            model.detent = .large
+    }
+
+    /// A seeded code for `show:<name>`, as Home would open it.
+    private static func showItem(named name: String, context: ModelContext) -> ShowCodeItem? {
+        let kind: CodeKind? = switch name {
+        case "wifi": .wifi
+        case "travel": .travel
+        case "contact": .contact
+        case "link": .link
+        default: nil
         }
+        guard let kind else { return nil }
+        let records = (try? context.fetch(CodeShelf.descriptor)) ?? []
+        if let record = records.first(where: { $0.kind == kind && $0.origin == .created }) ?? records.first(where: { $0.kind == kind }) {
+            return ShowCodeItem(record: record)
+        }
+        return sample(named: name).map(ShowCodeItem.init(result:))
     }
 
     private static func sample(named name: String) -> ScanResult? {

@@ -35,7 +35,7 @@ struct ResultActionRow<Leading: View>: View {
         .buttonStyle(.secondaryAction)
         .fixedSize(horizontal: false, vertical: true)
         .fullScreenCover(isPresented: $showingCode) {
-            CodeCover(raw: result.code.raw, symbology: result.code.symbology, title: result.payload.displayTitle)
+            ShowCodeView(item: ShowCodeItem(result: result))
         }
     }
 

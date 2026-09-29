@@ -40,7 +40,7 @@ struct HistoryRowItem: View {
                 Label("Share", systemImage: "square.and.arrow.up")
             }
             Button("Show Code", systemImage: "qrcode") { actions.showCode(record) }
-            Button(record.isPinned ? "Unpin" : "Pin", systemImage: record.isPinned ? "pin.slash" : "pin", action: togglePin)
+            Button(record.isPinned ? "Unpin" : "Pin to Your Codes", systemImage: record.isPinned ? "pin.slash" : "pin", action: togglePin)
             Divider()
             Button("Delete", systemImage: "trash", role: .destructive, action: delete)
         }

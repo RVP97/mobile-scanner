@@ -20,22 +20,6 @@
         }
       }
     },
-    "%@ code" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code %@"
-          }
-        }
-      }
-    },
     "%@ flight status" : {
       "comment" : "Web search query",
       "localizations" : {
@@ -275,6 +259,72 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "%@ · Seat %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · Seat %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · Asiento %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · Siège %2$@"
+          }
+        }
+      }
+    },
+    "%@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@"
+          }
+        }
+      }
+    },
+    "%@, %@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@, %3$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@, %3$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@, %3$@"
           }
         }
       }
@@ -1579,6 +1629,22 @@
         }
       }
     },
+    "Boarding pass code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código del pase de abordar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code de la carte d’embarquement"
+          }
+        }
+      }
+    },
     "Bogotá" : {
       "localizations" : {
         "es" : {
@@ -1671,22 +1737,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boston"
-          }
-        }
-      }
-    },
-    "Brightness is turned up while this is open" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El brillo sube mientras esto está abierto"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La luminosité est augmentée tant que ceci est ouvert"
           }
         }
       }
@@ -2011,22 +2061,6 @@
         }
       }
     },
-    "Can't Draw This Code" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se puede dibujar este código"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible de dessiner ce code"
-          }
-        }
-      }
-    },
     "Can't check %@ here" : {
       "localizations" : {
         "es" : {
@@ -2039,22 +2073,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impossible de vérifier %@ ici"
-          }
-        }
-      }
-    },
-    "Can't draw this code" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se puede dibujar este código"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible de dessiner ce code"
           }
         }
       }
@@ -2571,6 +2589,38 @@
         }
       }
     },
+    "Close Camera" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar cámara"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer l’appareil photo"
+          }
+        }
+      }
+    },
+    "Closing soon" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se cerrará pronto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermeture imminente"
+          }
+        }
+      }
+    },
     "Codabar can't hold “%@” here. Use digits and - $ : / . + between the A–D start and stop letters." : {
       "localizations" : {
         "es" : {
@@ -3019,6 +3069,22 @@
         }
       }
     },
+    "Copy Email Address" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar correo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier l’adresse e-mail"
+          }
+        }
+      }
+    },
     "Copy Image" : {
       "localizations" : {
         "es" : {
@@ -3031,6 +3097,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copier l’image"
+          }
+        }
+      }
+    },
+    "Copy Link" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar enlace"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le lien"
           }
         }
       }
@@ -3051,6 +3133,22 @@
         }
       }
     },
+    "Copy Number" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar número"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le numéro"
+          }
+        }
+      }
+    },
     "Copy Password" : {
       "localizations" : {
         "es" : {
@@ -3063,6 +3161,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copier le mot de passe"
+          }
+        }
+      }
+    },
+    "Copy Phone Number" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar teléfono"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le numéro de téléphone"
+          }
+        }
+      }
+    },
+    "Copy Text" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar texto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le texte"
           }
         }
       }
@@ -3207,6 +3337,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Créer un code"
+          }
+        }
+      }
+    },
+    "Create Wi-Fi Code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear código de Wi-Fi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créer un code Wi-Fi"
           }
         }
       }
@@ -3871,6 +4017,22 @@
         }
       }
     },
+    "Edit Style" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar estilo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifier le style"
+          }
+        }
+      }
+    },
     "Email" : {
       "localizations" : {
         "es" : {
@@ -4341,6 +4503,22 @@
         }
       }
     },
+    "Full brightness while shown" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brillo al máximo mientras se muestra"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luminosité maximale pendant l’affichage"
+          }
+        }
+      }
+    },
     "GS1 prefix" : {
       "localizations" : {
         "es" : {
@@ -4433,6 +4611,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Canton"
+          }
+        }
+      }
+    },
+    "Guests point their camera and they’re on. No spelling out passwords." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus invitados apuntan la cámara y listo. Sin deletrear contraseñas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos invités pointent l’appareil photo et c’est fait. Plus besoin d’épeler le mot de passe."
           }
         }
       }
@@ -4709,18 +4903,18 @@
         }
       }
     },
-    "History is locked" : {
+    "History is off" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El historial está bloqueado"
+            "value" : "El historial está desactivado"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’historique est verrouillé"
+            "value" : "L’historique est désactivé"
           }
         }
       }
@@ -6229,6 +6423,22 @@
         }
       }
     },
+    "Makes a new code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea un código nuevo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crée un nouveau code"
+          }
+        }
+      }
+    },
     "Manchester" : {
       "localizations" : {
         "es" : {
@@ -6565,22 +6775,6 @@
         }
       }
     },
-    "Multi-scan on" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escaneo múltiple activado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scan multiple activé"
-          }
-        }
-      }
-    },
     "Mumbai" : {
       "localizations" : {
         "es" : {
@@ -6773,6 +6967,22 @@
         }
       }
     },
+    "New Code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuevo código"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveau code"
+          }
+        }
+      }
+    },
     "New Orleans" : {
       "localizations" : {
         "es" : {
@@ -6833,6 +7043,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nouveau message"
+          }
+        }
+      }
+    },
+    "New scans aren’t saved. You can turn this on in Settings." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los escaneos nuevos no se guardan. Puedes activarlo en Ajustes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les nouveaux scans ne sont pas enregistrés. Vous pouvez l’activer dans Réglages."
           }
         }
       }
@@ -7221,6 +7447,22 @@
         }
       }
     },
+    "Nothing scanned yet" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no has escaneado nada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien de scanné pour l’instant"
+          }
+        }
+      }
+    },
     "Nothing stored on our side" : {
       "localizations" : {
         "es" : {
@@ -7233,6 +7475,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rien n’est stocké chez nous"
+          }
+        }
+      }
+    },
+    "Number" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Número"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numéro"
           }
         }
       }
@@ -7285,6 +7543,38 @@
         }
       }
     },
+    "Off" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé"
+          }
+        }
+      }
+    },
+    "On" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activé"
+          }
+        }
+      }
+    },
     "One tap from your Home Screen." : {
       "localizations" : {
         "es" : {
@@ -7313,6 +7603,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uniquement quand Lunet est ouverte"
+          }
+        }
+      }
+    },
+    "Open" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abierta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvert"
           }
         }
       }
@@ -7361,58 +7667,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ouvrir quand même…"
-          }
-        }
-      }
-    },
-    "Open History, ^[%lld scan](inflect: true)" : {
-      "localizations" : {
-        "es" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Abrir historial, %lld escaneos"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Abrir historial, %lld escaneo"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Abrir historial, %lld escaneos"
-                }
-              }
-            }
-          }
-        },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Ouvrir l’historique, %lld scans"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Ouvrir l’historique, %lld scan"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Ouvrir l’historique, %lld scans"
-                }
-              }
-            }
           }
         }
       }
@@ -7593,6 +7847,22 @@
         }
       }
     },
+    "Open to camera" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir en la cámara"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir sur l’appareil photo"
+          }
+        }
+      }
+    },
     "Opening a link, joining a network or adding a contact happens in the app you choose, under its own privacy policy." : {
       "localizations" : {
         "es" : {
@@ -7753,18 +8023,34 @@
         }
       }
     },
-    "Opens this scan" : {
+    "Opens the camera" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre este escaneo"
+            "value" : "Abre la cámara"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvre ce scan"
+            "value" : "Ouvre l’appareil photo"
+          }
+        }
+      }
+    },
+    "Opens the camera to collect several codes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre la cámara para reunir varios códigos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre l’appareil photo pour collecter plusieurs codes"
           }
         }
       }
@@ -8185,6 +8471,22 @@
         }
       }
     },
+    "Photos" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos"
+          }
+        }
+      }
+    },
     "Pick a frame to add a caption." : {
       "localizations" : {
         "es" : {
@@ -8245,6 +8547,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Épingler"
+          }
+        }
+      }
+    },
+    "Pin any scan to keep it here." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fija cualquier escaneo para tenerlo aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épinglez un scan pour le garder ici."
+          }
+        }
+      }
+    },
+    "Pin to Your Codes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fijar en Tus códigos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épingler dans Vos codes"
           }
         }
       }
@@ -8325,22 +8659,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Visez un code"
-          }
-        }
-      }
-    },
-    "Point at any code" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apunta a cualquier código"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visez n’importe quel code"
           }
         }
       }
@@ -8703,22 +9021,6 @@
         }
       }
     },
-    "Pull up to unlock" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desliza hacia arriba para desbloquear"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Balayez vers le haut pour déverrouiller"
-          }
-        }
-      }
-    },
     "Pupil" : {
       "localizations" : {
         "es" : {
@@ -8943,6 +9245,38 @@
         }
       }
     },
+    "Ready to scan" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo para escanear"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prêt à être scanné"
+          }
+        }
+      }
+    },
+    "Ready to scan at the register" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo para escanear en caja"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prêt à être scanné en caisse"
+          }
+        }
+      }
+    },
     "Real sites use names. Scam pages often don't." : {
       "localizations" : {
         "es" : {
@@ -8955,6 +9289,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Les vrais sites utilisent des noms. Les pages frauduleuses, souvent pas."
+          }
+        }
+      }
+    },
+    "Recent" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recientes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Récents"
           }
         }
       }
@@ -9739,6 +10089,22 @@
         }
       }
     },
+    "Scan" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanear"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scanner"
+          }
+        }
+      }
+    },
     "Scan & Go" : {
       "localizations" : {
         "es" : {
@@ -9767,6 +10133,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Scanner et ouvrir · uniquement les liens qui passent la vérification"
+          }
+        }
+      }
+    },
+    "Scan Another" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanear otro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scanner un autre"
           }
         }
       }
@@ -10091,6 +10473,70 @@
         }
       }
     },
+    "Scan with the Camera to add to Calendar" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanéalo con la Cámara para agregarlo al Calendario"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scannez avec l’appareil photo pour l’ajouter à Calendrier"
+          }
+        }
+      }
+    },
+    "Scan with the Camera to join" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanéalo con la Cámara para conectarte"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scannez avec l’appareil photo pour vous connecter"
+          }
+        }
+      }
+    },
+    "Scan with the Camera to open" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanéalo con la Cámara para abrirlo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scannez avec l’appareil photo pour l’ouvrir"
+          }
+        }
+      }
+    },
+    "Scan with the Camera to save the contact" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanéalo con la Cámara para guardar el contacto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scannez avec l’appareil photo pour enregistrer le contact"
+          }
+        }
+      }
+    },
     "Scan without unlocking." : {
       "localizations" : {
         "es" : {
@@ -10183,6 +10629,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Le scan ouvre ce lieu dans Plans."
+          }
+        }
+      }
+    },
+    "Scans a code in a photo" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanea un código en una foto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scanne un code dans une photo"
           }
         }
       }
@@ -10349,6 +10811,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sécurité"
+          }
+        }
+      }
+    },
+    "See All" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver todo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout afficher"
+          }
+        }
+      }
+    },
+    "See All History" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver todo el historial"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher tout l’historique"
           }
         }
       }
@@ -10577,6 +11071,22 @@
         }
       }
     },
+    "Share your Wi-Fi with a code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte tu Wi-Fi con un código"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partagez votre Wi-Fi avec un code"
+          }
+        }
+      }
+    },
     "Shelf labels and inventory" : {
       "localizations" : {
         "es" : {
@@ -10765,6 +11275,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Montre comment ajouter Lunet ici."
+          }
+        }
+      }
+    },
+    "Shows the code full screen" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra el código en pantalla completa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche le code en plein écran"
           }
         }
       }
@@ -11057,6 +11583,22 @@
         }
       }
     },
+    "Start every time in the camera, like before." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empieza siempre en la cámara, como antes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarrer toujours sur l’appareil photo, comme avant."
+          }
+        }
+      }
+    },
     "Start in Multi-scan" : {
       "localizations" : {
         "es" : {
@@ -11229,18 +11771,18 @@
         }
       }
     },
-    "Swipe right on a code to keep it at the top." : {
+    "Swipe right on a scan to pin it. Pinned codes also wait for you on Home." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Desliza a la derecha sobre un código para dejarlo arriba."
+            "value" : "Desliza a la derecha sobre un escaneo para fijarlo. Los códigos fijados también te esperan en Inicio."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Balayez un code vers la droite pour le garder en haut."
+            "value" : "Balayez un scan vers la droite pour l’épingler. Les codes épinglés vous attendent aussi sur l’accueil."
           }
         }
       }
@@ -11289,6 +11831,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Balayez pour supprimer un scan, ou effacez tout dans les réglages."
+          }
+        }
+      }
+    },
+    "Switch Camera" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar de cámara"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changer d’appareil photo"
           }
         }
       }
@@ -11433,6 +11991,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Touchez Écran verrouillé, puis touchez − sur le bouton de la lampe torche ou de l’appareil photo."
+          }
+        }
+      }
+    },
+    "Tap Scan and point at any code. It’ll be here for next time." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca Escanear y apunta a cualquier código. Aquí lo tendrás para la próxima."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez Scanner et visez n’importe quel code. Il vous attendra ici."
           }
         }
       }
@@ -12029,22 +12603,6 @@
         }
       }
     },
-    "This content doesn't fit the %@ format." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este contenido no cabe en el formato %@."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ce contenu ne convient pas au format %@."
-          }
-        }
-      }
-    },
     "This copy of Lunet couldn't be verified. Try again later." : {
       "localizations" : {
         "es" : {
@@ -12573,22 +13131,6 @@
         }
       }
     },
-    "Turns multi-scan off" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desactiva el escaneo múltiple"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Désactive le scan multiple"
-          }
-        }
-      }
-    },
     "UPC-E needs 6 to 8 digits, or a 12-digit UPC-A to shorten. This has %lld." : {
       "localizations" : {
         "es" : {
@@ -12665,6 +13207,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Déverrouiller"
+          }
+        }
+      }
+    },
+    "Unlock to see what you’ve saved." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloquea para ver lo que guardaste."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déverrouillez pour voir ce que vous avez enregistré."
           }
         }
       }
@@ -12781,22 +13339,6 @@
         }
       }
     },
-    "Use Back Camera" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usar cámara trasera"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utiliser la caméra arrière"
-          }
-        }
-      }
-    },
     "Use Capitals" : {
       "localizations" : {
         "es" : {
@@ -12825,22 +13367,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Utiliser la position actuelle"
-          }
-        }
-      }
-    },
-    "Use Front Camera" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usar cámara frontal"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utiliser la caméra avant"
           }
         }
       }
@@ -12985,22 +13511,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vérifié"
-          }
-        }
-      }
-    },
-    "Verified safe" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verificado como seguro"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vérifié comme sûr"
           }
         }
       }
@@ -13517,6 +14027,38 @@
         }
       }
     },
+    "Your codes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus códigos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos codes"
+          }
+        }
+      }
+    },
+    "Your codes and scans are locked" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus códigos y escaneos están bloqueados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos codes et scans sont verrouillés"
+          }
+        }
+      }
+    },
     "Your controls" : {
       "localizations" : {
         "es" : {
@@ -13593,22 +14135,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vos scans restent sur votre iPhone."
-          }
-        }
-      }
-    },
-    "Your scans will appear here." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tus escaneos aparecerán aquí."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vos scans apparaîtront ici."
           }
         }
       }
@@ -13898,58 +14424,6 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld scans"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "^[%lld scan](inflect: true) in History" : {
-      "localizations" : {
-        "es" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld escaneos en el historial"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld escaneo en el historial"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld escaneos en el historial"
-                }
-              }
-            }
-          }
-        },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld scans dans l’historique"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld scan dans l’historique"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld scans dans l’historique"
                 }
               }
             }

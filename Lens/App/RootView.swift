@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Camera underneath, one persistent sheet on top. The sheet's content swaps between
-/// the peek/History view and a result, so a scan feels like the code rising into a card.
+/// Home at the root with History pushed on its stack. The scanner is a full-screen cover opened
+/// from the Scan lens; results, Create and Settings come up as sheets; a code shown to someone else
+/// takes the whole screen.
 struct RootView: View {
     @Environment(AppModel.self) private var model
     @AppStorage(Pref.onboardingDone) private var onboardingDone = false
@@ -10,71 +11,52 @@ struct RootView: View {
     var body: some View {
         @Bindable var model = model
 
-        ScannerScreen()
-            .sheet(isPresented: .constant(onboardingDone)) {
-                sheetContent
-                    .presentationDetents(detents, selection: $model.detent)
-                    .presentationBackgroundInteraction(.enabled(upThrough: interactiveDetent))
-                    .presentationDragIndicator(.visible)
-                    .modifier(CameraSheetSurface())
-                    .interactiveDismissDisabled()
-                    .sheet(item: $model.modal) { modal in
-                        switch modal {
-                        case .create: CreateView()
-                        case .settings: SettingsView()
-                        }
+        NavigationStack(path: $model.path) {
+            HomeView()
+                .navigationDestination(for: AppModel.Route.self) { route in
+                    switch route {
+                    case .history: HistoryBrowser()
                     }
+                }
+        }
+        .tint(Palette.accent)
+        .sheet(item: homeSheet) { SheetContent(sheet: $0) }
+        .sheet(item: $model.modal) { modal in
+            switch modal {
+            case .create(let route): CreateView(route: route)
+            case .settings: SettingsView()
             }
-            .fullScreenCover(isPresented: .constant(!onboardingDone)) {
-                OnboardingFlow()
-            }
+        }
+        .fullScreenCover(item: $model.codeOnDisplay) { ShowCodeView(item: $0) }
+        .fullScreenCover(isPresented: scannerBinding) { ScannerCover() }
+        .fullScreenCover(isPresented: .constant(!onboardingDone)) {
+            OnboardingFlow()
+        }
+        .onAppear(perform: openToCameraIfWanted)
 #if DEBUG
-            .task { QAHarness.apply(model: model, context: modelContext) }
+        .task { QAHarness.apply(model: model, context: modelContext) }
 #endif
     }
 
-    @ViewBuilder
-    private var sheetContent: some View {
-        switch model.sheetContent {
-        case .home:
-            HistorySheet()
-        case .result(let result):
-            ResultView(result: result)
-                .id(result.id)
-        case .multiReview:
-            MultiScanReview()
+    /// "Open to camera": every launch starts in the scanner, the way Lunet used to.
+    private func openToCameraIfWanted() {
+#if DEBUG
+        if QAHarness.isActive { return }
+#endif
+        if onboardingDone, Pref.bool(Pref.openToCamera, default: Pref.Default.openToCamera) {
+            model.openScanner()
         }
     }
 
-    /// The largest detent at which the camera stays live and tappable. Must be a member of
-    /// `detents`, or UIKit silently ignores it and dims the camera.
-    private var interactiveDetent: PresentationDetent {
-        switch model.sheetContent {
-        case .home: AppModel.peekDetent
-        case .result: AppModel.resultDetent
-        case .multiReview: .medium
-        }
+    /// Results over Home. Over the camera, the scanner presents its own.
+    private var homeSheet: Binding<AppModel.Sheet?> {
+        Binding(
+            get: { model.isScannerPresented ? nil : model.sheet },
+            set: { if !model.isScannerPresented { model.sheet = $0 } }
+        )
     }
 
-    private var detents: Set<PresentationDetent> {
-        switch model.sheetContent {
-        case .home: [AppModel.peekDetent, .large]
-        case .result: [AppModel.resultDetent, .large]
-        case .multiReview: [.medium, .large]
-        }
-    }
-}
-
-/// Light glass over a dark camera reads as muddy grey, so in light mode the sheet gets a
-/// solid surface. Dark mode keeps the system material (Liquid Glass on iOS 26).
-private struct CameraSheetSurface: ViewModifier {
-    @Environment(\.colorScheme) private var colorScheme
-
-    func body(content: Content) -> some View {
-        if colorScheme == .light {
-            content.presentationBackground(Color(.systemBackground))
-        } else {
-            content
-        }
+    private var scannerBinding: Binding<Bool> {
+        Binding(get: { model.isScannerPresented }, set: { if !$0 { model.scannerDidClose() } })
     }
 }

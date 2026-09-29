@@ -7,6 +7,8 @@ enum Pref {
     static let sound = "sound"
     static let scanAndGo = "scanAndGo"
     static let multiScan = "multiScan"
+    /// Launch straight into the camera instead of Home.
+    static let openToCamera = "openToCamera"
     static let autoCopy = "autoCopy"
     static let checkLinks = "checkLinks"
     static let deepLinkCheck = "deepLinkCheck"
@@ -23,6 +25,7 @@ enum Pref {
         static let sound = true
         static let scanAndGo = false
         static let multiScan = false
+        static let openToCamera = false
         static let autoCopy = false
         static let checkLinks = true
         static let deepLinkCheck = true

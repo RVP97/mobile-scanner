@@ -8,6 +8,7 @@ struct SettingsView: View {
     @AppStorage(Pref.sound) private var sound = Pref.Default.sound
     @AppStorage(Pref.scanAndGo) private var scanAndGo = Pref.Default.scanAndGo
     @AppStorage(Pref.multiScan) private var multiScan = Pref.Default.multiScan
+    @AppStorage(Pref.openToCamera) private var openToCamera = Pref.Default.openToCamera
     @AppStorage(Pref.autoCopy) private var autoCopy = Pref.Default.autoCopy
     @AppStorage(Pref.checkLinks) private var checkLinks = Pref.Default.checkLinks
     @AppStorage(Pref.deepLinkCheck) private var deepLinkCheck = Pref.Default.deepLinkCheck
@@ -20,6 +21,7 @@ struct SettingsView: View {
         NavigationStack(path: $path) {
             Form {
                 scanAnywhereSection
+                openingSection
                 scanningSection
                 safetySection
                 SettingsHistorySection()
@@ -60,6 +62,16 @@ struct SettingsView: View {
                 }
                 .padding(.vertical, 4)
             }
+        }
+    }
+
+    private var openingSection: some View {
+        Section {
+            Toggle(isOn: $openToCamera) {
+                SettingsLabel("Open to camera", symbol: "camera.fill", color: .gray)
+            }
+        } footer: {
+            Text("Start every time in the camera, like before.")
         }
     }
 

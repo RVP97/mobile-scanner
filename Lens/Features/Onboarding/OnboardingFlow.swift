@@ -11,7 +11,7 @@ struct OnboardingFlow: View {
 
     @State private var steps = OnboardingStep.steps(cameraStatus: AVCaptureDevice.authorizationStatus(for: .video))
     @State private var index = 0
-    /// A real code scanned during onboarding; shown in the main sheet once we're done.
+    /// A real code scanned during onboarding; its result opens over Home once we're done.
     @State private var firstScan: ScanResult?
 
     private var step: OnboardingStep { steps[index] }
@@ -26,7 +26,6 @@ struct OnboardingFlow: View {
         .safeAreaInset(edge: .top, spacing: 0) { header }
         .environment(\.colorScheme, step.prefersDarkAppearance ? .dark : systemScheme)
         .onAppear {
-            model.cameraPaused = true
 #if DEBUG
             if let step = QAHarness.onboardingStep, let start = steps.firstIndex(of: step) { index = start }
 #endif
@@ -83,10 +82,12 @@ struct OnboardingFlow: View {
         withAnimation(.smooth(duration: 0.45)) { index += 1 }
     }
 
+    /// On to Home, with the first scan's result waiting if there was one.
     private func finish() {
-        model.cameraPaused = false
         onboardingDone = true
-        if let firstScan {
+        guard let firstScan else { return }
+        Task {
+            try? await Task.sleep(for: AppModel.presentationHandoff)
             model.show(firstScan)
         }
     }

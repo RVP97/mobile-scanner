@@ -15,7 +15,7 @@ final class PreviewView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .black
+        backgroundColor = .clear
         previewLayer.videoGravity = .resizeAspectFill
     }
 

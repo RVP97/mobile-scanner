@@ -40,10 +40,14 @@ final class StudioModel {
     private(set) var isChecking = false
     /// History entry for this code, created on the first save/share/print and updated after.
     @ObservationIgnored private var record: ScanRecord?
+    /// Reopened from Home: every change is kept on that code without an explicit save.
+    let editsSavedCode: Bool
     @ObservationIgnored var modelContext: ModelContext?
 
-    init(document: CodeDocument, style: CodeStyle = CodeStyle()) {
+    init(document: CodeDocument, style: CodeStyle = CodeStyle(), record: ScanRecord? = nil) {
         self.document = document
+        self.record = record
+        editsSavedCode = record != nil
         var style = style
         if style == CodeStyle(), document.symbology == .qr, document.kind == .wifi {
             // Wi-Fi signs traditionally show the network glyph; start there.

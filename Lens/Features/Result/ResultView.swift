@@ -4,6 +4,8 @@ import SwiftUI
 /// The result sheet: one header, a body built for what the code means, then its actions.
 struct ResultView: View {
     var result: ScanResult
+    /// Over the camera: offer to go straight back to scanning.
+    var offersScanAnother = false
 
     @Environment(AppModel.self) private var model
     /// A product's name, once the lookup finds it.
@@ -25,12 +27,7 @@ struct ResultView: View {
 
                 content
 
-                if let placeName = result.placeName {
-                    Label("Scanned at \(placeName)", systemImage: "mappin.and.ellipse")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                }
+                ResultFooter(result: result, offersScanAnother: offersScanAnother)
             }
             .padding(.horizontal, 20)
             .padding(.top, 20)

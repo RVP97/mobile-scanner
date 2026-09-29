@@ -1,4 +1,5 @@
 #if DEBUG
+import SwiftData
 import SwiftUI
 
 /// Deeper `-qaScreen` destinations for Create, Settings and History states:
@@ -12,7 +13,7 @@ import SwiftUI
 ///     -qaScreen everywhere        Settings › Scan from Anywhere
 ///     -qaScreen history:locked    History behind the lock, without the automatic passcode prompt
 ///                                 (launch-argument only: nothing is written to the real preferences)
-///     -qaScreen history:empty     History with nothing saved (pass -qaSeed NO)
+///     -qaScreen restyle           the seeded Casa Chen Wi-Fi back in the studio (pass -qaSeed YES)
 ///
 /// Add `-qaFill YES` to `create:<intent>` to open the form with realistic content.
 extension QAHarness {
@@ -30,7 +31,7 @@ extension QAHarness {
 
     /// Handles the screens above. Returns false for names it doesn't know.
     @MainActor
-    static func applyExtended(_ screen: String, model: AppModel) -> Bool {
+    static func applyExtended(_ screen: String, model: AppModel, context: ModelContext) -> Bool {
         let parts = screen.split(separator: ":", maxSplits: 1).map(String.init)
         let argument = parts.count > 1 ? parts[1] : nil
 
@@ -42,14 +43,19 @@ extension QAHarness {
                 createPath = [.studio(sampleWiFi)]
                 studioTool = argument.flatMap(StudioTool.init(rawValue:))
             }
-            model.modal = .create
+            model.modal = .create()
+        case "restyle":
+            let created = ScanRecord.Origin.created.rawValue
+            let records = (try? context.fetch(FetchDescriptor<ScanRecord>(predicate: #Predicate { $0.originRaw == created }))) ?? []
+            guard let record = records.first(where: { $0.kind == .wifi }) else { return true }
+            model.openCreate(.restyle(record))
         case "create":
             if argument == "formats" {
                 createPath = [.formats]
             } else if let intent = argument.flatMap(CreateIntent.init(rawValue:)) {
                 createPath = [.compose(intent)]
             }
-            model.modal = .create
+            model.modal = .create()
         case "privacy":
             settingsPath = [.privacy]
             model.modal = .settings
@@ -63,7 +69,7 @@ extension QAHarness {
                 HistoryLock.shared.lock()
                 suppressesAuthPrompt = true
             }
-            model.openHistory()
+            model.path = [.history]
         default:
             return false
         }

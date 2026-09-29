@@ -4,7 +4,7 @@ import SwiftData
 import SwiftUI
 
 /// What happens once a code is read: feedback, saving, Scan & Go, the lock chip and the lift into the
-/// result sheet, multi-scan collection, and codes imported from images.
+/// result sheet, multi-scan collection, and codes imported from images (in the scanner or on Home).
 @Observable
 final class ScanCoordinator {
     enum Stage: Equatable {
@@ -164,10 +164,7 @@ final class ScanCoordinator {
                 model.multiScanCodes.append(result)
             }
             captureFeedback += 1
-            withAnimation(.smooth(duration: 0.35)) {
-                model.sheetContent = .multiReview
-                model.detent = .large
-            }
+            model.sheet = .multiReview
         }
     }
 

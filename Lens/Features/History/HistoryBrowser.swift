@@ -1,10 +1,8 @@
 import SwiftData
 import SwiftUI
 
-/// History at the large detent: search, filter chips, day sections, select mode.
+/// History, pushed from Home: search, filter chips, day sections, select mode.
 struct HistoryBrowser: View {
-    var isLocked: Bool
-
     @Environment(AppModel.self) private var model
     @Environment(\.modelContext) private var modelContext
     @AppStorage(Pref.saveHistory) private var saveHistory = Pref.Default.saveHistory
@@ -14,7 +12,6 @@ struct HistoryBrowser: View {
     @State private var criteria = HistoryCriteria()
     @State private var editMode: EditMode = .inactive
     @State private var selection = Set<UUID>()
-    @State private var codePreview: ScanRecord?
     @State private var confirmingDelete = false
 
     private static var anyRecord: FetchDescriptor<ScanRecord> {
@@ -23,26 +20,29 @@ struct HistoryBrowser: View {
         return descriptor
     }
 
+    private let lock = HistoryLock.shared
+
     private var isEditing: Bool { editMode.isEditing }
+    private var isLocked: Bool { requireFaceID && !lock.isUnlocked }
 
     var body: some View {
-        NavigationStack {
-            content
-                .navigationTitle("History")
-                .historySubtitle(isLocked || anyRecord.isEmpty ? nil : recordCountText)
-                .toolbar { toolbar }
-                .environment(\.editMode, $editMode)
-                .sheet(item: $codePreview) { CodePreviewSheet(record: $0) }
-                .confirmationDialog(
-                    Text("Delete ^[\(selection.count) item](inflect: true)?"),
-                    isPresented: $confirmingDelete,
-                    titleVisibility: .visible
-                ) {
-                    Button("Delete", role: .destructive, action: deleteSelection)
-                } message: {
-                    Text("They'll be removed from this iPhone.")
-                }
-        }
+        content
+            .navigationTitle("History")
+            .navigationBarTitleDisplayMode(.large)
+            .historySubtitle(isLocked || anyRecord.isEmpty ? nil : recordCountText)
+            .toolbar { toolbar }
+            .navigationBarBackButtonHidden(isEditing)
+            .environment(\.editMode, $editMode)
+            .background(Color(.systemGroupedBackground))
+            .confirmationDialog(
+                Text("Delete ^[\(selection.count) item](inflect: true)?"),
+                isPresented: $confirmingDelete,
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive, action: deleteSelection)
+            } message: {
+                Text("They'll be removed from this iPhone.")
+            }
     }
 
     @ViewBuilder
@@ -59,7 +59,7 @@ struct HistoryBrowser: View {
                 isSaving: saveHistory,
                 actions: HistoryRowActions(
                     open: { model.show($0.scanResult) },
-                    showCode: { codePreview = $0 }
+                    showCode: { model.codeOnDisplay = ShowCodeItem(record: $0) }
                 )
             )
             .searchable(text: $criteria.search, prompt: Text("Search scans and places"))
@@ -80,7 +80,7 @@ struct HistoryBrowser: View {
             } description: {
                 Text("Turn on Save History to keep the codes you scan on this iPhone.")
             } actions: {
-                Button("Open Settings") { model.modal = .settings }
+                Button("Open Settings") { model.openSettings() }
             }
         }
     }
@@ -92,21 +92,18 @@ struct HistoryBrowser: View {
 
     @ToolbarContentBuilder
     private var toolbar: some ToolbarContent {
-        ToolbarItemGroup(placement: .topBarLeading) {
-            if isEditing {
+        if isEditing {
+            ToolbarItem(placement: .topBarLeading) {
                 Button("Done") { setEditing(false) }
                     .fontWeight(.semibold)
-            } else if !isLocked && !anyRecord.isEmpty {
-                Button("Select") { setEditing(true) }
-            }
-            if requireFaceID && !isLocked && !isEditing {
-                Button("Lock History", systemImage: "lock.fill") { HistoryLock.shared.lock() }
             }
         }
         ToolbarItemGroup(placement: .topBarTrailing) {
-            if !isEditing {
-                Button("Create Code", systemImage: "plus") { model.modal = .create }
-                Button("Settings", systemImage: "gearshape") { model.modal = .settings }
+            if requireFaceID && !isLocked && !isEditing {
+                Button("Lock History", systemImage: "lock.fill") { HistoryLock.shared.lock() }
+            }
+            if !isEditing && !isLocked && !anyRecord.isEmpty {
+                Button("Select") { setEditing(true) }
             }
         }
         if isEditing {
@@ -154,7 +151,7 @@ private extension View {
 
 #if DEBUG
 #Preview {
-    HistoryBrowser(isLocked: false)
+    NavigationStack { HistoryBrowser() }
         .environment(AppModel())
         .modelContainer(HistorySamples.container)
 }

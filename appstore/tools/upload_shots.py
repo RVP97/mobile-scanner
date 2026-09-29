@@ -2,7 +2,7 @@ import json, subprocess, sys, os, hashlib, glob
 JWT = sys.argv[1]; LOC = sys.argv[2]; DIR = sys.argv[3]
 A = "https://api.appstoreconnect.apple.com/v1"
 def call(method, url, body=None):
-    cmd = ["curl", "-s", "--retry", "5", "--retry-all-errors", "-X", method, url, "-H", f"Authorization: Bearer {JWT}", "-H", "Content-Type: application/json"]
+    cmd = ["curl", "-g", "-s", "--retry", "5", "--retry-all-errors", "-X", method, url, "-H", f"Authorization: Bearer {JWT}", "-H", "Content-Type: application/json"]
     if body is not None: cmd += ["-d", json.dumps(body)]
     out = subprocess.run(cmd, capture_output=True, text=True).stdout
     return json.loads(out) if out.strip() else {}

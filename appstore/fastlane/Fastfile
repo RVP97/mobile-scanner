@@ -45,6 +45,20 @@ platform :ios do
     )
   end
 
+  desc "Listing text only, optionally from another metadata folder (idempotent, safe to retry)"
+  lane :text do |options|
+    deliver(
+      app_version: options[:version] || "2.0.0",
+      metadata_path: options[:path] || "#{REPO}/appstore/metadata",
+      skip_screenshots: true,
+      skip_binary_upload: true,
+      skip_app_version_update: true,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      run_precheck_before_submit: false
+    )
+  end
+
   desc "Screenshots only (idempotent, safe to retry)"
   lane :screenshots do |options|
     deliver(

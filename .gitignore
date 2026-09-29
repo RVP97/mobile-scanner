@@ -21,3 +21,7 @@ node_modules/
 
 # Local tooling
 .claude/
+
+# fastlane run artifacts
+appstore/fastlane/report.xml
+appstore/fastlane/README.md

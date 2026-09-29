@@ -71,7 +71,8 @@ struct FirstScanStep: View {
                 .fill(locked ? Palette.accent : .white)
                 .frame(width: locked ? 212 : 248, height: locked ? 212 : 248)
                 .shadow(color: .black.opacity(0.3), radius: 6)
-                .opacity(cameraAllowed || locked ? 1 : 0)
+                // The live camera draws its own reticle; these brackets only frame the sample code.
+                .opacity(showsSample ? 1 : 0)
         }
         .offset(y: -40)
         .animation(reduceMotion ? nil : .snappy(duration: 0.4), value: locked)

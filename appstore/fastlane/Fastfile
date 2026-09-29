@@ -16,13 +16,16 @@ platform :ios do
   desc "Archive the app and upload it to App Store Connect"
   lane :upload_build do
     sh("cd #{REPO}/Lens && xcodegen generate")
+    # Cloud signing with the API key, so no Xcode account session is needed.
+    auth = "-allowProvisioningUpdates -authenticationKeyPath #{File.expand_path(ENV['ASC_KEY_PATH'])} " \
+           "-authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']}"
     build_app(
       project: "#{REPO}/Lens/Lens.xcodeproj",
       scheme: "Lens",
       configuration: "Release",
       export_method: "app-store",
       output_directory: "#{REPO}/Lens/build/release",
-      xcargs: "-allowProvisioningUpdates"
+      xcargs: auth
     )
     upload_to_app_store(skip_metadata: true, skip_screenshots: true, precheck_include_in_app_purchases: false)
   end
@@ -34,7 +37,23 @@ platform :ios do
       metadata_path: "#{REPO}/appstore/metadata",
       screenshots_path: "#{REPO}/appstore/screenshots",
       overwrite_screenshots: true,
+      app_review_attachment_file: "#{REPO}/appstore/review_attachments/review-sample-codes.png",
       skip_binary_upload: true,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      run_precheck_before_submit: false
+    )
+  end
+
+  desc "Screenshots only (idempotent, safe to retry)"
+  lane :screenshots do |options|
+    deliver(
+      app_version: options[:version] || "2.0.0",
+      screenshots_path: "#{REPO}/appstore/screenshots",
+      overwrite_screenshots: false,
+      skip_metadata: true,
+      skip_binary_upload: true,
+      skip_app_version_update: true,
       force: true,
       precheck_include_in_app_purchases: false,
       run_precheck_before_submit: false

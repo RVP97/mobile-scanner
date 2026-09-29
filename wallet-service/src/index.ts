@@ -249,7 +249,10 @@ async function handlePass(env: Env, req: Request): Promise<Response> {
       appId: cfg.appId,
     });
   } catch (e) {
-    if (e instanceof AttestError) throw new HttpError(401, "assertion_invalid");
+    if (e instanceof AttestError) {
+      console.warn("assertion_rejected", e.message);
+      throw new HttpError(401, "assertion_invalid");
+    }
     throw e;
   }
 
@@ -279,7 +282,11 @@ async function handlePass(env: Env, req: Request): Promise<Response> {
     throw new HttpError(400, "invalid_json");
   }
   const result = parsePassRequest(parsed);
-  if (!result.ok) return json(400, { error: "invalid_pass_request", issues: result.issues });
+  if (!result.ok) {
+    // Field paths and rule names only — never the submitted values.
+    console.warn("invalid_pass_request", JSON.stringify(result.issues).slice(0, 500));
+    return json(400, { error: "invalid_pass_request", issues: result.issues });
+  }
 
   const signer = await getSigner(env, cfg);
   const { pkpass } = await buildPkpass(result.value, { passTypeIdentifier: cfg.passTypeId, teamIdentifier: cfg.teamId }, signer);
@@ -323,7 +330,10 @@ export function createHandler(opts: HandlerOptions = {}) {
             return err(404, "not_found");
         }
       } catch (e) {
-        if (e instanceof HttpError) return err(e.status, e.code, e.status === 429 ? { "retry-after": "60" } : undefined);
+        if (e instanceof HttpError) {
+          console.warn("rejected", pathname, e.status, e.code);
+          return err(e.status, e.code, e.status === 429 ? { "retry-after": "60" } : undefined);
+        }
         // Log the error class only — never request data.
         console.error("unhandled", e instanceof Error ? e.name : typeof e);
         return err(500, "internal");

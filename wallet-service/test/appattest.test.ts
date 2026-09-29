@@ -86,6 +86,10 @@ describe("App Attest assertion", () => {
     const a = await dev.assert(body, { counter: 5 });
     expect(await verifyAssertion({ assertion: a, clientData: body, publicKey: dev.publicRaw, storedCounter: 4, appId: APP_ID })).toBe(5);
   });
+  it("accepts a real-device assertion: 37-byte authenticator data with the AT flag still set", async () => {
+    const a = await dev.assert(body, { counter: 1, flags: 0x40 });
+    expect(await verifyAssertion({ assertion: a, clientData: body, publicKey: dev.publicRaw, storedCounter: 0, appId: APP_ID })).toBe(1);
+  });
   it("rejects a replayed / non-increasing counter", async () => {
     const a = await dev.assert(body, { counter: 5 });
     await expectReason(verifyAssertion({ assertion: a, clientData: body, publicKey: dev.publicRaw, storedCounter: 5, appId: APP_ID }), "counter_replay");

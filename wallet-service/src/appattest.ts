@@ -26,13 +26,18 @@ export interface AuthData {
   credentialId?: Uint8Array;
 }
 
-export function parseAuthData(b: Uint8Array): AuthData {
+/**
+ * Parses WebAuthn-style authenticator data. Attestations carry attested credential data after the
+ * 37-byte header; assertions are the bare 37 bytes, and Apple may leave the AT flag set on them, so
+ * callers verifying an assertion pass `withCredential: false` to ignore that section.
+ */
+export function parseAuthData(b: Uint8Array, withCredential = true): AuthData {
   if (b.length < 37) throw new AttestError("authdata_short");
   const rpIdHash = b.slice(0, 32);
   const flags = b[32]!;
   const counter = new DataView(b.buffer, b.byteOffset + 33, 4).getUint32(0, false);
   const out: AuthData = { rpIdHash, flags, counter };
-  if (flags & 0x40) {
+  if (withCredential && flags & 0x40) {
     if (b.length < 55) throw new AttestError("authdata_short");
     out.aaguid = b.slice(37, 53);
     const len = (b[53]! << 8) | b[54]!;
@@ -214,7 +219,7 @@ export async function verifyAssertion(inp: AssertionInput): Promise<number> {
   );
   if (!ok) throw new AttestError("assertion_signature");
 
-  const ad = parseAuthData(authenticatorData);
+  const ad = parseAuthData(authenticatorData, false);
   if (!bytesEqual(ad.rpIdHash, await sha256(te.encode(inp.appId)))) throw new AttestError("rpid_mismatch");
   if (ad.counter <= inp.storedCounter) throw new AttestError("counter_replay");
   return ad.counter;

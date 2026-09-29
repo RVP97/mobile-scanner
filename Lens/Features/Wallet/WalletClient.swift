@@ -92,13 +92,15 @@ actor WalletClient {
         let assertion: Data
         do {
             assertion = try await DCAppAttestService.shared.generateAssertion(keyId, clientDataHash: clientDataHash)
-        } catch let error as DCError where error.code == .invalidKey && allowReattest {
-            // Key no longer valid (app reinstalled, restored to a new device, …): attest a fresh key once.
+        } catch let error as DCError where (error.code == .invalidKey || error.code == .invalidInput) && allowReattest {
+            // The stored key can't sign any more (app reinstalled or re-signed, restored to a new device, …):
+            // App Attest reports this as invalidKey or invalidInput. Attest a fresh key once.
             resetKey()
             return try await requestPass(body: body, allowReattest: false)
         } catch let error as DCError where error.code == .serverUnavailable {
             throw WalletError.serviceUnavailable
         } catch {
+            Self.debugLog("generateAssertion failed: \(error)")
             throw WalletError.attestationFailed
         }
 
@@ -111,6 +113,7 @@ actor WalletClient {
         req.httpBody = body
 
         let (data, http) = try await send(req)
+        Self.debugLog("POST /pass -> \(http.statusCode) \(Self.errorCode(data) ?? "")")
         switch http.statusCode {
         case 200:
             guard http.value(forHTTPHeaderField: "Content-Type")?.hasPrefix("application/vnd.apple.pkpass") == true,
@@ -151,6 +154,7 @@ actor WalletClient {
         } catch let error as DCError where error.code == .serverUnavailable {
             throw WalletError.serviceUnavailable
         } catch {
+            Self.debugLog("generateKey/attestKey failed: \(error)")
             throw WalletError.attestationFailed
         }
 
@@ -163,6 +167,7 @@ actor WalletClient {
             challenge: challenge.string
         ))
         let (data, http) = try await send(req)
+        Self.debugLog("POST /attest -> \(http.statusCode) \(Self.errorCode(data) ?? "")")
         guard http.statusCode == 201 else { throw Self.map(status: http.statusCode, data: data) }
         keychain.write(keyId)
         return keyId
@@ -189,8 +194,16 @@ actor WalletClient {
         } catch let error as WalletError {
             throw error
         } catch {
+            Self.debugLog("network error for \(request.url?.path() ?? ""): \(error)")
             throw WalletError.network
         }
+    }
+
+    /// Step-by-step trace in debug builds only; never logs keys, assertions or pass contents.
+    private static func debugLog(_ message: @autoclosure () -> String) {
+        #if DEBUG
+        print("[Wallet]", message())
+        #endif
     }
 
     private static func errorCode(_ data: Data) -> String? {

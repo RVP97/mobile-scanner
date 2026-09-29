@@ -178,11 +178,11 @@ export class FakeDevice {
   }
 
   /** Mimics DCAppAttestService.generateAssertion(keyId, clientDataHash: SHA256(body)). */
-  async assert(body: Uint8Array, o: { appId?: string; counter?: number } = {}): Promise<Uint8Array> {
+  async assert(body: Uint8Array, o: { appId?: string; counter?: number; flags?: number } = {}): Promise<Uint8Array> {
     this.counter = o.counter ?? this.counter + 1;
     const counter = new Uint8Array(4);
     new DataView(counter.buffer).setUint32(0, this.counter);
-    const authenticatorData = concat(await sha256(te.encode(o.appId ?? APP_ID)), new Uint8Array([0x00]), counter);
+    const authenticatorData = concat(await sha256(te.encode(o.appId ?? APP_ID)), new Uint8Array([o.flags ?? 0x00]), counter);
     const nonce = await sha256(concat(authenticatorData, await sha256(body)));
     const raw = new Uint8Array(await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, this.keyPair.privateKey, ab(nonce)));
     return encodeCbor(new Map<string | number, any>([["signature", rawToDer(raw)], ["authenticatorData", authenticatorData]]));

@@ -1,4 +1,5 @@
 #if DEBUG
+import PassKit
 import SwiftData
 import SwiftUI
 
@@ -36,6 +37,7 @@ enum QAHarness {
 
     /// Runs once at launch, before the first frame settles.
     static func apply(model: AppModel, context: ModelContext) {
+        if arguments.bool(forKey: "qaWalletTest") { runWalletTest() }
         if let appearance = arguments.string(forKey: "qaAppearance") {
             UserDefaults.standard.set(appearance, forKey: Pref.appearance)
         }
@@ -98,6 +100,24 @@ enum QAHarness {
             return ShowCodeItem(record: record)
         }
         return sample(named: name).map(ShowCodeItem.init(result:))
+    }
+
+    /// `-qaWalletTest YES`: creates a Wallet pass for the sample boarding pass on launch and prints
+    /// each step (`[Wallet] …`) to the console, for diagnosing the signing round trip on a device.
+    private static func runWalletTest() {
+        let sample = ScanResult.sampleTravel
+        guard case .travel(let pass) = sample.payload else { return print("[Wallet] sample isn't a boarding pass") }
+        Task {
+            print("[Wallet] test start; App Attest supported: \(WalletClient.isSupported)")
+            do {
+                let data = try await WalletClient.shared.makeBoardingPass(pass, raw: sample.code.raw, symbology: sample.code.symbology)
+                print("[Wallet] received \(data.count) bytes")
+                let pkpass = try PKPass(data: data)
+                print("[Wallet] VALID pass \(pkpass.serialNumber)")
+            } catch {
+                print("[Wallet] FAILED: \(error)")
+            }
+        }
     }
 
     private static func sample(named name: String) -> ScanResult? {

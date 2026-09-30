@@ -1,7 +1,8 @@
 """Wait for a build to process, attach it to the editable version, refresh review notes, and (re)submit.
 
 Usage: python3 resubmit.py <jwt-command> <build-number> <notes-file>
-<jwt-command> is a shell command that prints a fresh App Store Connect JWT (tokens expire after 20 min).
+<jwt-command> is a shell command that prints a fresh App Store Connect JWT (tokens expire after 20 min),
+e.g. "python3 appstore/tools/asc_jwt.py".
 """
 import json, subprocess, sys, time
 JWT_CMD, BUILD, NOTES = sys.argv[1], sys.argv[2], sys.argv[3]
@@ -14,7 +15,9 @@ def jwt():
 A = "https://api.appstoreconnect.apple.com/v1"; APP = "6758315540"
 
 def call(method, url, body=None):
-    cmd = ["curl", "-g", "-s", "--retry", "5", "--retry-all-errors", "-X", method, url,
+    # Only reads retry on any error: a retried write can run twice, and curl then prints both replies.
+    retry = ["--retry", "5", "--retry-all-errors"] if method == "GET" else ["--retry", "3"]
+    cmd = ["curl", "-g", "-s", *retry, "-X", method, url,
            "-H", f"Authorization: Bearer {jwt()}", "-H", "Content-Type: application/json"]
     if body is not None: cmd += ["-d", json.dumps(body)]
     out = subprocess.run(cmd, capture_output=True, text=True).stdout

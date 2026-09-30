@@ -54,6 +54,8 @@ final class ScanCoordinator {
 
     func process(_ reads: [CodeRead], context: Context) {
         guard stage == .searching else { return }
+        // Several codes at once: wait for a tap instead of guessing (Multi-scan takes them all).
+        if !context.model.isMultiScanActive, tracker.holdIfCrowded(reads) { return }
         let stable = tracker.ingest(reads)
         guard let first = stable.first else { return }
 
@@ -62,6 +64,13 @@ final class ScanCoordinator {
         } else {
             lockOn(first, context: context)
         }
+    }
+
+    /// The person tapped one of several codes in view.
+    func choose(_ read: CodeRead, context: Context) {
+        guard stage == .searching else { return }
+        tracker.suppress(read.raw)
+        lockOn(read, context: context)
     }
 
     private func lockOn(_ read: CodeRead, context: Context) {

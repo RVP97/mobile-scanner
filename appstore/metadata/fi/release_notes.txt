@@ -1,12 +1,4 @@
-Tervetuloa Lunetiin – täysin uusi Fast QR & Barcode.
-
-Rakensimme sovelluksen alusta alkaen uudelleen natiiviksi iPhone- ja iPad-sovellukseksi ja annoimme sille uuden nimen.
-
-- Linkkiturva: jokainen linkki tarkistetaan ennen avaamista, ja todellinen kohde, samannäköiset verkkotunnukset ja lyhennetyt linkit kerrotaan selkokielellä
-- Oikea toiminto jokaiselle koodille: liity Wi-Fi-verkkoon, lisää tarkastuskortit Apple Walletiin, tallenna yhteystiedot ja tapahtumat, hae tuotetietoja, seuraa paketteja
-- Koodisi: pidä Wi-Fi, yhteystietokortti ja kortit aloitusnäkymässä ja avaa ne koko näytölle yhdellä napautuksella
-- Studio: suunnittele QR-koodeja omilla tyyleillä, väreillä, logoilla ja kehyksillä
-- Skannaa Ohjauskeskuksesta, lukitusnäytöltä, Toimintopainikkeella, widgeteistä ja Sirillä
-- Uusi ulkoasu: Liquid Glass, tumma tila ja täysi saavutettavuus
-
-Skannaushistoriasi siirtyy mukana. Kaikki tallentamasi on siellä, mihin sen jätit.
+- Useita koodeja näkyvissä? Lunet ei enää valitse puolestasi. Jokainen koodi saa oman tarran – napauta vain haluamaasi.
+- Uusi Skannaa-painike: pidä sitä painettuna nähdäksesi kameran linssin sisällä ja päästä irti avataksesi sen.
+- Kamera avautuu ja sulkeutuu nyt nopeammin ja sujuvammin.
+- Poista viimeaikainen skannaus pyyhkäisemällä sitä vasemmalle kotinäytöllä.

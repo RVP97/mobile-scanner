@@ -7,6 +7,7 @@ struct RecentSection: View {
     @Environment(\.modelContext) private var modelContext
     @AppStorage(Pref.saveHistory) private var saveHistory = Pref.Default.saveHistory
     @Query(RecentSection.descriptor) private var recent: [ScanRecord]
+    @State private var swipeGate = SwipeGate()
 
     static let limit = 5
 
@@ -40,14 +41,20 @@ struct RecentSection: View {
     private var rows: some View {
         VStack(spacing: 0) {
             ForEach(recent) { record in
-                Button { model.show(record.scanResult) } label: {
+                Button {
+                    if !swipeGate.isSwiping { model.show(record.scanResult) }
+                } label: {
                     HistoryRow(record: record)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
                         .contentShape(.rect)
                 }
                 .buttonStyle(RowPressStyle())
+                .background(Color(.secondarySystemGroupedBackground))
                 .contextMenu { menu(for: record) }
+                .swipeToDelete(gate: swipeGate) {
+                    withAnimation(.snappy) { modelContext.delete(record) }
+                }
                 if record.id != recent.last?.id {
                     Divider().padding(.leading, 72)
                 }

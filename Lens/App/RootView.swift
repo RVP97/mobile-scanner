@@ -20,6 +20,15 @@ struct RootView: View {
                 }
         }
         .tint(Palette.accent)
+        // Home falls back as the camera opens out of the Scan lens.
+        // (A dim, not a blur: blurring all of Home every frame makes the opening stutter on a phone.)
+        .scaleEffect(model.isScannerRevealed ? 0.92 : 1, anchor: UnitPoint(x: 0.5, y: 0.8))
+        .overlay {
+            Color.black
+                .opacity(model.isScannerRevealed ? 0.3 : 0)
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+        }
         .sheet(item: homeSheet) { SheetContent(sheet: $0) }
         .sheet(item: $model.modal) { modal in
             switch modal {

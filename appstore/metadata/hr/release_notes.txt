@@ -1,12 +1,4 @@
-Upoznaj Lunet, potpuno novi Fast QR & Barcode.
-
-Aplikaciju smo iznova izgradili kao nativnu aplikaciju za iPhone i iPad i dali joj novo ime koje joj pristaje.
-
-- Sigurnost linkova: svaki se link provjerava prije otvaranja, a stvarno odredište, lažne domene i skraćeni linkovi jasno su označeni
-- Prava radnja za svaki kod: spajanje na Wi-Fi, ukrcajne karte u Apple Wallet, spremanje kontakata i događaja, pretraživanje proizvoda, praćenje pošiljki
-- Tvoji kodovi: Wi-Fi, posjetnica i karte na početnom zaslonu, preko cijelog zaslona jednim dodirom
-- Studio: dizajniraj QR kodove s vlastitim stilovima, bojama, logotipima i okvirima
-- Skeniranje iz Kontrolnog centra, sa zaključanog zaslona, tipkom Radnja, iz widgeta i pomoću Siri
-- Svjež dizajn s Liquid Glass izgledom, tamnim načinom i punom pristupačnošću
-
-Tvoja povijest skeniranja ide s tobom. Sve spremljeno ostalo je točno ondje gdje je i bilo.
+- Više kodova u kadru? Lunet više ne bira umjesto vas. Svaki kod dobiva vlastitu oznaku – samo dodirnite onaj koji želite.
+- Novi gumb Skeniraj: zadržite ga da vidite kameru unutar leće, a pustite ga da je otvorite.
+- Kamera se sada otvara i zatvara brže i glađe.
+- Povucite ulijevo nedavno skeniranje na početnom zaslonu da biste ga izbrisali.

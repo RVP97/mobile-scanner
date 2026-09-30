@@ -14,12 +14,20 @@ struct HomeActionBar: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            ScanLensButton(isAnimating: isLensAnimating, action: onScan)
+            ScanLensButton(
+                isAnimating: isLensAnimating,
+                catchTrigger: model.scannerCloseCount,
+                onPressChange: { $0 ? model.beginPeek() : model.endPeek() },
+                action: onScan
+            )
                 .background {
                     GeometryReader { proxy in
                         Color.clear
                             .onAppear { model.lensFrame = proxy.frame(in: .global) }
-                            .onChange(of: proxy.frame(in: .global)) { _, frame in model.lensFrame = frame }
+                            .onChange(of: proxy.frame(in: .global)) { _, frame in
+                                // Home shrinks behind the open scanner; the camera closes back to where the lens rests.
+                                if !model.isScannerPresented { model.lensFrame = frame }
+                            }
                     }
                 }
 

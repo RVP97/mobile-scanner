@@ -1,6 +1,6 @@
-Update for 5.1.1(iv): the camera explanation screen now has one "Continue" button that always opens the system permission request; "Not Now" and "Skip" were removed there.
+What's new in 2.1 (build 104): when several codes are in view, the scanner labels each one and waits for a tap instead of opening one on its own; a redesigned Scan button and camera opening; swipe to delete on Home's recent scans. No new permissions, data collection or network use.
 
-Thank you for reviewing Lunet (version 2.0; formerly listed as "Fast QR & Barcode").
+Thank you for reviewing Lunet (version 2.1; formerly listed as "Fast QR & Barcode").
 
 NO LOGIN NEEDED
 Lunet has no accounts, sign-in, subscriptions or in-app purchases. Every feature is available on first launch.

@@ -99,4 +99,29 @@ struct ScannerStabilizerTests {
         _ = stabilizer.ingest([read("A")], at: 0.066)
         #expect(stabilizer.ingest([read("A")], at: 0.1).map(\.raw) == ["A"])
     }
+
+    // MARK: Several codes in view
+
+    @Test func oneCodeIsNotCrowded() {
+        var gate = CrowdGate()
+        let crowded = gate.isCrowded(distinctCount: 1, at: 0)
+        #expect(!crowded)
+    }
+
+    @Test func twoCodesAreCrowded() {
+        var gate = CrowdGate()
+        let crowded = gate.isCrowded(distinctCount: 2, at: 0)
+        #expect(crowded)
+    }
+
+    @Test func aMissedCodeDoesNotLetTheOtherOneThrough() {
+        var gate = CrowdGate()
+        _ = gate.isCrowded(distinctCount: 2, at: 0)
+        // The camera loses one code for a few frames: still waiting for a tap.
+        let shortlyAfter = [0.2, 0.6].map { gate.isCrowded(distinctCount: 1, at: $0) }
+        #expect(shortlyAfter == [true, true])
+        // The other code has really left: back to scanning on its own.
+        let later = [1.0, 1.1].map { gate.isCrowded(distinctCount: 1, at: $0) }
+        #expect(later == [false, false])
+    }
 }

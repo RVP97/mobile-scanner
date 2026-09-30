@@ -16,6 +16,8 @@ import SwiftUI
 ///   text|email|sms|phone`
 /// - `history`, `create`, `settings`, and the deeper screens in `QAHarness+Screens.swift`
 ///
+/// `-qaFakeCamera YES` shows the reticle without a camera; add `-qaTwoCodes YES` to put two codes in view.
+///
 /// `-qaOnboarding <welcome|answers|safety|camera|firstScan|everywhere>`. `-qaCodeCover YES` opens a result's
 /// full-screen code. `-qaWelcomeTime 0.6` freezes the Welcome animation at that moment.
 enum QAHarness {
@@ -25,6 +27,18 @@ enum QAHarness {
     static var isActive: Bool {
         arguments.string(forKey: "qaScreen") != nil || arguments.string(forKey: "qaOnboarding") != nil
     }
+
+    /// `-qaFakeCamera YES`: the scanner acts as if a camera were running (the Simulator has none),
+    /// so the reticle and the opening can be reviewed.
+    static var fakesCamera: Bool { arguments.bool(forKey: "qaFakeCamera") }
+
+    /// `-qaTwoCodes YES`: the scanner "sees" two codes side by side (with `-qaFakeCamera YES`).
+    static var feedsTwoCodes: Bool { arguments.bool(forKey: "qaTwoCodes") }
+
+    static let twoCodeFrame: [CodeRead] = [
+        CodeRead(raw: "https://atlas-coffee.co/menu", symbology: .qr, quad: Quad(rect: CGRect(x: 40, y: 250, width: 140, height: 140))),
+        CodeRead(raw: "WIFI:S:Atlas Guest;T:WPA;P:cortado-2019;;", symbology: .qr, quad: Quad(rect: CGRect(x: 220, y: 290, width: 130, height: 130))),
+    ]
 
     static var welcomeTime: Double? {
         arguments.object(forKey: "qaWelcomeTime") == nil ? nil : arguments.double(forKey: "qaWelcomeTime")

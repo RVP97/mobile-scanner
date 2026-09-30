@@ -1,12 +1,4 @@
-Kenalan dengan Lunet, Fast QR & Barcode yang serba baru.
-
-Kami membangun ulang aplikasi ini dari nol sebagai aplikasi native untuk iPhone dan iPad, dan memberinya nama baru yang pas.
-
-- Keamanan link: setiap link diperiksa sebelum dibuka, dengan tujuan asli, domain tiruan, dan pemendek link dijelaskan dengan bahasa sederhana
-- Aksi yang tepat untuk setiap kode: sambung ke Wi-Fi, tambahkan boarding pass ke Apple Wallet, simpan kontak dan acara, cari produk, lacak paket
-- Kode Anda: simpan Wi-Fi, kartu kontak, dan pass di Beranda, tampil layar penuh dengan sekali ketuk
-- Studio: desain kode QR dengan gaya, warna, logo, dan bingkai kustom
-- Scan dari Pusat Kontrol, Layar Terkunci, tombol Tindakan, widget, dan Siri
-- Desain baru dengan Liquid Glass, mode gelap, dan aksesibilitas lengkap
-
-Riwayat scan Anda ikut pindah. Semua yang Anda simpan tetap di tempatnya.
+- Ada beberapa kode sekaligus? Lunet tidak lagi memilihkan untuk Anda. Setiap kode punya labelnya sendiri, cukup ketuk yang Anda inginkan.
+- Tombol Pindai baru: sentuh dan tahan untuk melihat kamera langsung di dalam lensa, lalu lepaskan untuk membukanya.
+- Kamera kini terbuka dan tertutup lebih cepat dan lebih mulus.
+- Gesek ke kiri pada pindaian terbaru di Beranda untuk menghapusnya.

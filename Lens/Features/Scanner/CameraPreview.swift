@@ -33,7 +33,13 @@ final class PreviewView: UIView {
             options: [.initial, .new]
         ) { [weak self] coordinator, _ in
             let angle = coordinator.videoRotationAngleForHorizonLevelPreview
-            Task { @MainActor in self?.applyRotation(angle) }
+            // The initial value arrives on the main thread: apply it now, so the first frame is
+            // already upright instead of turning a frame later.
+            if Thread.isMainThread {
+                MainActor.assumeIsolated { self?.applyRotation(angle) }
+            } else {
+                Task { @MainActor in self?.applyRotation(angle) }
+            }
         }
     }
 

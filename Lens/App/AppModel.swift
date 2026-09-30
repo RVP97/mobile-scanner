@@ -54,8 +54,19 @@ final class AppModel {
     private(set) var isScannerPresented = false
     /// The scanner is animating closed; `scannerDidClose()` removes it.
     private(set) var isScannerClosing = false
+    /// The scanner's circle is (or is heading) open; Home falls back behind it.
+    var isScannerRevealed = false
+    /// Bumped each time the scanner has closed back into the Scan lens.
+    private(set) var scannerCloseCount = 0
     /// Where Home's Scan lens sits on screen (global coordinates), so the viewfinder opens out of it.
     var lensFrame: CGRect?
+
+    /// One camera for every opening of the scanner: the session stays configured between them, so
+    /// the feed is up almost at once instead of after a fresh setup each time.
+    let camera = ScannerCamera()
+    /// A finger is on Home's Scan lens: the scanner is up but still closed, the camera starting,
+    /// and the lens's glass shows the live feed. Letting go opens it; sliding off puts it away.
+    private(set) var isPeeking = false
 
     /// Codes collected in the current multi-scan session, newest last.
     var multiScanCodes: [ScanResult] = []
@@ -72,6 +83,7 @@ final class AppModel {
 
     /// Opens the camera. `multi` nil keeps the "Start in Multi-scan" preference.
     func openScanner(multi: Bool? = nil) {
+        isPeeking = false
         isMultiScanActive = multi ?? Pref.bool(Pref.multiScan, default: Pref.Default.multiScan)
         if isScannerPresented {
             isScannerClosing = false
@@ -86,6 +98,25 @@ final class AppModel {
         Task {
             try? await Task.sleep(for: Self.presentationHandoff)
             presentScanner()
+        }
+    }
+
+    /// Finger down on the Scan lens.
+    func beginPeek() {
+        guard !isScannerPresented, sheet == nil, modal == nil, codeOnDisplay == nil, path.isEmpty else { return }
+        isPeeking = true
+        presentScanner()
+    }
+
+    /// Finger up (or off) the Scan lens. A tap's action arrives right after and opens the scanner;
+    /// if it doesn't, the finger slid away and the peek closes.
+    func endPeek() {
+        guard isPeeking else { return }
+        Task {
+            try? await Task.sleep(for: .milliseconds(120))
+            guard isPeeking else { return }
+            isPeeking = false
+            closeScanner()
         }
     }
 
@@ -111,7 +142,10 @@ final class AppModel {
         withTransaction(transaction) {
             isScannerPresented = false
             isScannerClosing = false
+            isScannerRevealed = false
+            isPeeking = false
         }
+        scannerCloseCount += 1
         if let pendingModal {
             self.pendingModal = nil
             Task {

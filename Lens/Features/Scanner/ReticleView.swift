@@ -7,12 +7,13 @@ struct ReticleView: View {
     var quad: Quad?
     var idle: Quad
     var tint: Color = .white
+    var lineWidth: CGFloat = 4
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ReticleShape(quad: quad?.expanded(by: 10) ?? idle)
-            .stroke(tint, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
+            .stroke(tint, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
             .shadow(color: .black.opacity(0.28), radius: 3, y: 1)
             .animation(reduceMotion ? .easeOut(duration: 0.12) : .spring(response: 0.32, dampingFraction: 0.76), value: quad)
             .animation(.smooth(duration: 0.2), value: tint)

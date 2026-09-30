@@ -103,3 +103,85 @@ nonisolated struct LiftEffect: GeometryEffect {
     }
     .environment(\.colorScheme, .dark)
 }
+
+/// Several codes in view: each gets its own brackets and a glass pin naming it. Tap one to open it.
+struct CodeChoicePins: View {
+    var choices: [ScanTracker.Choice]
+    var onChoose: (CodeRead) -> Void
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var breathing = false
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            ForEach(choices) { choice in
+                let quad = choice.read.quad
+                ReticleShape(quad: quad.expanded(by: 8))
+                    .stroke(choice.payload.kind.tint, style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
+                    .shadow(color: .black.opacity(0.3), radius: 3, y: 1)
+                    .opacity(breathing ? 1 : 0.55)
+                    .allowsHitTesting(false)
+
+                Button { onChoose(choice.read) } label: {
+                    ChoicePin(payload: choice.payload)
+                }
+                .buttonStyle(ChoicePressStyle())
+                .position(quad.center)
+                .transition(.scale(scale: 0.6).combined(with: .opacity))
+                .accessibilityLabel(Text("Open \(choice.payload.displayTitle)"))
+            }
+        }
+        .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.8), value: choices)
+        .onAppear {
+            guard !reduceMotion else { breathing = true; return }
+            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) { breathing = true }
+        }
+    }
+}
+
+private struct ChoicePin: View {
+    var payload: Payload
+
+    var body: some View {
+        HStack(spacing: 6) {
+            KindTile(kind: payload.kind, size: 24)
+            Text(payload.displayTitle)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .truncationMode(.middle)
+            Image(systemName: "hand.tap.fill")
+                .font(.caption.weight(.bold))
+                .foregroundStyle(.white.opacity(0.8))
+        }
+        .padding(.leading, 5)
+        .padding(.trailing, 10)
+        .frame(minHeight: 36)
+        .frame(maxWidth: 190)
+        .lensGlass(.regular, in: Capsule(), interactive: true)
+        .contentShape(.capsule)
+        .padding(6)
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+    }
+}
+
+private struct ChoicePressStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.9 : 1)
+            .animation(.spring(response: 0.25, dampingFraction: 0.6), value: configuration.isPressed)
+    }
+}
+
+/// Shown while several codes are in view.
+struct ChoiceHint: View {
+    var body: some View {
+        Label("Tap the code you want", systemImage: "hand.tap")
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 16)
+            .frame(minHeight: 44)
+            .lensGlass(.regular, in: Capsule())
+            .accessibilityElement(children: .combine)
+    }
+}

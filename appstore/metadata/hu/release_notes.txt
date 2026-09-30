@@ -1,12 +1,4 @@
-Ismerd meg a Lunetet, a teljesen megújult Fast QR & Barcode-ot.
-
-Az appot az alapoktól újraépítettük natív iPhone- és iPad-alkalmazásként, és új nevet is kapott.
-
-- Linkbiztonság: minden linket ellenőrzünk megnyitás előtt, és közérthetően jelezzük a valódi célt, a hasonmás domaineket és a linkrövidítőket
-- Minden kódhoz a megfelelő művelet: csatlakozás Wi-Fi-hez, beszállókártya az Apple Walletbe, névjegyek és események mentése, termékkeresés, csomagkövetés
-- A kódjaid: Wi-Fi, névjegykártya és kártyák a kezdőlapon, egy koppintással teljes képernyőn
-- Studio: tervezz QR-kódokat egyedi stílusokkal, színekkel, logókkal és keretekkel
-- Beolvasás a Vezérlőközpontból, a zárolási képernyőről, a Műveletgombbal, widgetekről és a Sirivel
-- Új dizájn Liquid Glass-szal, sötét móddal és teljes akadálymentességgel
-
-A beolvasási előzményeid veled jönnek. Minden, amit elmentettél, ott van, ahol hagytad.
+- Több kód is látszik? A Lunet már nem választ helyetted. Minden kód saját címkét kap – csak koppints arra, amelyiket szeretnéd.
+- Új Beolvasás gomb: tartsd lenyomva, hogy a lencsében lásd a kamerát, majd engedd el a megnyitáshoz.
+- A kamera mostantól gyorsabban és simábban nyílik meg és záródik be.
+- Egy legutóbbi beolvasás törléséhez húzd balra a kezdőképernyőn.

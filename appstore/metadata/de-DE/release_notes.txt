@@ -1,4 +1,4 @@
-- Mehrere Codes im Bild? Lunet wählt nicht mehr für dich. Jeder Code bekommt ein eigenes Etikett – tippe einfach auf den gewünschten.
-- Eine neue Taste „Scannen“: Halte sie gedrückt, um die Kamera direkt in der Linse zu sehen, und lass los, um sie zu öffnen.
-- Die Kamera öffnet und schließt sich jetzt schneller und flüssiger.
-- Wische auf dem Startbildschirm über einen letzten Scan nach links, um ihn zu löschen.
+- Die Kamera zoomt jetzt direkt aus der Scannen-Taste auf und danach wieder hinein. Zum Schließen nach unten streichen.
+- Gemacht für das iPhone Duo: Die Tasten sitzen in der Spalte der Statusleiste, damit deine Codes und die Kamera den ganzen Bildschirm nutzen.
+- Tippe auf einen gespeicherten Code, um ihn im Vollbild zu zeigen.
+- Flüssigere Animationen mit 120 Hz auf ProMotion-Displays.

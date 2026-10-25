@@ -1,4 +1,4 @@
-- Flera koder i bild? Lunet väljer inte längre åt dig. Varje kod får en egen etikett – tryck bara på den du vill ha.
-- En ny Skanna-knapp: håll den nedtryckt för att se kameran inne i linsen och släpp för att öppna den.
-- Kameran öppnas och stängs nu snabbare och mjukare.
-- Svep åt vänster på en nyligen gjord skanning på hemskärmen för att radera den.
+- Kameran zoomar nu upp direkt ur Skanna-knappen och tillbaka in i den när du är klar. Svep nedåt för att stänga den.
+- Gjord för iPhone Duo: knapparna sitter i statusfältets kolumn, så att dina koder och kameran får hela skärmen.
+- Tryck på en sparad kod för att visa den i helskärm.
+- Mjukare animeringar i 120 Hz på ProMotion-skärmar.

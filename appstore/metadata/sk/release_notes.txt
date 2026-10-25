@@ -1,4 +1,4 @@
-- Viac kódov v zábere? Lunet už nevyberá za vás. Každý kód má vlastný štítok – stačí klepnúť na ten, ktorý chcete.
-- Nové tlačidlo Skenovať: podržte ho a uvidíte fotoaparát priamo v šošovke, pustite ho a otvorí sa.
-- Fotoaparát sa teraz otvára a zatvára rýchlejšie a plynulejšie.
-- Nedávne skenovanie na úvodnej obrazovke vymažete potiahnutím doľava.
+- Fotoaparát sa teraz otvára priblížením priamo z tlačidla Skenovať a po skončení sa doň vracia. Zatvoríte ho potiahnutím nadol.
+- Pre iPhone Duo: tlačidlá sú v stĺpci stavového riadka, takže vaše kódy aj fotoaparát majú celú obrazovku.
+- Klepnutím na uložený kód ho zobrazíte na celú obrazovku.
+- Plynulejšie animácie pri 120 Hz na displejoch ProMotion.

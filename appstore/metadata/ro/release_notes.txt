@@ -1,4 +1,4 @@
-- Mai multe coduri în cadru? Lunet nu mai alege în locul tău. Fiecare cod primește propria etichetă – atinge-l doar pe cel dorit.
-- Un nou buton Scanați: ține-l apăsat ca să vezi camera direct în lentilă, apoi eliberează-l ca să o deschizi.
-- Camera se deschide și se închide acum mai rapid și mai fluid.
-- Glisează spre stânga o scanare recentă de pe ecranul principal pentru a o șterge.
+- Camera se deschide acum cu un zoom direct din butonul Scanați și revine în el când termini. Glisează în jos pentru a o închide.
+- Creat pentru iPhone Duo: butoanele stau în coloana barei de stare, astfel încât codurile tale și camera folosesc tot ecranul.
+- Atinge un cod salvat pentru a-l mări pe tot ecranul.
+- Animații mai fluide la 120 Hz pe ecranele ProMotion.

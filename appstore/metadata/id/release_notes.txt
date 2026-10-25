@@ -1,4 +1,4 @@
-- Ada beberapa kode sekaligus? Lunet tidak lagi memilihkan untuk Anda. Setiap kode punya labelnya sendiri, cukup ketuk yang Anda inginkan.
-- Tombol Pindai baru: sentuh dan tahan untuk melihat kamera langsung di dalam lensa, lalu lepaskan untuk membukanya.
-- Kamera kini terbuka dan tertutup lebih cepat dan lebih mulus.
-- Gesek ke kiri pada pindaian terbaru di Beranda untuk menghapusnya.
+- Kamera kini terbuka dengan zoom langsung dari tombol Pindai, lalu kembali ke tombol itu saat Anda selesai. Gesek ke bawah untuk menutupnya.
+- Dibuat untuk iPhone Duo: tombol berada di kolom bar status, sehingga kode Anda dan kamera mendapatkan seluruh layar.
+- Ketuk kode tersimpan untuk memperbesarnya ke layar penuh.
+- Animasi lebih mulus pada 120 Hz di layar ProMotion.

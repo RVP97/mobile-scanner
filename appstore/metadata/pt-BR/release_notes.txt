@@ -1,4 +1,4 @@
-- Vários códigos à vista? O Lunet não escolhe mais por você. Cada código ganha sua própria etiqueta: é só tocar no que você quer.
-- Um novo botão Escanear: toque e segure para ver a câmera dentro da lente e solte para abri-la.
-- A câmera agora abre e fecha de forma mais rápida e suave.
-- Deslize para a esquerda um escaneamento recente no Início para apagá-lo.
+- A câmera agora abre com um zoom direto do botão Escanear e volta para ele quando você termina. Deslize para baixo para fechar.
+- Feito para o iPhone Duo: os botões ficam na coluna da barra de status, para que seus códigos e a câmera usem a tela inteira.
+- Toque em um código salvo para ampliá-lo em tela cheia.
+- Animações mais suaves a 120 Hz em telas ProMotion.

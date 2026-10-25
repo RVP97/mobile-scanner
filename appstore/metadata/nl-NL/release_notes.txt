@@ -1,4 +1,4 @@
-- Meerdere codes in beeld? Lunet kiest niet langer voor je. Elke code krijgt een eigen label: tik gewoon op de code die je wilt.
-- Een nieuwe Scan-knop: houd hem ingedrukt om de camera in de lens te zien en laat los om hem te openen.
-- De camera opent en sluit nu sneller en soepeler.
-- Veeg op het beginscherm naar links over een recente scan om hem te verwijderen.
+- De camera zoomt nu open vanuit de Scan-knop en weer terug als je klaar bent. Veeg omlaag om hem te sluiten.
+- Gemaakt voor iPhone Duo: de knoppen staan in de kolom van de statusbalk, zodat je codes en de camera het hele scherm krijgen.
+- Tik op een bewaarde code om hem schermvullend te tonen.
+- Vloeiendere animaties op 120 Hz op ProMotion-schermen.

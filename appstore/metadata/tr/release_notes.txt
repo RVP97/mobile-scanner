@@ -1,4 +1,4 @@
-- Görüntüde birden fazla kod mu var? Lunet artık sizin yerinize seçmiyor. Her kodun kendi etiketi var; istediğinize dokunmanız yeterli.
-- Yeni Tara düğmesi: Kamerayı merceğin içinde görmek için basılı tutun, açmak için bırakın.
-- Kamera artık daha hızlı ve daha akıcı açılıp kapanıyor.
-- Ana ekrandaki son bir taramayı silmek için sola kaydırın.
+- Kamera artık doğrudan Tara düğmesinden yakınlaşarak açılıyor ve işiniz bitince ona geri dönüyor. Kapatmak için aşağı kaydırın.
+- iPhone Duo için tasarlandı: düğmeler durum çubuğunun sütununda durur, böylece kodlarınız ve kamera tüm ekranı kullanır.
+- Kayıtlı bir koda dokunarak onu tam ekranda büyütün.
+- ProMotion ekranlarda 120 Hz’de daha akıcı animasyonlar.

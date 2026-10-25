@@ -1,4 +1,4 @@
-- Useita koodeja näkyvissä? Lunet ei enää valitse puolestasi. Jokainen koodi saa oman tarran – napauta vain haluamaasi.
-- Uusi Skannaa-painike: pidä sitä painettuna nähdäksesi kameran linssin sisällä ja päästä irti avataksesi sen.
-- Kamera avautuu ja sulkeutuu nyt nopeammin ja sujuvammin.
-- Poista viimeaikainen skannaus pyyhkäisemällä sitä vasemmalle kotinäytöllä.
+- Kamera avautuu nyt zoomaten suoraan Skannaa-painikkeesta ja palaa siihen, kun olet valmis. Sulje se pyyhkäisemällä alas.
+- Tehty iPhone Duolle: painikkeet ovat tilapalkin sarakkeessa, joten koodisi ja kamera saavat koko näytön.
+- Napauta tallennettua koodia, niin se avautuu koko näytölle.
+- Sulavammat 120 Hz:n animaatiot ProMotion-näytöillä.

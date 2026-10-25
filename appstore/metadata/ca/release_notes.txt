@@ -1,4 +1,4 @@
-- Hi ha diversos codis a la vista? El Lunet ja no tria per tu. Cada codi té la seva etiqueta: només cal que toquis el que vulguis.
-- Un nou botó Escaneja: mantén-lo premut per veure la càmera dins la lent i deixa’l anar per obrir-la.
-- La càmera ara s’obre i es tanca més ràpid i amb més fluïdesa.
-- Llisca cap a l’esquerra un escaneig recent a l’inici per eliminar-lo.
+- Ara la càmera s’obre amb un zoom directament des del botó Escaneja i hi torna quan acabes. Llisca cap avall per tancar-la.
+- Fet per a l’iPhone Duo: els botons van a la columna de la barra d’estat, així els teus codis i la càmera ocupen tota la pantalla.
+- Toca un codi desat per ampliar-lo a pantalla completa.
+- Animacions més fluides a 120 Hz a les pantalles ProMotion.

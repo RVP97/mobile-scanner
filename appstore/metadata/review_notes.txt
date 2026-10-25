@@ -1,12 +1,12 @@
-New in 2.1 (build 104): with several codes in view the scanner labels each one and waits for a tap; redesigned Scan button; swipe to delete recent scans on Home. No new permissions or data use.
+New in 2.2 (build 106): the camera zooms out of the Scan button and back (swipe down also closes it); iPhone Duo support (controls in the side status bar column; two panes when open); saved codes zoom to full screen. No new permissions or data use.
 
-Thank you for reviewing Lunet (version 2.1; formerly listed as "Fast QR & Barcode").
+Thank you for reviewing Lunet (version 2.2; formerly listed as "Fast QR & Barcode").
 
 NO LOGIN NEEDED
 Lunet has no accounts, sign-in, subscriptions or in-app purchases. Every feature is available on first launch.
 
 SAMPLE CODES (attached)
-The attachment contains four sample codes. Open them on a second screen and point the camera at them, or save them to Photos on the test device and use the Photos button on Home to scan from an image. No special hardware is needed.
+The attachment contains four sample codes. Open them on a second screen and point the camera at them, or save them to Photos on the test device and use the Photos button on Home to scan from an image.
 1-boarding-pass-pdf417.png  A sample IATA boarding pass barcode (fictional passenger "APPLESEED/JOHNNY").
 2-danger-link-qr.png        https://atlas-coffee.co@n0rthbank-login.co/pay (a phishing-style link).
 3-safe-link-qr.png          https://www.apple.com
@@ -25,7 +25,7 @@ About the passes: Lunet does not impersonate airlines or venues. Each pass is si
 Signing happens on our small signing service because signing keys cannot ship inside an app. Requests are protected by App Attest, the service returns the signed .pkpass immediately, and it does not store the pass or its contents. App Attest requires a physical device, so please test this step on a device rather than in Simulator.
 
 OTHER FEATURES
-- Wi-Fi: scan 4-wifi-qr.png and tap Join. iOS shows its own confirmation to join "Lunet Review" (the network does not need to exist to see the flow).
+- Wi-Fi: scan 4-wifi-qr.png and tap Join. iOS shows its own confirmation to join "Lunet Review".
 - History: every scan appears in History with search and filters. Settings > History lets you lock History with Face ID (or the device passcode) and export it as CSV.
 - Location of scans is off by default and only requested if the user turns it on in Settings; it stays on the device.
 - Create: tap Create on Home to make a Wi-Fi, link, contact or other code, then open Studio to style it.

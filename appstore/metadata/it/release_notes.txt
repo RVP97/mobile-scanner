@@ -1,4 +1,4 @@
-- Più codici inquadrati? Lunet non sceglie più al posto tuo. Ogni codice ha la sua etichetta: tocca semplicemente quello che vuoi.
-- Un nuovo pulsante Scansiona: tienilo premuto per vedere la fotocamera dentro la lente, poi rilascia per aprirla.
-- La fotocamera ora si apre e si chiude in modo più rapido e fluido.
-- Scorri a sinistra una scansione recente nella Home per eliminarla.
+- La fotocamera ora si apre con uno zoom direttamente dal pulsante Scansiona e ci ritorna quando hai finito. Scorri verso il basso per chiuderla.
+- Pensata per iPhone Duo: i pulsanti stanno nella colonna della barra di stato, così i tuoi codici e la fotocamera usano tutto lo schermo.
+- Tocca un codice salvato per ingrandirlo a tutto schermo.
+- Animazioni più fluide a 120 Hz sugli schermi ProMotion.

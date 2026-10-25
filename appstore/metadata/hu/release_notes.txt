@@ -1,4 +1,4 @@
-- Több kód is látszik? A Lunet már nem választ helyetted. Minden kód saját címkét kap – csak koppints arra, amelyiket szeretnéd.
-- Új Beolvasás gomb: tartsd lenyomva, hogy a lencsében lásd a kamerát, majd engedd el a megnyitáshoz.
-- A kamera mostantól gyorsabban és simábban nyílik meg és záródik be.
-- Egy legutóbbi beolvasás törléséhez húzd balra a kezdőképernyőn.
+- A kamera most a Beolvasás gombból nagyítva nyílik meg, és oda tér vissza, ha végeztél. Lefelé húzva bezárhatod.
+- iPhone Duóra tervezve: a gombok az állapotsor oszlopában vannak, így a kódjaid és a kamera a teljes képernyőt kapják.
+- Koppints egy mentett kódra, hogy teljes képernyőn lásd.
+- Gördülékenyebb, 120 Hz-es animációk ProMotion kijelzőkön.

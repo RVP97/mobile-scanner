@@ -1,4 +1,4 @@
-- Plusieurs codes en vue ? Lunet ne choisit plus à votre place. Chaque code a sa propre étiquette : touchez simplement celui que vous voulez.
-- Un nouveau bouton Scanner : maintenez-le enfoncé pour voir la caméra dans la lentille, puis relâchez pour l’ouvrir.
-- La caméra s’ouvre et se ferme désormais plus vite et plus en douceur.
-- Balayez vers la gauche un scan récent sur l’écran d’accueil pour le supprimer.
+- L’appareil photo s’ouvre maintenant en zoomant à partir du bouton Scanner, et s’y referme quand vous avez terminé. Balayez vers le bas pour le fermer.
+- Conçu pour l’iPhone Duo : les boutons se placent dans la colonne de la barre d’état, pour que vos codes et l’appareil photo occupent tout l’écran.
+- Touchez un code enregistré pour l’agrandir en plein écran.
+- Animations plus fluides à 120 Hz sur les écrans ProMotion.

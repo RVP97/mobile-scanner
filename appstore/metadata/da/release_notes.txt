@@ -1,4 +1,4 @@
-- Flere koder i billedet? Lunet vælger ikke længere for dig. Hver kode får sin egen etiket – tryk bare på den, du vil have.
-- En ny Scan-knap: Hold den nede for at se kameraet inde i linsen, og slip for at åbne det.
-- Kameraet åbner og lukker nu hurtigere og mere glidende.
-- Skub til venstre på en nylig scanning på startskærmen for at slette den.
+- Kameraet zoomer nu op direkte fra Scan-knappen og tilbage i den, når du er færdig. Skub nedad for at lukke det.
+- Lavet til iPhone Duo: knapperne sidder i statuslinjens kolonne, så dine koder og kameraet får hele skærmen.
+- Tryk på en gemt kode for at vise den i fuld skærm.
+- Glattere animationer i 120 Hz på ProMotion-skærme.

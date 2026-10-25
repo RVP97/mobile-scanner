@@ -1,4 +1,4 @@
-- Several codes in view? Lunet no longer picks one for you. Each code gets its own label, so just tap the one you want.
-- A new Scan button: touch and hold to see the camera right inside the lens, then let go to open it.
-- The camera now opens and closes faster and more smoothly.
-- Swipe left on a recent scan on Home to delete it.
+- The camera now zooms open right out of the Scan button, and back into it when you’re done. Swipe down to close it.
+- Made for iPhone Duo: the buttons sit in the status bar’s column, so your codes and the camera get the whole screen.
+- Tap a saved code to zoom it to full screen.
+- Smoother animations at 120 Hz on ProMotion displays.

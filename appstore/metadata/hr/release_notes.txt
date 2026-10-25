@@ -1,4 +1,4 @@
-- Više kodova u kadru? Lunet više ne bira umjesto vas. Svaki kod dobiva vlastitu oznaku – samo dodirnite onaj koji želite.
-- Novi gumb Skeniraj: zadržite ga da vidite kameru unutar leće, a pustite ga da je otvorite.
-- Kamera se sada otvara i zatvara brže i glađe.
-- Povucite ulijevo nedavno skeniranje na početnom zaslonu da biste ga izbrisali.
+- Kamera se sada otvara zumiranjem ravno iz tipke Skeniraj i vraća se u nju kad završite. Povucite prema dolje da je zatvorite.
+- Izrađeno za iPhone Duo: tipke su u stupcu statusne trake, pa vaši kodovi i kamera dobivaju cijeli zaslon.
+- Dodirnite spremljeni kod da biste ga povećali na cijeli zaslon.
+- Glađe animacije od 120 Hz na ProMotion zaslonima.

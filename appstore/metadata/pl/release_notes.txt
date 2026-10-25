@@ -1,4 +1,4 @@
-- Kilka kodów w kadrze? Lunet już nie wybiera za Ciebie. Każdy kod ma własną etykietę – po prostu stuknij ten, który chcesz.
-- Nowy przycisk Skanuj: przytrzymaj go, aby zobaczyć obraz z aparatu w soczewce, i puść, aby go otworzyć.
-- Aparat otwiera się i zamyka teraz szybciej i płynniej.
-- Przesuń w lewo ostatni skan na ekranie głównym, aby go usunąć.
+- Aparat otwiera się teraz z efektem przybliżenia prosto z przycisku Skanuj i wraca do niego, gdy skończysz. Przesuń w dół, aby go zamknąć.
+- Stworzone dla iPhone’a Duo: przyciski są w kolumnie paska stanu, więc Twoje kody i aparat zajmują cały ekran.
+- Stuknij zapisany kod, aby powiększyć go na pełny ekran.
+- Płynniejsze animacje 120 Hz na ekranach ProMotion.

@@ -1,4 +1,4 @@
-- Vários códigos à vista? O Lunet já não escolhe por si. Cada código tem a sua própria etiqueta: basta tocar no que pretende.
-- Um novo botão Ler: mantenha-o premido para ver a câmara dentro da lente e solte para a abrir.
-- A câmara abre e fecha agora de forma mais rápida e suave.
-- Deslize para a esquerda uma leitura recente no Início para a apagar.
+- A câmara abre agora com um zoom a partir do botão Ler e regressa a ele quando termina. Deslize para baixo para a fechar.
+- Feito para o iPhone Duo: os botões ficam na coluna da barra de estado, para que os seus códigos e a câmara ocupem o ecrã inteiro.
+- Toque num código guardado para o ampliar em ecrã inteiro.
+- Animações mais suaves a 120 Hz em ecrãs ProMotion.

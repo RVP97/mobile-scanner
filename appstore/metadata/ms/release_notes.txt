@@ -1,4 +1,4 @@
-- Beberapa kod kelihatan? Lunet tidak lagi memilih untuk anda. Setiap kod mempunyai labelnya sendiri, cuma ketik yang anda mahu.
-- Butang Imbas baharu: sentuh dan tahan untuk melihat kamera di dalam kanta, kemudian lepaskan untuk membukanya.
-- Kamera kini dibuka dan ditutup dengan lebih pantas dan lancar.
-- Leret ke kiri pada imbasan terkini di Utama untuk memadamkannya.
+- Kamera kini dibuka dengan zum terus dari butang Imbas dan kembali ke dalamnya apabila anda selesai. Leret ke bawah untuk menutupnya.
+- Dibina untuk iPhone Duo: butang berada dalam lajur bar status, jadi kod anda dan kamera mendapat seluruh skrin.
+- Ketik kod yang disimpan untuk mengezumnya ke skrin penuh.
+- Animasi lebih lancar pada 120 Hz di skrin ProMotion.

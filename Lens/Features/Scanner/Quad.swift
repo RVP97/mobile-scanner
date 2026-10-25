@@ -96,9 +96,16 @@ nonisolated struct Quad: Hashable, Sendable {
 
     /// The resting reticle: a centered square in the part of the screen the sheet doesn't cover.
     static func idle(in size: CGSize, bottomInset: CGFloat) -> Quad {
+        idle(in: size, bottomInset: bottomInset, centerX: size.width / 2, insets: EdgeInsets())
+    }
+
+    /// Centered on `centerX` (the scanner's Close button, under the Scan lens), kept off the sides the
+    /// safe area takes. Insets on opposite sides differ: iPhone Duo's status bar is a column down one side.
+    static func idle(in size: CGSize, bottomInset: CGFloat, centerX: CGFloat, insets: EdgeInsets) -> Quad {
         let usableHeight = max(size.height - bottomInset, 0)
-        let side = min(min(size.width, usableHeight) * 0.62, 264)
-        let center = CGPoint(x: size.width / 2, y: usableHeight / 2)
+        let halfRoom = max(min(centerX - insets.leading, size.width - insets.trailing - centerX), 0)
+        let side = min(min(halfRoom * 2, usableHeight) * 0.62, 264)
+        let center = CGPoint(x: centerX, y: usableHeight / 2)
         return Quad(rect: CGRect(x: center.x - side / 2, y: center.y - side / 2, width: side, height: side))
     }
 }

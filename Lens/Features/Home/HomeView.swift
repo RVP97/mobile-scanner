@@ -27,14 +27,53 @@ struct HomeView: View {
     }
 
     var body: some View {
+        GeometryReader { proxy in
+            Group {
+                if isWide(proxy.size) {
+                    wideLayout
+                } else {
+                    narrowLayout
+                }
+            }
+            .background(Color(.systemGroupedBackground))
+        }
+        .overlay(alignment: .top) { statusBarFade }
+        .overlay(alignment: .top) { toast }
+        .toolbar(.hidden, for: .navigationBar)
+        .task { LegacyImporter.runIfNeeded(into: modelContext) }
+        .task {
+            // Once Home has settled: the scanner then opens onto a live feed even on a quick tap.
+            try? await Task.sleep(for: .seconds(0.6))
+            model.camera.prewarm()
+        }
+        .onChange(of: isFrontmost) { _, frontmost in
+            if frontmost { promptForReviewIfDue() }
+        }
+        .onChange(of: model.sheet) { _, sheet in
+            if case .result = sheet { ReviewPrompter.leftHomeForResult = true }
+        }
+    }
+
+    /// Room for two panes: iPhone Duo open and turned sideways, iPad in landscape. Upright, a pane would
+    /// be too narrow for a card, so the page stays one column (its codes two to a row).
+    private func isWide(_ size: CGSize) -> Bool {
+        sizeClass == .regular && size.width >= 760 && size.width > size.height
+    }
+
+    /// iPhone: one column, the Scan lens in the thumb zone under it.
+    private var narrowLayout: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 32) {
-                header
-                if isLocked {
-                    LockedHomeCard()
-                        .padding(.horizontal, 20)
-                } else {
-                    YourCodesSection()
+                VStack(alignment: .leading, spacing: 12) {
+                    header(showsSettings: true)
+                    if isLocked {
+                        LockedHomeCard()
+                            .padding(.horizontal, 20)
+                    } else {
+                        YourCodesSection()
+                    }
+                }
+                if !isLocked {
                     RecentSection()
                 }
             }
@@ -45,49 +84,72 @@ struct HomeView: View {
             .frame(maxWidth: .infinity)
         }
         .scrollIndicators(.hidden)
-        .background(Color(.systemGroupedBackground))
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            HomeActionBar(
-                isLensAnimating: isFrontmost,
-                onScan: { model.openScanner() },
-                onPhotos: scanFromPhotos,
-                onMultiScan: { model.openScanner(multi: true) },
-                onCreate: { model.openCreate() }
-            )
-        }
-        .overlay(alignment: .top) { statusBarFade }
-        .overlay(alignment: .top) { toast }
-        .toolbar(.hidden, for: .navigationBar)
-        .task { LegacyImporter.runIfNeeded(into: modelContext) }
-        .onChange(of: isFrontmost) { _, frontmost in
-            if frontmost { promptForReviewIfDue() }
-        }
-        .onChange(of: model.sheet) { _, sheet in
-            if case .result = sheet { ReviewPrompter.leftHomeForResult = true }
+        .safeAreaInset(edge: .bottom, spacing: 0) { actionBar }
+    }
+
+    /// Wide: the codes on one side of the hinge; recent scans and the Scan lens on the other, so the lens
+    /// is never on the fold and stays under the thumb.
+    private var wideLayout: some View {
+        HingeSplit {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    header(showsSettings: false)
+                    if isLocked {
+                        LockedHomeCard()
+                            .padding(.horizontal, 20)
+                    } else {
+                        YourCodesSection()
+                            .environment(\.stacksCodeCards, true)
+                    }
+                }
+                .padding(.top, 8)
+                .padding(.bottom, 24)
+            }
+            .scrollIndicators(.hidden)
+        } trailing: {
+            ScrollView {
+                Group {
+                    if isLocked {
+                        HStack {
+                            Spacer(minLength: 0)
+                            HomeSettingsButton()
+                        }
+                        .padding(.horizontal, 20)
+                    } else {
+                        RecentSection(titlesPane: true)
+                    }
+                }
+                .padding(.top, 8)
+                .padding(.bottom, 24)
+            }
+            .scrollIndicators(.hidden)
+            .safeAreaInset(edge: .bottom, spacing: 0) { actionBar }
         }
     }
 
-    private var header: some View {
+    private var actionBar: some View {
+        HomeActionBar(
+            isLensAnimating: isFrontmost,
+            onScan: { model.openScanner() },
+            onPhotos: scanFromPhotos,
+            onMultiScan: { model.openScanner(multi: true) },
+            onCreate: { model.openCreate() }
+        )
+    }
+
+    private func header(showsSettings: Bool) -> some View {
+        // Content first, as Wallet does: the page is titled by what's on it, not by the app's name.
         HStack(spacing: 12) {
-            LunetAppIcon(size: 38)
-                .accessibilityHidden(true)
-            Text(verbatim: "Lunet")
+            Text("Your codes")
                 .font(.largeTitle.bold())
                 .accessibilityAddTraits(.isHeader)
             Spacer(minLength: 8)
-            Button { model.openSettings() } label: {
-                Image(systemName: "gearshape")
-                    .font(.system(size: 19, weight: .semibold))
-                    .foregroundStyle(.primary)
-                    .frame(width: 44, height: 44)
-                    .contentShape(.circle)
-                    .lensGlass(.regular, in: Circle(), interactive: true)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Settings")
+            if showsSettings { HomeSettingsButton() }
         }
+        .frame(minHeight: 44)
         .padding(.horizontal, 20)
     }
+
 
     /// Content scrolling up under the clock softens away instead of colliding with it.
     private var statusBarFade: some View {
@@ -134,6 +196,24 @@ struct HomeView: View {
             try? await Task.sleep(for: .seconds(0.8))
             requestReview()
         }
+    }
+}
+
+/// Home's way into Settings: a glass gear beside the page title.
+struct HomeSettingsButton: View {
+    @Environment(AppModel.self) private var model
+
+    var body: some View {
+        Button { model.openSettings() } label: {
+            Image(systemName: "gearshape")
+                .font(.system(size: 19, weight: .semibold))
+                .foregroundStyle(.primary)
+                .frame(width: 44, height: 44)
+                .contentShape(.circle)
+                .lensGlass(.regular, in: Circle(), interactive: true)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Settings")
     }
 }
 

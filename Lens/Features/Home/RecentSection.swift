@@ -21,13 +21,19 @@ struct RecentSection: View {
         return descriptor
     }
 
+    /// Beside the codes (a wide Home), the section heads its pane in the page title's size, level with
+    /// "Your codes", and Settings joins it.
+    var titlesPane = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HomeSectionHeader(title: "Recent") {
+            HomeSectionHeader(title: "Recent", isPageTitle: titlesPane) {
                 if !recent.isEmpty {
                     Button("See All") { model.path = [.history] }
                         .accessibilityLabel("See All History")
                 }
+            } accessory: {
+                if titlesPane { HomeSettingsButton() }
             }
             if recent.isEmpty {
                 emptyState

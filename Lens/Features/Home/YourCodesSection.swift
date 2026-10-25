@@ -2,32 +2,30 @@ import SwiftData
 import SwiftUI
 
 /// "Your codes": what the person made and what they pinned, as Wallet-style cards that open full
-/// screen for someone else to scan.
+/// screen for someone else to scan. Home's large title heads it.
 struct YourCodesSection: View {
     @Environment(AppModel.self) private var model
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.stacksCodeCards) private var stacksCards
     @Query(CodeShelf.descriptor) private var records: [ScanRecord]
 
     var body: some View {
         let codes = CodeShelf.arrange(records)
+        // The page's own title names this section (Home's header), so it has none of its own.
         VStack(alignment: .leading, spacing: 12) {
-            HomeSectionHeader(title: "Your codes") {
-                if !codes.isEmpty {
-                    Button { model.openCreate() } label: {
-                        Label("New Code", systemImage: "plus")
-                    }
-                }
-            }
-            .padding(.horizontal, 20)
 
             if codes.isEmpty {
                 EmptyShelfCard { model.openCreate(.compose(.wifi)) }
                     .padding(.horizontal, 20)
-            } else if typeSize.isAccessibilitySize {
+            } else if typeSize.isAccessibilitySize || stacksCards {
                 VStack(spacing: 12) {
-                    ForEach(codes) { card(for: $0) }
+                    ForEach(codes) { record in
+                        card(for: record)
+                            // A pass's proportions, unless large text needs the height.
+                            .aspectRatio(stacksCards && !typeSize.isAccessibilitySize ? 1.586 : nil, contentMode: .fit)
+                    }
                 }
                 .padding(.horizontal, 20)
             } else if sizeClass == .regular {
@@ -65,6 +63,9 @@ struct YourCodesSection: View {
         .scrollTargetBehavior(.viewAligned)
         .contentMargins(.horizontal, 20, for: .scrollContent)
         .scrollClipDisabled()
+        // Shadows spill above and below, but the cards stop at the safe area's sides: on iPhone Duo the
+        // status bar is a column down the side, and a card sliding under the clock looks broken.
+        .mask { Rectangle().padding(.vertical, -40) }
     }
 
     /// iPad: every card in view, two to a row, like passes laid out on a table.
@@ -109,21 +110,35 @@ struct YourCodesSection: View {
 }
 
 /// Title and an optional trailing action, shared by Home's sections.
-struct HomeSectionHeader<Trailing: View>: View {
+struct HomeSectionHeader<Trailing: View, Accessory: View>: View {
     var title: LocalizedStringKey
+    /// In the page title's size, heading a whole pane.
+    var isPageTitle = false
     @ViewBuilder var trailing: Trailing
+    /// Glass buttons after the link (Settings), centered on the row.
+    @ViewBuilder var accessory: Accessory
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(title)
-                .font(.title2.bold())
-                .accessibilityAddTraits(.isHeader)
-            Spacer(minLength: 8)
-            trailing
-                .font(.body)
-                .labelStyle(.titleOnly)
-                .tint(Palette.accent)
+        HStack(spacing: 16) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(title)
+                    .font(isPageTitle ? .largeTitle.bold() : .title2.bold())
+                    .accessibilityAddTraits(.isHeader)
+                Spacer(minLength: 8)
+                trailing
+                    .font(.body)
+                    .labelStyle(.titleOnly)
+                    .tint(Palette.accent)
+            }
+            accessory
         }
+        .frame(minHeight: isPageTitle ? 44 : nil)
+    }
+}
+
+extension HomeSectionHeader where Accessory == EmptyView {
+    init(title: LocalizedStringKey, isPageTitle: Bool = false, @ViewBuilder trailing: () -> Trailing) {
+        self.init(title: title, isPageTitle: isPageTitle, trailing: trailing) { EmptyView() }
     }
 }
 
@@ -218,3 +233,8 @@ private struct GhostCard: View {
         .modelContainer(for: ScanRecord.self, inMemory: true)
 }
 #endif
+
+extension EnvironmentValues {
+    /// Codes one above another at full width, as in a pane beside the hinge (iPhone Duo open).
+    @Entry var stacksCodeCards = false
+}

@@ -61,7 +61,12 @@ struct LensFace: View {
     @Environment(\.lensIsPressed) private var isPressed
 
     /// One turn of the rim every 14 seconds.
-    private var rimAngle: Angle { .degrees((time / 14).truncatingRemainder(dividingBy: 1) * 360) }
+    private var rimAngle: Angle { Self.rimAngle(at: Date(timeIntervalSinceReferenceDate: time)) }
+
+    /// Where the rim's colors stand at a moment, so the scanner's opening edge can carry them on.
+    static func rimAngle(at date: Date) -> Angle {
+        .degrees((date.timeIntervalSinceReferenceDate / 14).truncatingRemainder(dividingBy: 1) * 360)
+    }
 
     /// 0...1 while the glint crosses (about a second every six), otherwise nil.
     private var glintPhase: Double? {

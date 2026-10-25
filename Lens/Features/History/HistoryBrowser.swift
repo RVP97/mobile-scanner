@@ -7,14 +7,14 @@ struct HistoryBrowser: View {
     @Environment(\.modelContext) private var modelContext
     @AppStorage(Pref.saveHistory) private var saveHistory = Pref.Default.saveHistory
     @AppStorage(Pref.requireFaceID) private var requireFaceID = Pref.Default.requireFaceID
-    @Query(HistoryBrowser.anyRecord) private var anyRecord: [ScanRecord]
+    @Query(HistoryBrowser.firstRecord) private var anyRecord: [ScanRecord]
 
     @State private var criteria = HistoryBrowser.initialCriteria
     @State private var editMode: EditMode = .inactive
     @State private var selection = Set<UUID>()
     @State private var confirmingDelete = false
 
-    private static var anyRecord: FetchDescriptor<ScanRecord> {
+    private static var firstRecord: FetchDescriptor<ScanRecord> {
         var descriptor = FetchDescriptor<ScanRecord>()
         descriptor.fetchLimit = 1
         return descriptor

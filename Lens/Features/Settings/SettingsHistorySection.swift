@@ -8,7 +8,7 @@ struct SettingsHistorySection: View {
     @AppStorage(Pref.saveHistory) private var saveHistory = Pref.Default.saveHistory
     @AppStorage(Pref.rememberPlace) private var rememberPlace = Pref.Default.rememberPlace
     @AppStorage(Pref.requireFaceID) private var requireFaceID = Pref.Default.requireFaceID
-    @Query(SettingsHistorySection.anyRecord) private var anyRecord: [ScanRecord]
+    @Query(SettingsHistorySection.firstRecord) private var anyRecord: [ScanRecord]
 
     @State private var confirmingClear = false
     @State private var showingLocationDenied = false
@@ -16,7 +16,7 @@ struct SettingsHistorySection: View {
 
     private let biometry = BiometryKind.current
 
-    private static var anyRecord: FetchDescriptor<ScanRecord> {
+    private static var firstRecord: FetchDescriptor<ScanRecord> {
         var descriptor = FetchDescriptor<ScanRecord>()
         descriptor.fetchLimit = 1
         return descriptor

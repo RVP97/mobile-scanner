@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Four rounded viewfinder brackets, filled. Scales to the smaller side of its frame.
-struct ViewfinderBrackets: Shape {
+nonisolated struct ViewfinderBrackets: Shape {
     /// Proportions on a 604-point box, stroke included.
     private static let extent: CGFloat = 604
     private static let halfBox: CGFloat = 268

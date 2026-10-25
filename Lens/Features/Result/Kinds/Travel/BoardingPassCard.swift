@@ -118,7 +118,7 @@ struct BoardingPassCard: View {
         return items
     }
 
-    private struct Line: Shape {
+    nonisolated private struct Line: Shape {
         func path(in rect: CGRect) -> Path {
             Path { path in
                 path.move(to: CGPoint(x: rect.minX, y: rect.midY))

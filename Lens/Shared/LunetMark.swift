@@ -153,7 +153,7 @@ struct LunetGlyph: View {
     }
 }
 
-struct LunetGlyphShape: Shape {
+nonisolated struct LunetGlyphShape: Shape {
     func path(in rect: CGRect) -> Path {
         let center = LunetGeometry.lensCenter
         var glyph = LunetGeometry.circle(center: center, radius: 222)

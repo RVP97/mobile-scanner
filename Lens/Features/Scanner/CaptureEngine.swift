@@ -1,5 +1,11 @@
 @preconcurrency import AVFoundation
 
+/// Which of iPhone Duo's displays the scanner is on, for the camera facing the person. Every other
+/// iPhone has one display and one front camera, and reads as `.outer`.
+nonisolated enum CameraDisplay: Sendable {
+    case outer, inner
+}
+
 /// What the configured camera can do, handed back to the UI.
 nonisolated struct CameraCapabilities: Hashable, Sendable {
     var position: AVCaptureDevice.Position
@@ -79,22 +85,24 @@ nonisolated final class CaptureEngine: @unchecked Sendable {
     /// Builds (or rebuilds, when flipping cameras) the session. Returns nil when no camera is usable.
     func configure(
         position: AVCaptureDevice.Position,
+        display: CameraDisplay,
         types: [AVMetadataObject.ObjectType],
         relay: MetadataRelay
     ) async -> CameraCapabilities? {
         await withCheckedContinuation { continuation in
             queue.async {
-                continuation.resume(returning: self.configureOnQueue(position: position, types: types, relay: relay))
+                continuation.resume(returning: self.configureOnQueue(position: position, display: display, types: types, relay: relay))
             }
         }
     }
 
     private func configureOnQueue(
         position: AVCaptureDevice.Position,
+        display: CameraDisplay,
         types: [AVMetadataObject.ObjectType],
         relay: MetadataRelay
     ) -> CameraCapabilities? {
-        guard let device = Self.bestDevice(for: position),
+        guard let device = Self.bestDevice(for: position, display: display),
               let input = try? AVCaptureDeviceInput(device: device) else { return nil }
 
         session.beginConfiguration()
@@ -111,6 +119,10 @@ nonisolated final class CaptureEngine: @unchecked Sendable {
         if !session.outputs.contains(metadataOutput) {
             guard session.canAddOutput(metadataOutput) else { return nil }
             session.addOutput(metadataOutput)
+        }
+        // The preview's first frame comes first; code reading starts right after it.
+        if #available(iOS 26.0, *), metadataOutput.isDeferredStartSupported {
+            metadataOutput.isDeferredStartEnabled = true
         }
         metadataOutput.setMetadataObjectsDelegate(relay, queue: .main)
         let available = Set(metadataOutput.availableMetadataObjectTypes)
@@ -134,14 +146,33 @@ nonisolated final class CaptureEngine: @unchecked Sendable {
     }
 
     /// Prefers a virtual device so the system switches to the ultra-wide lens for macro when a code is close.
-    private static func bestDevice(for position: AVCaptureDevice.Position) -> AVCaptureDevice? {
-        let types: [AVCaptureDevice.DeviceType] = position == .back
-            ? [.builtInTripleCamera, .builtInDualWideCamera, .builtInWideAngleCamera]
-            : [.builtInWideAngleCamera]
-        for type in types {
+    /// Facing the person, iPhone Duo has a camera over each display: the one over the display in use.
+    static func bestDevice(for position: AVCaptureDevice.Position, display: CameraDisplay) -> AVCaptureDevice? {
+        if position == .front {
+            let devices = AVCaptureDevice.DiscoverySession(
+                deviceTypes: frontTypes(for: display),
+                mediaType: .video,
+                position: .front
+            ).devices
+            // The discovery session lists them in no promised order; take them in ours.
+            for type in frontTypes(for: display) {
+                if let device = devices.first(where: { $0.deviceType == type }) { return device }
+            }
+            return nil
+        }
+        for type in [AVCaptureDevice.DeviceType.builtInTripleCamera, .builtInDualWideCamera, .builtInWideAngleCamera] {
             if let device = AVCaptureDevice.default(type, for: .video, position: position) { return device }
         }
         return nil
+    }
+
+    private static func frontTypes(for display: CameraDisplay) -> [AVCaptureDevice.DeviceType] {
+        guard #available(iOS 27.1, *) else { return [.builtInWideAngleCamera] }
+        let duo: [AVCaptureDevice.DeviceType] = display == .inner
+            ? [.builtInInnerUltraWideCamera, .builtInOuterUltraWideCamera]
+            : [.builtInOuterUltraWideCamera, .builtInInnerUltraWideCamera]
+        // Duo's own types first: its front cameras may also answer to the generic one.
+        return duo + [.builtInWideAngleCamera]
     }
 
     private static func zoomProfile(for device: AVCaptureDevice) -> ZoomProfile {

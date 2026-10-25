@@ -91,6 +91,10 @@
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<true/>
 	</dict>
+	<!-- ProMotion: without this iPhone holds the app's own animations (the Scan lens opening into the
+	     camera above all) to 60 Hz. The system still drops the rate when nothing moves. -->
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

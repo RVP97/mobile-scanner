@@ -35,6 +35,8 @@ final class ScannerCamera {
     private(set) var isTorchOn = false
     private(set) var position: AVCaptureDevice.Position = .back
     private(set) var focusMark: FocusMark?
+    /// The display the scanner is on (iPhone Duo open or closed), for the camera that faces the person.
+    private(set) var display: CameraDisplay = .outer
 
     /// Every frame's codes, in the preview view's coordinate space. Empty when codes leave the frame.
     @ObservationIgnored var onCodes: ([CodeRead]) -> Void = { _ in }
@@ -43,7 +45,7 @@ final class ScannerCamera {
     @ObservationIgnored private var relay: MetadataRelay?
     @ObservationIgnored private weak var preview: PreviewView?
     @ObservationIgnored private var wantsRunning = false
-    @ObservationIgnored private var configuredPosition: AVCaptureDevice.Position?
+    @ObservationIgnored private var configured: (position: AVCaptureDevice.Position, display: CameraDisplay)?
     @ObservationIgnored private var reconcileTask: Task<Void, Never>?
     @ObservationIgnored private var pinchBase: CGFloat?
 
@@ -60,10 +62,10 @@ final class ScannerCamera {
     /// The window hosting the preview, for presenting UIKit pickers above the app's sheets.
     var window: UIWindow? { preview?.window }
 
-    var canFlip: Bool {
-        AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) != nil
-            && AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) != nil
-    }
+    var canFlip: Bool { Self.hasBothCameras }
+
+    private static let hasBothCameras = CaptureEngine.bestDevice(for: .front, display: .outer) != nil
+        && CaptureEngine.bestDevice(for: .back, display: .outer) != nil
 
     // MARK: Lifecycle
 
@@ -71,6 +73,20 @@ final class ScannerCamera {
     func setActive(_ active: Bool) {
         wantsRunning = active
         reconcile()
+    }
+
+    /// Sets the camera up without starting it, so opening the scanner only has to start the feed. Only
+    /// with access already granted: this never asks, and nothing records (no camera indicator).
+    func prewarm() {
+        guard Self.currentAccess() == .authorized, configured == nil, !wantsRunning else { return }
+        reconcile()
+    }
+
+    /// Follows iPhone Duo opening and closing: facing the person, the camera over the display in use.
+    func setDisplay(_ display: CameraDisplay) {
+        guard display != self.display else { return }
+        self.display = display
+        if position == .front { reconcile() }
     }
 
     func connect(_ view: PreviewView) {
@@ -102,6 +118,8 @@ final class ScannerCamera {
             if status != .unavailable { status = .idle }
             isTorchOn = false
             onCodes([])
+            // Prewarming: configured, not running.
+            if configured == nil, Self.currentAccess() == .authorized { await configureIfNeeded() }
             return
         }
 
@@ -110,23 +128,7 @@ final class ScannerCamera {
             access = await AVCaptureDevice.requestAccess(for: .video) ? .authorized : .denied
         }
         guard access == .authorized else { return }
-
-        if configuredPosition != position {
-            let relay = relay ?? MetadataRelay { [weak self] codes in self?.receive(codes) }
-            self.relay = relay
-            guard let capabilities = await engine.configure(
-                position: position,
-                types: Symbology.captureTypes,
-                relay: relay
-            ) else {
-                status = .unavailable
-                return
-            }
-            configuredPosition = position
-            self.capabilities = capabilities
-            displayZoom = capabilities.initialDisplayZoom
-            attachPreview()
-        }
+        guard await configureIfNeeded() else { return }
 
         guard wantsRunning else { return }
         await engine.start()
@@ -134,8 +136,33 @@ final class ScannerCamera {
         status = .running
     }
 
+    /// Builds the session for the wanted camera, unless it already is. False when no camera is usable.
+    @discardableResult
+    private func configureIfNeeded() async -> Bool {
+        // The back camera is the same whichever display is in use.
+        let wanted = (position: position, display: position == .front ? display : .outer)
+        if configured?.position != wanted.position || configured?.display != wanted.display {
+            let relay = relay ?? MetadataRelay { [weak self] codes in self?.receive(codes) }
+            self.relay = relay
+            guard let capabilities = await engine.configure(
+                position: wanted.position,
+                display: wanted.display,
+                types: Symbology.captureTypes,
+                relay: relay
+            ) else {
+                status = .unavailable
+                return false
+            }
+            configured = wanted
+            self.capabilities = capabilities
+            displayZoom = capabilities.initialDisplayZoom
+            attachPreview()
+        }
+        return true
+    }
+
     private func attachPreview() {
-        guard let preview, configuredPosition != nil, let device = engine.device else { return }
+        guard let preview, configured != nil, let device = engine.device else { return }
         preview.attach(session: engine.session, device: device)
     }
 

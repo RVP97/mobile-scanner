@@ -13,6 +13,7 @@ struct ScannerCover: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openURL) private var openURL
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
     /// Home's appearance, kept while the scanner is still just the lens (so the status bar doesn't flip).
     @Environment(\.colorScheme) private var outerColorScheme
 
@@ -31,8 +32,9 @@ struct ScannerCover: View {
     @State private var idleClock = ScannerIdleClock(now: ScannerCover.now)
     /// The countdown ring's fill during the last seconds, nil otherwise.
     @State private var countdown: Double?
-    /// The cover lays out edge to edge, so it reads the status bar's height from the window.
-    @State private var topInset: CGFloat = 59
+    /// The cover lays out edge to edge, so it reads the safe area from the window: every side on its
+    /// own, since on iPhone Duo the status bar is a column down one side.
+    @State private var insets = EdgeInsets(top: 59, leading: 0, bottom: 34, trailing: 0)
 
     /// Fraction of the screen the result sheet covers (`AppModel.resultDetent`).
     private let resultFraction: CGFloat = 0.62
@@ -67,6 +69,8 @@ struct ScannerCover: View {
             .opacity(reduceMotion && !isOpen ? 0 : 1)
         }
         .ignoresSafeArea()
+        // Turning, or iPhone Duo opening and closing, moves the safe area.
+        .onGeometryChange(for: CGSize.self) { $0.size } action: { _ in readInsets() }
         .environment(\.colorScheme, isOpen ? .dark : outerColorScheme)
         .presentationBackground(.clear)
         .sheet(item: sheet) { SheetContent(sheet: $0, overCamera: true) }
@@ -91,6 +95,8 @@ struct ScannerCover: View {
         .onChange(of: model.isPeeking) { _, peeking in
             if !peeking && model.isScannerPresented && !model.isScannerClosing { expand() }
         }
+        // iPhone Duo open (regular width) faces the person with the camera over the inner display.
+        .onChange(of: sizeClass, initial: true) { _, size in camera.setDisplay(size == .regular ? .inner : .outer) }
         .onChange(of: cameraShouldRun, initial: true) { _, run in camera.setActive(run) }
         .onChange(of: detectionEnabled, initial: true) { _, enabled in coordinator.tracker.setPaused(!enabled) }
         .onChange(of: reduceMotion, initial: true) { _, value in coordinator.reduceMotion = value }
@@ -162,14 +168,24 @@ struct ScannerCover: View {
     // MARK: Opening and closing
 
     private func prepare() {
-        if let window = UIApplication.shared.connectedScenes.compactMap({ ($0 as? UIWindowScene)?.keyWindow }).first {
-            topInset = window.safeAreaInsets.top
-        }
+        readInsets()
         let context = context
         let coordinator = coordinator
         camera.onCodes = { reads in coordinator.process(reads, context: context) }
         idleClock = ScannerIdleClock(now: Self.now)
         countdown = nil
+    }
+
+    private func readInsets() {
+        guard let window = camera.window ?? UIApplication.shared.connectedScenes
+            .compactMap({ ($0 as? UIWindowScene)?.keyWindow }).first else { return }
+        let safe = window.safeAreaInsets
+        let rtl = window.effectiveUserInterfaceLayoutDirection == .rightToLeft
+        insets = EdgeInsets(top: safe.top, leading: rtl ? safe.right : safe.left, bottom: safe.bottom, trailing: rtl ? safe.left : safe.right)
+    }
+
+    private func idleQuad(in size: CGSize, bottomInset: CGFloat, anchor: CGPoint) -> Quad {
+        .idle(in: size, bottomInset: bottomInset, centerX: anchor.x, insets: insets)
     }
 
     private func expand() {
@@ -279,7 +295,7 @@ struct ScannerCover: View {
                 ReticleView(
                     quad: lock?.quad ?? coordinator.tracker.trackedQuad,
                     // Closed, the brackets sit where the Scan lens draws them.
-                    idle: isOpen ? .idle(in: size, bottomInset: bottomInset) : ScanLensButton.glyphQuad(around: anchor, pressed: model.isPeeking),
+                    idle: isOpen ? idleQuad(in: size, bottomInset: bottomInset, anchor: anchor) : ScanLensButton.glyphQuad(around: anchor, pressed: model.isPeeking),
                     tint: lock.map { $0.result.payload.kind.tint } ?? .white,
                     // In the lens, the brackets have the lens glyph's weight.
                     lineWidth: isOpen || reduceMotion ? 4 : 3.4
@@ -290,7 +306,7 @@ struct ScannerCover: View {
             }
 
             if statusKind == nil && !reduceMotion {
-                LandingRipple(quad: .idle(in: size, bottomInset: bottomInset), trigger: landings)
+                LandingRipple(quad: idleQuad(in: size, bottomInset: bottomInset, anchor: anchor), trigger: landings)
             }
 
             if !choices.isEmpty {
@@ -349,8 +365,10 @@ struct ScannerCover: View {
             GeometryReader { proxy in
                 VStack(spacing: 12) {
                     ScannerTopBar(camera: camera)
-                        .padding(.horizontal, 16)
-                        .padding(.top, topInset + 8)
+                        .padding(.leading, insets.leading + 16)
+                        .padding(.trailing, insets.trailing + 16)
+                        // Under the status bar, or (iPhone Duo, status bar down the side) clear of the corner.
+                        .padding(.top, max(insets.top, 12) + 8)
                     if !coordinator.tracker.choices.isEmpty && coordinator.stage == .searching && model.sheet == nil {
                         ChoiceHint()
                             .transition(.move(edge: .top).combined(with: .opacity))
@@ -438,9 +456,10 @@ struct ScannerCover: View {
     }
 }
 
-/// The rim of the opening window: a glass hairline and a soft shadow that lifts the camera above
-/// Home. Strong at the lens, gone by the time the edge nears the corners. It follows the window's own
-/// animated diameter, so it never drifts from the edge.
+/// The rim of the opening window: the Scan lens's own colored rim, carried out with the edge so the
+/// lens itself grows into the camera, thinning and fading as it sweeps toward the corners, over a soft
+/// shadow that lifts the camera above Home. It follows the window's own animated diameter, so it
+/// never drifts from the edge, and turns with the lens's rim so the hand-off doesn't jump.
 private struct LensEdge: View, Animatable {
     var diameter: CGFloat
     var closedDiameter: CGFloat
@@ -456,9 +475,11 @@ private struct LensEdge: View, Animatable {
 
     var body: some View {
         let t = lensProgress(diameter, closed: closedDiameter, open: openDiameter)
-        let fade = 1 - smoothstep(t, from: 0.1, to: 0.6)
+        let fade = 1 - smoothstep(t, from: 0.08, to: 0.55)
         let radius = diameter / 2
         let outer = radius + shadowReach
+        // Full rim width at the lens, a hairline by the time it fades.
+        let rim = ScanLensButton.rimWidth * (1 - 0.6 * smoothstep(t, from: 0, to: 0.4))
         ZStack {
             // A soft shadow just outside the edge, as a gradient (no blur pass on a screen-sized layer).
             Circle()
@@ -476,8 +497,15 @@ private struct LensEdge: View, Animatable {
                 .frame(width: outer * 2, height: outer * 2)
             Circle()
                 .strokeBorder(
-                    LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.12), .white.opacity(0.45)], startPoint: .topLeading, endPoint: .bottomTrailing),
-                    lineWidth: 1.5
+                    AngularGradient(colors: LunetPalette.rims + [LunetPalette.rims[0]], center: .center, angle: LensFace.rimAngle(at: .now)),
+                    lineWidth: rim
+                )
+                .frame(width: diameter + rim * 2, height: diameter + rim * 2)
+            // The glass's specular edge, inside the rim.
+            Circle()
+                .strokeBorder(
+                    LinearGradient(colors: [.white.opacity(0.7), .white.opacity(0.1), .white.opacity(0.35)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                    lineWidth: 1
                 )
                 .frame(width: diameter, height: diameter)
         }

@@ -5,6 +5,8 @@ import SwiftUI
 struct CodeCard: View {
     let record: ScanRecord
 
+    static let cornerRadius: CGFloat = 20
+
     @State private var codeImage: UIImage?
 
     var body: some View {
@@ -19,8 +21,8 @@ struct CodeCard: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .foregroundStyle(.white)
         .background(CardSurface(color: record.kind.cardColor))
-        .clipShape(.rect(cornerRadius: 20, style: .continuous))
-        .contentShape(.rect(cornerRadius: 20, style: .continuous))
+        .clipShape(.rect(cornerRadius: Self.cornerRadius, style: .continuous))
+        .contentShape(.rect(cornerRadius: Self.cornerRadius, style: .continuous))
         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .task(id: record.styleData) { renderCode() }
         .accessibilityElement(children: .ignore)

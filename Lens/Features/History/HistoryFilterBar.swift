@@ -14,7 +14,7 @@ struct HistoryFilterBar: View {
             .padding(.horizontal, 20)
         }
         .scrollClipDisabled()
-        .sensoryFeedback(.selection, trigger: selection)
+        .lensFeedback(.selection, trigger: selection)
     }
 
     private func chipButton(_ chip: HistoryFilter) -> some View {

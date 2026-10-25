@@ -81,7 +81,7 @@ struct CopyButton: View {
             Label(showingConfirmation ? "Copied" : title, systemImage: showingConfirmation ? "checkmark" : "doc.on.doc")
                 .contentTransition(.symbolEffect(.replace))
         }
-        .sensoryFeedback(.success, trigger: copies)
+        .lensFeedback(.success, trigger: copies)
         .animation(.snappy, value: showingConfirmation)
     }
 }

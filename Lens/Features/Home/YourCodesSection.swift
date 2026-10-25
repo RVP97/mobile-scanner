@@ -80,17 +80,25 @@ struct YourCodesSection: View {
     }
 
     private func card(for record: ScanRecord) -> some View {
-        Button { model.codeOnDisplay = ShowCodeItem(record: record) } label: {
+        Button { show(record) } label: {
             CodeCard(record: record)
+                .codeZoomSource(id: record.id)
         }
         .buttonStyle(CardPressStyle())
         .shadow(color: record.kind.cardColor.opacity(0.22), radius: 12, y: 6)
         .contextMenu { menu(for: record) }
     }
 
+    /// Full screen, growing out of its card.
+    private func show(_ record: ScanRecord) {
+        var item = ShowCodeItem(record: record)
+        item.zoomSource = record.id
+        model.codeOnDisplay = item
+    }
+
     @ViewBuilder
     private func menu(for record: ScanRecord) -> some View {
-        Button("Show Code", systemImage: "qrcode") { model.codeOnDisplay = ShowCodeItem(record: record) }
+        Button("Show Code", systemImage: "qrcode") { show(record) }
         ShareLink(item: record.raw) {
             Label("Share", systemImage: "square.and.arrow.up")
         }

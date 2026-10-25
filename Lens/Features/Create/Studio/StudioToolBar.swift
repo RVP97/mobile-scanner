@@ -44,7 +44,7 @@ struct StudioToolBar: View {
         .background(.fill.tertiary, in: .rect(cornerRadius: 18, style: .continuous))
         // Six tools share one row; like a tab bar, it stops growing at the largest non-accessibility size.
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-        .sensoryFeedback(.selection, trigger: selection)
+        .lensFeedback(.selection, trigger: selection)
     }
 }
 

@@ -41,7 +41,7 @@ struct SwipeToDelete: ViewModifier {
             .overlay(alignment: .trailing) { deleteButton }
             .onGeometryChangeCompat { width = $0 }
             .simultaneousGesture(drag)
-            .sensoryFeedback(.impact(weight: .medium), trigger: isPastFullSwipe) { _, past in past }
+            .lensFeedback(.impact(weight: .medium), trigger: isPastFullSwipe) { _, past in past }
             .accessibilityAction(named: Text("Delete"), onDelete)
     }
 

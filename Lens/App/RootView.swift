@@ -7,6 +7,8 @@ struct RootView: View {
     @Environment(AppModel.self) private var model
     @AppStorage(Pref.onboardingDone) private var onboardingDone = false
     @Environment(\.modelContext) private var modelContext
+    /// Home's code cards grow into the full-screen code through this.
+    @Namespace private var codeZoom
 
     var body: some View {
         @Bindable var model = model
@@ -19,6 +21,7 @@ struct RootView: View {
                     }
                 }
         }
+        .environment(\.codeZoomNamespace, codeZoom)
         .tint(Palette.accent)
         // Home falls back as the camera opens out of the Scan lens.
         // (A dim, not a blur: blurring all of Home every frame makes the opening stutter on a phone.)
@@ -36,7 +39,10 @@ struct RootView: View {
             case .settings: SettingsView().pageSizedSheet()
             }
         }
-        .fullScreenCover(item: $model.codeOnDisplay) { ShowCodeView(item: $0) }
+        .fullScreenCover(item: $model.codeOnDisplay) { item in
+            ShowCodeView(item: item)
+                .codeZoomDestination(id: item.zoomSource, in: codeZoom)
+        }
         .fullScreenCover(isPresented: scannerBinding) { ScannerCover() }
         .fullScreenCover(isPresented: .constant(!onboardingDone)) {
             OnboardingFlow()

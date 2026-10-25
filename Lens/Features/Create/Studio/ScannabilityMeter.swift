@@ -59,7 +59,7 @@ struct ScannabilityMeter: View {
         .frame(minHeight: 48)
         .background(state.tint.opacity(0.12), in: .rect(cornerRadius: 16, style: .continuous))
         .animation(.smooth(duration: 0.25), value: model.report)
-        .sensoryFeedback(.warning, trigger: state.isProblem) { _, isProblem in isProblem }
+        .lensFeedback(.warning, trigger: state.isProblem) { _, isProblem in isProblem }
     }
 
     private func title(_ state: MeterState) -> some View {

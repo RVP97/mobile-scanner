@@ -117,7 +117,7 @@ struct ScannerBottomRow: View {
                 .modifier(CircleControl(diameter: 56, tint: isMultiScanActive ? Palette.accent : nil))
         }
         .buttonStyle(.plain)
-        .sensoryFeedback(.selection, trigger: isMultiScanActive)
+        .lensFeedback(.selection, trigger: isMultiScanActive)
         .accessibilityLabel("Multi-scan")
         .accessibilityValue(isMultiScanActive ? Text("On") : Text("Off"))
         .accessibilityAddTraits(isMultiScanActive ? .isSelected : [])

@@ -49,7 +49,7 @@ struct ExportBar: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
-        .sensoryFeedback(trigger: confirmations) { _, _ in confirmation?.success == false ? .error : .success }
+        .lensFeedback(trigger: confirmations) { _, _ in confirmation?.success == false ? .error : .success }
         .alert("Allow Photos Access", isPresented: $photosDenied) {
             Button("Open Settings") {
                 if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }

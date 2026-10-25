@@ -100,7 +100,7 @@ private struct DetailLine: View {
         .padding(.trailing, row.copyTitle == nil ? 16 : 6)
         .padding(.vertical, 10)
         .frame(minHeight: 60)
-        .sensoryFeedback(.success, trigger: copies)
+        .lensFeedback(.success, trigger: copies)
     }
 
     private func copy() {

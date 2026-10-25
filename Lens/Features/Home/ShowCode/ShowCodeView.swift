@@ -36,7 +36,7 @@ struct ShowCodeView: View {
         }
         .scrollBounceBehavior(.basedOnSize)
         .defaultScrollAnchor(.center)
-        .background(Color(.systemGroupedBackground))
+        .background { backdrop }
         .safeAreaInset(edge: .bottom, spacing: 0) { bottomBar }
         .task(id: item.id) {
             let side: CGFloat = item.symbology.isTwoDimensional && item.symbology != .pdf417 ? 300 : 340
@@ -47,6 +47,21 @@ struct ShowCodeView: View {
         .onChange(of: scenePhase) { _, phase in
             phase == .active ? stayBright() : restore()
         }
+    }
+
+    /// The page, washed at the top with the card's color, so a card growing into it keeps its color
+    /// instead of turning grey.
+    private var backdrop: some View {
+        Color(.systemGroupedBackground)
+            .overlay(alignment: .top) {
+                LinearGradient(
+                    colors: [item.kind.cardColor.opacity(0.22), item.kind.cardColor.opacity(0)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .frame(height: 360)
+            }
+            .ignoresSafeArea()
     }
 
     private var heading: some View {

@@ -47,7 +47,7 @@ enum ProductLookup {
         func text(_ key: String) -> String { (product[key] as? String)?.trimmed ?? "" }
         let name = text("product_name")
         let brand = text("brands").split(separator: ",").first.map { String($0).trimmed } ?? ""
-        guard !name.isEmpty || !brand.isEmpty else { return nil }
+        guard !name.isEmpty || !brand.isEmpty, !isPlaceholder(name), !isPlaceholder(brand) else { return nil }
 
         let categories = text("categories")
             .split(separator: ",")
@@ -62,6 +62,17 @@ enum ProductLookup {
             source: source
         )
     }
+
+    /// The open databases keep test entries people left behind ("Diagnostic Test Product DELETE ME").
+    /// Shown as a product they'd look broken; the next database, or "not found", is the honest answer.
+    static func isPlaceholder(_ text: String) -> Bool {
+        let folded = text.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
+        return placeholderPhrases.contains { folded.contains($0) }
+    }
+
+    private static let placeholderPhrases = [
+        "delete me", "do not use", "test product", "diagnostic test", "dummy product", "lorem ipsum",
+    ]
 
     private static let session: URLSession = {
         let configuration = URLSessionConfiguration.ephemeral

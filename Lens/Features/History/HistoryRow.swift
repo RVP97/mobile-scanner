@@ -44,7 +44,7 @@ struct HistoryRowItem: View {
             Divider()
             Button("Delete", systemImage: "trash", role: .destructive, action: delete)
         }
-        .sensoryFeedback(.selection, trigger: record.isPinned)
+        .lensFeedback(.selection, trigger: record.isPinned)
     }
 
     private func togglePin() {

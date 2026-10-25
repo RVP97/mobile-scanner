@@ -38,6 +38,14 @@ struct ResultActionHelpersTests {
         #expect(ProductLookup.parse(Data(#"{"status":1,"product":{"product_name":""}}"#.utf8), source: "x") == nil)
     }
 
+    @Test func leftoverTestEntryIsNotAMatch() {
+        let json = Data(#"{"status":1,"product":{"product_name":"Diagnostic Test Product DELETE ME","brands":"DiagnosticTest"}}"#.utf8)
+        #expect(ProductLookup.parse(json, source: "Open Food Facts") == nil)
+        #expect(ProductLookup.isPlaceholder("Do Not Use"))
+        #expect(!ProductLookup.isPlaceholder("Testosterone Booster"))
+        #expect(!ProductLookup.isPlaceholder("Fine-liner Pen, 0.4mm, Black"))
+    }
+
     // MARK: Contact links
 
     @Test func telKeepsDialableCharacters() {

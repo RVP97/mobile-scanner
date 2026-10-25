@@ -41,7 +41,7 @@ struct LinkResultView: View {
             }
         }
         .animation(.smooth(duration: 0.4), value: verdict?.level)
-        .sensoryFeedback(.warning, trigger: verdict?.level == .danger) { _, isDanger in isDanger }
+        .lensFeedback(.warning, trigger: verdict?.level == .danger) { _, isDanger in isDanger }
         .confirmationDialog("Open this link?", isPresented: $confirmingOpen, titleVisibility: .visible) {
             Button("Open \(host)") { openURL(url) }
             Button("Cancel", role: .cancel) {}

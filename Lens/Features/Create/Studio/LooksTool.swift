@@ -94,7 +94,7 @@ struct LooksTool: View {
             }
         }
         .buttonStyle(.plain)
-        .sensoryFeedback(.success, trigger: justSaved)
+        .lensFeedback(.success, trigger: justSaved)
     }
 
     private var alertTitle: Text {

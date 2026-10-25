@@ -22,7 +22,7 @@ struct MultiScanReview: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbar }
         }
-        .sensoryFeedback(.success, trigger: copied)
+        .lensFeedback(.success, trigger: copied)
     }
 
     private var list: some View {

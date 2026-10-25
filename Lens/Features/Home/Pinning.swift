@@ -56,7 +56,7 @@ struct PinButton: View {
             Label(isPinned ? "Unpin" : "Pin to Your Codes", systemImage: isPinned ? "pin.slash" : "pin")
                 .contentTransition(.symbolEffect(.replace))
         }
-        .sensoryFeedback(.selection, trigger: isPinned)
+        .lensFeedback(.selection, trigger: isPinned)
         .onAppear { isPinned = Pinning.isPinned(result.code.raw, in: modelContext) }
     }
 }

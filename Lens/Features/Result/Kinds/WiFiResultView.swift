@@ -40,7 +40,7 @@ struct WiFiResultView: View {
                 }
             }
         }
-        .sensoryFeedback(.success, trigger: joinState == .joined) { _, joined in joined }
+        .lensFeedback(.success, trigger: joinState == .joined) { _, joined in joined }
         .animation(.smooth, value: joinState)
     }
 

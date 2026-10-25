@@ -9,6 +9,8 @@ struct ShowCodeItem: Identifiable, Hashable {
     var title: String
     /// The studio style of a created code; nil draws it plain.
     var style: CodeStyle?
+    /// The Home card it was opened from, which it grows out of and shrinks back into.
+    var zoomSource: UUID?
 
     var kind: CodeKind { payload.kind }
 

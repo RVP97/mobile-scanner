@@ -75,6 +75,9 @@ final class AppModel {
 
     /// Opens the camera. `multi` nil keeps the "Start in Multi-scan" preference.
     func openScanner(multi: Bool? = nil) {
+        #if DEBUG
+        PerfWatchdog.mark("openScanner")
+        #endif
         isMultiScanActive = multi ?? Pref.bool(Pref.multiScan, default: Pref.Default.multiScan)
         if isScannerPresented {
             sheet = nil

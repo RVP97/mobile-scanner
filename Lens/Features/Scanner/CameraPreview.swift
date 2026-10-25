@@ -43,6 +43,13 @@ final class PreviewView: UIView {
         }
     }
 
+    /// The one preview moves between scanners as they open; the display it lands on (iPhone Duo open
+    /// or closed, turned or not) may hold it differently.
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window != nil, let angle = rotationCoordinator?.videoRotationAngleForHorizonLevelPreview { applyRotation(angle) }
+    }
+
     private func applyRotation(_ angle: CGFloat) {
         guard let connection = previewLayer.connection, connection.isVideoRotationAngleSupported(angle) else { return }
         connection.videoRotationAngle = angle
@@ -54,9 +61,7 @@ struct CameraPreview: UIViewRepresentable {
     let camera: ScannerCamera
 
     func makeUIView(context: Context) -> PreviewView {
-        let view = PreviewView()
-        camera.connect(view)
-        return view
+        camera.preview
     }
 
     func updateUIView(_ uiView: PreviewView, context: Context) {}

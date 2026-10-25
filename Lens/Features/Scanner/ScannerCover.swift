@@ -21,12 +21,11 @@ struct ScannerCover: View {
     @State private var coordinator = ScanCoordinator()
     /// Settled in after the zoom: the controls are up and the scanner reads codes.
     @State private var isOpen = false
-    /// The first camera frame is up, so the feed can fade in rather than pop.
-    @State private var isFeedLive = false
     /// Bumped when the brackets land in place after opening (the ripple).
     @State private var landings = 0
     @State private var isPickingPhoto = false
-    @State private var idleClock = ScannerIdleClock(now: ScannerCover.now)
+    /// Reset on every touch, so it's held by reference: as view state each reset redrew the scanner.
+    @State private var idle = IdleClockBox()
     /// The countdown ring's fill during the last seconds, nil otherwise.
     @State private var countdown: Double?
     /// The cover lays out edge to edge, so it reads the safe area from the window: every side on its
@@ -34,16 +33,27 @@ struct ScannerCover: View {
     @State private var insets = EdgeInsets(top: 59, leading: 0, bottom: 34, trailing: 0)
     /// iPhone Duo's status column, where the controls stand; nil for the usual top and bottom bars.
     @State private var railEdge: HorizontalEdge?
-
-    /// Fraction of the screen the result sheet covers (`AppModel.resultDetent`).
-    private let resultFraction: CGFloat = 0.62
+    /// Read when the scanner opens and when the pasteboard changes, never per frame (it's a call to
+    /// another process).
+    @State private var canScanPasteboard = false
 
     var body: some View {
         GeometryReader { proxy in
             let size = proxy.size
             let layout = Layout(size: size, insets: insets, railEdge: railEdge)
             ZStack {
-                cameraLayer(layout)
+                // Its own view: the tracked code moves every frame, and only this has to follow it.
+                ScannerFeed(
+                    camera: camera,
+                    coordinator: coordinator,
+                    layout: layout,
+                    isOpen: isOpen,
+                    detectionEnabled: detectionEnabled,
+                    showsReticle: statusKind == nil,
+                    landings: landings,
+                    context: context,
+                    onActivity: registerActivity
+                )
                 chrome(layout)
             }
         }
@@ -61,6 +71,9 @@ struct ScannerCover: View {
             return true
         }
         .onAppear(perform: open)
+        .onReceive(NotificationCenter.default.publisher(for: UIPasteboard.changedNotification)) { _ in
+            canScanPasteboard = UIPasteboard.general.hasImages
+        }
         .onDisappear {
             camera.setActive(false)
             MultiScanActivity.end()
@@ -74,11 +87,10 @@ struct ScannerCover: View {
             if active { coordinator.tracker.clearChoices() }
             active ? MultiScanActivity.start() : MultiScanActivity.end()
         }
-        .onChange(of: coordinator.tracker.trackedQuad != nil) { _, seen in if seen { registerActivity() } }
         .onChange(of: coordinator.tracker.choices.isEmpty) { registerActivity() }
         .onChange(of: coordinator.stage) { registerActivity() }
         .onChange(of: isIdlePaused, initial: true) { _, paused in
-            paused ? idleClock.pause(at: Self.now) : idleClock.resume(at: Self.now)
+            paused ? idle.clock.pause(at: Self.now) : idle.clock.resume(at: Self.now)
         }
         .task(id: isOpen) { await watchIdleTime() }
         #if DEBUG
@@ -90,9 +102,9 @@ struct ScannerCover: View {
             }
         }
         #endif
-        .onChange(of: camera.status == .running, initial: true) { _, running in
-            withAnimation(.easeOut(duration: 0.45)) { isFeedLive = running }
-        }
+        #if DEBUG
+        .onChange(of: camera.status == .running, initial: true) { _, running in PerfWatchdog.mark("camera running \(running)") }
+        #endif
         .sensoryFeedback(trigger: coordinator.lockFeedback) { _, _ in haptics ? .impact(weight: .medium) : nil }
         .sensoryFeedback(trigger: coordinator.captureFeedback) { _, _ in haptics ? .impact(weight: .light) : nil }
     }
@@ -153,10 +165,6 @@ struct ScannerCover: View {
         Binding(get: { model.sheet }, set: { model.sheet = $0 })
     }
 
-    private var isShowingResult: Bool {
-        if case .result = model.sheet { true } else { false }
-    }
-
     /// Live for as long as the cover is up, through the zoom back into the lens.
     private var cameraShouldRun: Bool {
         scenePhase != .background && !isPickingPhoto && model.sheet != .multiReview
@@ -180,12 +188,16 @@ struct ScannerCover: View {
     // MARK: Opening
 
     private func open() {
+        #if DEBUG
+        PerfWatchdog.mark("cover appeared")
+        #endif
         readInsets()
         let context = context
         let coordinator = coordinator
         camera.onCodes = { reads in coordinator.process(reads, context: context) }
-        idleClock = ScannerIdleClock(now: Self.now)
+        idle.clock = ScannerIdleClock(now: Self.now)
         countdown = nil
+        canScanPasteboard = UIPasteboard.general.hasImages
         // The controls settle in as the zoom finishes, and the brackets land just after.
         withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .smooth(duration: 0.35).delay(0.18)) { isOpen = true }
         guard !reduceMotion else { return }
@@ -206,7 +218,7 @@ struct ScannerCover: View {
     // MARK: Idle
 
     private func registerActivity() {
-        idleClock.reset(at: Self.now)
+        idle.clock.reset(at: Self.now)
         if countdown != nil { withAnimation(.snappy) { countdown = nil } }
     }
 
@@ -215,107 +227,15 @@ struct ScannerCover: View {
         while !Task.isCancelled {
             try? await Task.sleep(for: .milliseconds(200))
             let now = Self.now
-            if idleClock.isExpired(at: now) {
+            if idle.clock.isExpired(at: now) {
                 model.closeScanner()
                 return
             }
-            let next = idleClock.isWarning(at: now) ? idleClock.warningProgress(at: now) : nil
+            let next = idle.clock.isWarning(at: now) ? idle.clock.warningProgress(at: now) : nil
             if next != countdown {
                 withAnimation(next == nil ? .snappy : .linear(duration: 0.2)) { countdown = next }
             }
         }
-    }
-
-    // MARK: Camera layer (full screen, preview-layer coordinates)
-
-    private func cameraLayer(_ layout: Layout) -> some View {
-        let size = layout.size
-        let lock = coordinator.lock
-        let bottomInset = layout.content.bottom
-        let idle = layout.idleQuad
-        let choices = coordinator.stage == .searching && model.sheet == nil ? coordinator.tracker.choices : []
-        return ZStack(alignment: .topLeading) {
-            CameraPreview(camera: camera)
-                .onTapGesture(coordinateSpace: .local) { camera.focus(at: $0) }
-                .gesture(
-                    MagnifyGesture()
-                        .onChanged { camera.pinch(by: $0.magnification) }
-                        .onEnded { _ in camera.endPinch() }
-                )
-                .accessibilityLabel("Camera")
-                .accessibilityHint("Point at a QR code or barcode to scan it.")
-                .accessibilityAddTraits(.allowsDirectInteraction)
-
-            // Until the first frame: the backdrop, then the feed fades up through it.
-            ScannerBackdrop(size: size)
-                .opacity(isFeedLive ? 0 : 1)
-                .allowsHitTesting(false)
-
-            ScannerScrims(railEdge: layout.railEdge)
-
-            if statusKind == nil {
-                ReticleView(
-                    quad: lock?.quad ?? coordinator.tracker.trackedQuad,
-                    idle: idle,
-                    tint: lock.map { $0.result.payload.kind.tint } ?? .white,
-                    lineWidth: 4
-                )
-                .opacity(reticleOpacity(hasChoices: !choices.isEmpty))
-                .animation(.smooth(duration: 0.2), value: coordinator.stage)
-                .animation(.smooth(duration: 0.2), value: choices.isEmpty)
-                .animation(.smooth(duration: 0.3), value: idle)
-            }
-
-            if statusKind == nil && !reduceMotion {
-                LandingRipple(quad: idle, trigger: landings)
-            }
-
-            if !choices.isEmpty {
-                CodeChoicePins(choices: choices) { coordinator.choose($0, context: context) }
-                    .transition(.opacity)
-            }
-
-            if let mark = camera.focusMark {
-                FocusMarkView()
-                    .id(mark.id)
-                    .position(mark.point)
-            }
-
-            if let lock, coordinator.stage == .locked {
-                LockChip(payload: lock.result.payload)
-                    .position(LockChip.position(for: lock.quad, in: size, bottomInset: bottomInset))
-                    .transition(.scale(scale: 0.85).combined(with: .opacity))
-            }
-
-            if let lock, coordinator.stage == .lifting {
-                LiftingCode(
-                    kind: lock.result.payload.kind,
-                    codeImage: lock.codeImage,
-                    source: lock.quad,
-                    destination: liftDestination(in: size)
-                )
-            }
-
-            Color.black
-                .opacity(isShowingResult ? 0.35 : 0)
-                .allowsHitTesting(false)
-                .animation(.smooth(duration: 0.3), value: isShowingResult)
-        }
-        .frame(width: size.width, height: size.height)
-        .background { ScannerBackdrop(size: size) }
-    }
-
-    private func reticleOpacity(hasChoices: Bool) -> Double {
-        if hasChoices || coordinator.stage == .lifting { return 0 }
-        // While opening and closing the brackets are part of the zoom (the lens draws them too).
-        if !isOpen || !model.isScannerPresented { return 1 }
-        return !detectionEnabled && coordinator.lock == nil ? 0 : 1
-    }
-
-    /// Where the result sheet's header tile lands.
-    private func liftDestination(in size: CGSize) -> CGRect {
-        let sheetTop = size.height * (1 - resultFraction)
-        return CGRect(x: 28, y: sheetTop + 20, width: 52, height: 52)
     }
 
     // MARK: Chrome
@@ -324,7 +244,7 @@ struct ScannerCover: View {
         ScannerControls(
             countdown: countdown,
             isMultiScanActive: Bindable(model).isMultiScanActive,
-            canScanPasteboard: UIPasteboard.general.hasImages,
+            canScanPasteboard: canScanPasteboard,
             canFlip: camera.canFlip,
             onClose: { model.closeScanner() },
             onPhotos: scanFromPhotos,
@@ -435,6 +355,127 @@ struct ScannerCover: View {
     private func openSystemSettings() {
         guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
         openURL(url)
+    }
+}
+
+private final class IdleClockBox {
+    var clock = ScannerIdleClock(now: ProcessInfo.processInfo.systemUptime)
+}
+
+/// The camera and what's drawn over the code it sees: the reticle, choices, the lock and its lift into
+/// the result. The tracked code moves every frame; kept apart from the cover, only this redraws then.
+private struct ScannerFeed: View {
+    var camera: ScannerCamera
+    var coordinator: ScanCoordinator
+    var layout: ScannerCover.Layout
+    var isOpen: Bool
+    var detectionEnabled: Bool
+    var showsReticle: Bool
+    var landings: Int
+    var context: ScanCoordinator.Context
+    var onActivity: () -> Void
+
+    @Environment(AppModel.self) private var model
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// Fraction of the screen the result sheet covers (`AppModel.resultDetent`).
+    private let resultFraction: CGFloat = 0.62
+
+    private var isShowingResult: Bool {
+        if case .result = model.sheet { true } else { false }
+    }
+
+    var body: some View {
+        let size = layout.size
+        let lock = coordinator.lock
+        let bottomInset = layout.content.bottom
+        let idle = layout.idleQuad
+        let tracked = coordinator.tracker.trackedQuad
+        let choices = coordinator.stage == .searching && model.sheet == nil ? coordinator.tracker.choices : []
+        ZStack(alignment: .topLeading) {
+            CameraPreview(camera: camera)
+                .onTapGesture(coordinateSpace: .local) { camera.focus(at: $0) }
+                .gesture(
+                    MagnifyGesture()
+                        .onChanged { camera.pinch(by: $0.magnification) }
+                        .onEnded { _ in camera.endPinch() }
+                )
+                .accessibilityLabel("Camera")
+                .accessibilityHint("Point at a QR code or barcode to scan it.")
+                .accessibilityAddTraits(.allowsDirectInteraction)
+
+            // Until the first frame: the backdrop, then the feed fades up through it.
+            ScannerBackdrop(size: size)
+                .opacity(camera.status == .running ? 0 : 1)
+                .animation(.easeOut(duration: 0.45), value: camera.status == .running)
+                .allowsHitTesting(false)
+
+            ScannerScrims(railEdge: layout.railEdge)
+
+            if showsReticle {
+                ReticleView(
+                    quad: lock?.quad ?? tracked,
+                    idle: idle,
+                    tint: lock.map { $0.result.payload.kind.tint } ?? .white,
+                    lineWidth: 4
+                )
+                .opacity(reticleOpacity(hasChoices: !choices.isEmpty))
+                .animation(.smooth(duration: 0.2), value: coordinator.stage)
+                .animation(.smooth(duration: 0.2), value: choices.isEmpty)
+                .animation(.smooth(duration: 0.3), value: idle)
+            }
+
+            if showsReticle && !reduceMotion {
+                LandingRipple(quad: idle, trigger: landings)
+            }
+
+            if !choices.isEmpty {
+                CodeChoicePins(choices: choices) { coordinator.choose($0, context: context) }
+                    .transition(.opacity)
+            }
+
+            if let mark = camera.focusMark {
+                FocusMarkView()
+                    .id(mark.id)
+                    .position(mark.point)
+            }
+
+            if let lock, coordinator.stage == .locked {
+                LockChip(payload: lock.result.payload)
+                    .position(LockChip.position(for: lock.quad, in: size, bottomInset: bottomInset))
+                    .transition(.scale(scale: 0.85).combined(with: .opacity))
+            }
+
+            if let lock, coordinator.stage == .lifting {
+                LiftingCode(
+                    kind: lock.result.payload.kind,
+                    codeImage: lock.codeImage,
+                    source: lock.quad,
+                    destination: liftDestination(in: size)
+                )
+            }
+
+            Color.black
+                .opacity(isShowingResult ? 0.35 : 0)
+                .allowsHitTesting(false)
+                .animation(.smooth(duration: 0.3), value: isShowingResult)
+        }
+        .frame(width: size.width, height: size.height)
+        .background { ScannerBackdrop(size: size) }
+        .onChange(of: tracked != nil) { _, seen in if seen { onActivity() } }
+    }
+
+    private func reticleOpacity(hasChoices: Bool) -> Double {
+        if hasChoices || coordinator.stage == .lifting { return 0 }
+        // While opening and closing the brackets are part of the zoom (the lens draws them too).
+        if !isOpen || !model.isScannerPresented { return 1 }
+        return !detectionEnabled && coordinator.lock == nil ? 0 : 1
+    }
+
+    /// Where the result sheet's header tile lands.
+    private func liftDestination(in size: CGSize) -> CGRect {
+        let sheetTop = size.height * (1 - resultFraction)
+        return CGRect(x: 28, y: sheetTop + 20, width: 52, height: 52)
     }
 }
 

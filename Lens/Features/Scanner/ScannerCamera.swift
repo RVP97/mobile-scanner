@@ -43,7 +43,9 @@ final class ScannerCamera {
 
     @ObservationIgnored private let engine = CaptureEngine()
     @ObservationIgnored private var relay: MetadataRelay?
-    @ObservationIgnored private weak var preview: PreviewView?
+    /// One preview for the life of the app, attached to the session when it's configured (ahead of
+    /// time, from Home), so opening the scanner never waits on the session from the main thread.
+    @ObservationIgnored let preview = PreviewView()
     @ObservationIgnored private var wantsRunning = false
     @ObservationIgnored private var configured: (position: AVCaptureDevice.Position, display: CameraDisplay)?
     @ObservationIgnored private var reconcileTask: Task<Void, Never>?
@@ -60,12 +62,9 @@ final class ScannerCamera {
     }
 
     /// The window hosting the preview, for presenting UIKit pickers above the app's sheets.
-    var window: UIWindow? { preview?.window }
+    var window: UIWindow? { preview.window }
 
-    var canFlip: Bool { Self.hasBothCameras }
-
-    private static let hasBothCameras = CaptureEngine.bestDevice(for: .front, display: .outer) != nil
-        && CaptureEngine.bestDevice(for: .back, display: .outer) != nil
+    var canFlip: Bool { capabilities?.canFlip ?? false }
 
     // MARK: Lifecycle
 
@@ -87,11 +86,6 @@ final class ScannerCamera {
         guard display != self.display else { return }
         self.display = display
         if position == .front { reconcile() }
-    }
-
-    func connect(_ view: PreviewView) {
-        preview = view
-        attachPreview()
     }
 
     func refreshAccess() {
@@ -162,7 +156,7 @@ final class ScannerCamera {
     }
 
     private func attachPreview() {
-        guard let preview, configured != nil, let device = engine.device else { return }
+        guard configured != nil, let device = engine.device else { return }
         preview.attach(session: engine.session, device: device)
     }
 
@@ -182,7 +176,7 @@ final class ScannerCamera {
     // MARK: Codes
 
     private func receive(_ codes: [RawCode]) {
-        guard let preview, status == .running else { return }
+        guard status == .running else { return }
         let layer = preview.previewLayer
         let bounds = preview.bounds
         let reads = codes.compactMap { code -> CodeRead? in
@@ -222,7 +216,7 @@ final class ScannerCamera {
 
     /// Focus and expose at a point in the preview's coordinate space.
     func focus(at point: CGPoint) {
-        guard let preview, capabilities?.supportsFocusPoint == true, status == .running else { return }
+        guard capabilities?.supportsFocusPoint == true, status == .running else { return }
         engine.focus(at: preview.previewLayer.captureDevicePointConverted(fromLayerPoint: point))
         let mark = FocusMark(point: point)
         focusMark = mark

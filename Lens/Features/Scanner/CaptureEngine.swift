@@ -13,6 +13,8 @@ nonisolated struct CameraCapabilities: Hashable, Sendable {
     var supportsFocusPoint: Bool
     var zoom: ZoomProfile
     var initialDisplayZoom: CGFloat
+    /// There's a camera on the other side to switch to.
+    var canFlip: Bool
 }
 
 /// A code as the metadata output reported it: corners in normalized capture-device space.
@@ -141,7 +143,8 @@ nonisolated final class CaptureEngine: @unchecked Sendable {
             hasTorch: device.hasTorch,
             supportsFocusPoint: device.isFocusPointOfInterestSupported,
             zoom: zoom,
-            initialDisplayZoom: initialZoom
+            initialDisplayZoom: initialZoom,
+            canFlip: Self.bestDevice(for: position == .back ? .front : .back, display: display) != nil
         )
     }
 

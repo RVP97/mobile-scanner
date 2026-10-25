@@ -7,6 +7,7 @@ final class LensHaptics {
     static let shared = LensHaptics()
 
     private var engine: CHHapticEngine?
+    private var isRunning = false
 
     private var isEnabled: Bool {
         Pref.bool(Pref.haptics, default: Pref.Default.haptics) && CHHapticEngine.capabilitiesForHardware().supportsHaptics
@@ -51,24 +52,39 @@ final class LensHaptics {
     // MARK: Engine
 
     private func play(events: [CHHapticEvent], curves: [CHHapticParameterCurve] = []) {
-        guard isEnabled, let engine = startedEngine() else { return }
-        do {
-            let pattern = try CHHapticPattern(events: events, parameterCurves: curves)
-            try engine.makePlayer(with: pattern).start(atTime: CHHapticTimeImmediate)
-        } catch {
-            self.engine = nil
+        guard isEnabled, let pattern = try? CHHapticPattern(events: events, parameterCurves: curves) else { return }
+        guard let engine = makeEngine() else { return }
+        if isRunning {
+            start(pattern, on: engine)
+            return
+        }
+        // Starting the engine can take a while: never on the main thread, as the scanner opens. The
+        // engine and its players are safe to use from the thread the completion runs on.
+        nonisolated(unsafe) let starting = engine, queued = pattern
+        starting.start { [weak self] error in
+            guard error == nil else { return }
+            try? starting.makePlayer(with: queued).start(atTime: CHHapticTimeImmediate)
+            Task { @MainActor in self?.isRunning = true }
         }
     }
 
-    private func startedEngine() -> CHHapticEngine? {
+    private func start(_ pattern: CHHapticPattern, on engine: CHHapticEngine) {
+        do {
+            try engine.makePlayer(with: pattern).start(atTime: CHHapticTimeImmediate)
+        } catch {
+            self.engine = nil
+            isRunning = false
+        }
+    }
+
+    private func makeEngine() -> CHHapticEngine? {
         if engine == nil {
             engine = try? CHHapticEngine()
             engine?.isAutoShutdownEnabled = true
             engine?.playsHapticsOnly = true
-            engine?.resetHandler = { [weak self] in try? self?.engine?.start() }
-            engine?.stoppedHandler = { [weak self] _ in self?.engine = nil }
+            engine?.resetHandler = { [weak self] in Task { @MainActor in self?.isRunning = false } }
+            engine?.stoppedHandler = { [weak self] _ in Task { @MainActor in self?.isRunning = false } }
         }
-        try? engine?.start()
         return engine
     }
 

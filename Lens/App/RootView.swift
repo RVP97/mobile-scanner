@@ -45,6 +45,9 @@ struct RootView: View {
         .onAppear(perform: openToCameraIfWanted)
 #if DEBUG
         .task { QAHarness.apply(model: model, context: modelContext) }
+        #if DEBUG
+        .task { PerfWatchdog.startIfRequested() }
+        #endif
 #endif
     }
 

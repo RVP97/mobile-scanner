@@ -21,30 +21,84 @@ struct ScannerTopBar: View {
     @ViewBuilder
     private var torch: some View {
         if camera.capabilities?.hasTorch == true && camera.status == .running {
-            torchButton
+            ScannerTorch(camera: camera)
         } else {
             Color.clear.frame(width: 48, height: 48)
         }
     }
+}
 
-    private var torchButton: some View {
-        Button(action: camera.toggleTorch) {
-            Image(systemName: camera.isTorchOn ? "flashlight.on.fill" : "flashlight.off.fill")
-                .contentTransition(.symbolEffect(.replace))
-                .foregroundStyle(camera.isTorchOn ? Color.yellow : Color.white)
-                .modifier(CircleControl())
+/// The flashlight, when the camera has one.
+struct ScannerTorch: View {
+    var camera: ScannerCamera
+
+    var body: some View {
+        if camera.capabilities?.hasTorch == true && camera.status == .running {
+            Button(action: camera.toggleTorch) {
+                Image(systemName: camera.isTorchOn ? "flashlight.on.fill" : "flashlight.off.fill")
+                    .contentTransition(.symbolEffect(.replace))
+                    .foregroundStyle(camera.isTorchOn ? Color.yellow : Color.white)
+                    .modifier(CircleControl())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(camera.isTorchOn ? "Turn Flashlight Off" : "Turn Flashlight On")
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(camera.isTorchOn ? "Turn Flashlight Off" : "Turn Flashlight On")
     }
 }
 
-/// Photos · Close · Multi-scan, with Close exactly where Home's Scan lens was. During the last
-/// seconds before the scanner closes by itself, a ring drains around Close.
+/// Photos · Close · Multi-scan, centered low over the camera. During the last seconds before the
+/// scanner closes by itself, a ring drains around Close.
 struct ScannerBottomRow: View {
+    var controls: ScannerControls
+
+    static let closeDiameter: CGFloat = 72
+
+    var body: some View {
+        LensGlassContainer(spacing: 24) {
+            HStack(spacing: 40) {
+                controls.photos(diameter: 56)
+                controls.close(diameter: Self.closeDiameter)
+                controls.multi(diameter: 56)
+            }
+        }
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+    }
+}
+
+/// iPhone Duo, with the status bar down one side: every control stands in that column, as the system's
+/// own bar buttons do there, so the camera keeps the rest of the display. The torch and zoom under
+/// the clock, Close in the middle where the thumb holding that side rests, Photos and Multi-scan at
+/// the foot.
+struct ScannerRail: View {
+    var camera: ScannerCamera
+    var controls: ScannerControls
+
+    static let width: CGFloat = 64
+
+    var body: some View {
+        LensGlassContainer(spacing: 16) {
+            VStack(spacing: 14) {
+                ScannerTorch(camera: camera)
+                if let profile = camera.capabilities?.zoom, !profile.presets.isEmpty, camera.status == .running {
+                    ZoomCapsule(profile: profile, zoom: camera.displayZoom, axis: .vertical) { camera.setZoom($0) }
+                }
+                Spacer(minLength: 16)
+                controls.close(diameter: 60)
+                Spacer(minLength: 16)
+                controls.photos(diameter: 48)
+                controls.multi(diameter: 48)
+            }
+        }
+        .frame(width: Self.width)
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+    }
+}
+
+/// The scanner's buttons, laid out by `ScannerBottomRow` or `ScannerRail`.
+struct ScannerControls {
     /// The countdown ring's fill (1 → 0), or nil when it's hidden.
     var countdown: Double?
-    @Binding var isMultiScanActive: Bool
+    var isMultiScanActive: Binding<Bool>
     var canScanPasteboard: Bool
     var canFlip: Bool
     var onClose: () -> Void
@@ -52,24 +106,11 @@ struct ScannerBottomRow: View {
     var onPasteboard: () -> Void
     var onFlip: () -> Void
 
-    static let closeDiameter: CGFloat = 72
-
-    var body: some View {
-        LensGlassContainer(spacing: 24) {
-            HStack(spacing: 40) {
-                photos
-                close
-                multi
-            }
-        }
-        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-    }
-
-    private var photos: some View {
+    func photos(diameter: CGFloat) -> some View {
         Button(action: onPhotos) {
             Image(systemName: "photo.on.rectangle")
                 .foregroundStyle(.white)
-                .modifier(CircleControl(diameter: 56))
+                .modifier(CircleControl(diameter: diameter))
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Scan from Photos")
@@ -83,12 +124,12 @@ struct ScannerBottomRow: View {
         }
     }
 
-    private var close: some View {
+    func close(diameter: CGFloat) -> some View {
         Button(action: onClose) {
             Image(systemName: "xmark")
-                .font(.system(size: 24, weight: .semibold))
+                .font(.system(size: diameter / 3, weight: .semibold))
                 .foregroundStyle(.white)
-                .frame(width: Self.closeDiameter, height: Self.closeDiameter)
+                .frame(width: diameter, height: diameter)
                 .contentShape(.circle)
                 .lensGlass(.regular, in: Circle(), interactive: true)
                 .overlay {
@@ -107,20 +148,21 @@ struct ScannerBottomRow: View {
         .accessibilityValue(countdown == nil ? Text("") : Text("Closing soon"))
     }
 
-    private var multi: some View {
-        Button {
-            isMultiScanActive.toggle()
+    func multi(diameter: CGFloat) -> some View {
+        let isActive = isMultiScanActive.wrappedValue
+        return Button {
+            isMultiScanActive.wrappedValue.toggle()
         } label: {
-            Image(systemName: isMultiScanActive ? "square.stack.3d.up.fill" : "square.stack.3d.up")
+            Image(systemName: isActive ? "square.stack.3d.up.fill" : "square.stack.3d.up")
                 .contentTransition(.symbolEffect(.replace))
-                .foregroundStyle(isMultiScanActive ? Palette.onTint : .white)
-                .modifier(CircleControl(diameter: 56, tint: isMultiScanActive ? Palette.accent : nil))
+                .foregroundStyle(isActive ? Palette.onTint : .white)
+                .modifier(CircleControl(diameter: diameter, tint: isActive ? Palette.accent : nil))
         }
         .buttonStyle(.plain)
-        .lensFeedback(.selection, trigger: isMultiScanActive)
+        .lensFeedback(.selection, trigger: isActive)
         .accessibilityLabel("Multi-scan")
-        .accessibilityValue(isMultiScanActive ? Text("On") : Text("Off"))
-        .accessibilityAddTraits(isMultiScanActive ? .isSelected : [])
+        .accessibilityValue(isActive ? Text("On") : Text("Off"))
+        .accessibilityAddTraits(isActive ? .isSelected : [])
     }
 }
 
@@ -138,15 +180,18 @@ private struct CircleControl: ViewModifier {
     }
 }
 
-/// ".5  1×  2" — the lens switcher.
+/// ".5  1×  2" — the lens switcher (top to bottom on iPhone Duo's rail).
 struct ZoomCapsule: View {
     var profile: ZoomProfile
     var zoom: CGFloat
+    /// Down the rail on iPhone Duo.
+    var axis: Axis = .horizontal
     var select: (CGFloat) -> Void
 
     var body: some View {
         let active = profile.activePreset(for: zoom)
-        HStack(spacing: 2) {
+        let layout = axis == .horizontal ? AnyLayout(HStackLayout(spacing: 2)) : AnyLayout(VStackLayout(spacing: 2))
+        layout {
             ForEach(profile.presets, id: \.self) { preset in
                 let isActive = preset == active
                 Button {
@@ -194,10 +239,10 @@ struct ScannerToast: View {
 #Preview("Bottom row") {
     ZStack {
         Color.gray
-        ScannerBottomRow(
+        ScannerBottomRow(controls: ScannerControls(
             countdown: 0.6, isMultiScanActive: .constant(true), canScanPasteboard: false, canFlip: false,
             onClose: {}, onPhotos: {}, onPasteboard: {}, onFlip: {}
-        )
+        ))
     }
     .environment(\.colorScheme, .dark)
 }

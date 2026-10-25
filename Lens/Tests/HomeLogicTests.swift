@@ -122,19 +122,22 @@ struct HomeRoutingTests {
         let model = AppModel()
         model.openScanner(multi: false)
         model.handle(url: LensDeepLink.create.url)
-        #expect(model.isScannerClosing)
+        #expect(!model.isScannerPresented)
         #expect(model.modal == nil)
         model.scannerDidClose()
-        #expect(!model.isScannerPresented)
+        #expect(model.scannerCloseCount == 1)
     }
 
-    @Test func closingTheResultClosesTheCamera() {
+    @Test func closingTheResultClosesTheCamera() async {
         let model = AppModel()
         model.openScanner(multi: false)
         model.show(.sampleText)
         model.dismissResult()
         #expect(model.sheet == nil)
-        #expect(model.isScannerClosing)
+        // The sheet goes first, then the camera.
+        #expect(model.isScannerPresented)
+        try? await Task.sleep(for: .milliseconds(500))
+        #expect(!model.isScannerPresented)
     }
 
     @Test func scanAnotherKeepsTheCamera() {
@@ -143,7 +146,7 @@ struct HomeRoutingTests {
         model.show(.sampleText)
         model.scanAnother()
         #expect(model.sheet == nil)
-        #expect(model.isScannerPresented && !model.isScannerClosing)
+        #expect(model.isScannerPresented)
     }
 
     @Test func resultOverHomeJustCloses() {

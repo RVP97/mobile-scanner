@@ -9,8 +9,9 @@ struct ScanResult: Identifiable, Hashable {
     var placeName: String?
 }
 
-/// App-wide navigation state. Home is the root; the scanner is a full-screen cover that runs the
-/// camera only while it's up; results and the multi-scan review are sheets over whichever is on top.
+/// App-wide navigation state. Home is the root; the scanner is a full-screen cover that zooms out of
+/// Home's Scan lens and runs the camera only while it's up; results and the multi-scan review are
+/// sheets over whichever is on top.
 @Observable
 final class AppModel {
     /// Content of the sheet over Home or over the scanner.
@@ -50,23 +51,14 @@ final class AppModel {
     /// A code shown full screen for someone else to scan.
     var codeOnDisplay: ShowCodeItem?
 
-    /// The scanner cover is in the hierarchy (opening, open or closing).
+    /// The scanner cover is up (or zooming in or out of the Scan lens).
     private(set) var isScannerPresented = false
-    /// The scanner is animating closed; `scannerDidClose()` removes it.
-    private(set) var isScannerClosing = false
-    /// The scanner's circle is (or is heading) open; Home falls back behind it.
-    var isScannerRevealed = false
     /// Bumped each time the scanner has closed back into the Scan lens.
     private(set) var scannerCloseCount = 0
-    /// Where Home's Scan lens sits on screen (global coordinates), so the viewfinder opens out of it.
-    var lensFrame: CGRect?
 
     /// One camera for every opening of the scanner: the session stays configured between them, so
     /// the feed is up almost at once instead of after a fresh setup each time.
     let camera = ScannerCamera()
-    /// A finger is on Home's Scan lens: the scanner is up but still closed, the camera starting,
-    /// and the lens's glass shows the live feed. Letting go opens it; sliding off puts it away.
-    private(set) var isPeeking = false
 
     /// Codes collected in the current multi-scan session, newest last.
     var multiScanCodes: [ScanResult] = []
@@ -83,10 +75,8 @@ final class AppModel {
 
     /// Opens the camera. `multi` nil keeps the "Start in Multi-scan" preference.
     func openScanner(multi: Bool? = nil) {
-        isPeeking = false
         isMultiScanActive = multi ?? Pref.bool(Pref.multiScan, default: Pref.Default.multiScan)
         if isScannerPresented {
-            isScannerClosing = false
             sheet = nil
             return
         }
@@ -101,51 +91,49 @@ final class AppModel {
         }
     }
 
-    /// Finger down on the Scan lens.
+    /// Finger down on the Scan lens: the camera starts now, so the feed is live by the time the lens
+    /// has zoomed open (a tap's action follows on finger up).
     func beginPeek() {
         guard !isScannerPresented, sheet == nil, modal == nil, codeOnDisplay == nil, path.isEmpty else { return }
-        isPeeking = true
-        presentScanner()
+        camera.setActive(true)
     }
 
-    /// Finger up (or off) the Scan lens. A tap's action arrives right after and opens the scanner;
-    /// if it doesn't, the finger slid away and the peek closes.
+    /// Finger up (or slid off) the Scan lens. If no tap opened the scanner, the camera goes back off.
     func endPeek() {
-        guard isPeeking else { return }
         Task {
-            try? await Task.sleep(for: .milliseconds(120))
-            guard isPeeking else { return }
-            isPeeking = false
-            closeScanner()
+            try? await Task.sleep(for: .milliseconds(400))
+            if !isScannerPresented { camera.setActive(false) }
         }
     }
 
     private func presentScanner() {
-        // The viewfinder draws its own opening, so the cover appears without the system slide.
-        var transaction = Transaction()
-        transaction.disablesAnimations = true
-        withTransaction(transaction) { isScannerPresented = true }
+        LensHaptics.shared.open()
+        isScannerPresented = true
     }
 
-    /// Back to Home. The cover animates closed, then calls `scannerDidClose()`.
+    /// Back to Home: the camera zooms back into the Scan lens. A sheet over it goes first, so the two
+    /// presentations don't leave together.
     func closeScanner() {
-        guard isScannerPresented, !isScannerClosing else { return }
-        sheet = nil
-        isScannerClosing = true
+        guard isScannerPresented else { return }
         isMultiScanActive = false
         multiScanCodes.removeAll()
+        LensHaptics.shared.close()
+        guard sheet != nil else {
+            isScannerPresented = false
+            return
+        }
+        sheet = nil
+        Task {
+            try? await Task.sleep(for: .milliseconds(350))
+            isScannerPresented = false
+        }
     }
 
+    /// The cover has gone (closed with its button, by itself, or swiped away).
     func scannerDidClose() {
-        var transaction = Transaction()
-        transaction.disablesAnimations = true
-        withTransaction(transaction) {
-            isScannerPresented = false
-            isScannerClosing = false
-            isScannerRevealed = false
-            isPeeking = false
-        }
+        isScannerPresented = false
         scannerCloseCount += 1
+        LensHaptics.shared.settle()
         if let pendingModal {
             self.pendingModal = nil
             Task {
@@ -163,8 +151,7 @@ final class AppModel {
 
     /// The result's close button: done with this code, back to Home.
     func dismissResult() {
-        sheet = nil
-        closeScanner()
+        if isScannerPresented { closeScanner() } else { sheet = nil }
     }
 
     /// Puts the camera back, ready for the next code.
@@ -177,8 +164,7 @@ final class AppModel {
     }
 
     func openHistory() {
-        sheet = nil
-        closeScanner()
+        if isScannerPresented { closeScanner() } else { sheet = nil }
         path = [.history]
     }
 

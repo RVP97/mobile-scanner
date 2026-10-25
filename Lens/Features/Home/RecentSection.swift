@@ -22,7 +22,7 @@ struct RecentSection: View {
     }
 
     /// Beside the codes (a wide Home), the section heads its pane in the page title's size, level with
-    /// "Your codes", and Settings joins it.
+    /// "Your codes".
     var titlesPane = false
 
     var body: some View {
@@ -32,8 +32,6 @@ struct RecentSection: View {
                     Button("See All") { model.path = [.history] }
                         .accessibilityLabel("See All History")
                 }
-            } accessory: {
-                if titlesPane { HomeSettingsButton() }
             }
             if recent.isEmpty {
                 emptyState

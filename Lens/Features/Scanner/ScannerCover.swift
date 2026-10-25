@@ -1,12 +1,12 @@
 import SwiftData
 import SwiftUI
 
-/// The camera, full screen, opened from Home's Scan lens. A finger on the lens already starts the
-/// camera and turns the lens's glass into a window onto it; letting go opens that window out to the
-/// whole screen while Home sinks back, and the brackets in the lens fly out and snap into the reticle
-/// with a ripple and a click. The picture itself never moves, only the window around it. Closing
-/// folds the window back into the lens, which catches it. The camera runs only while this is up, and it closes itself after a
-/// while with nothing to read.
+/// The camera, full screen, zoomed open out of Home's Scan lens (and back into it when it closes, or
+/// follows the finger down when swiped away). A finger on the lens already starts the camera, so the
+/// picture is live as it opens; the controls settle in after it, and the brackets land with a ripple.
+/// On iPhone Duo, where the status bar is a column down one side, the controls stand in that column
+/// and the camera has the rest of the display. The camera runs only while this is up, and it closes
+/// itself after a while with nothing to read.
 struct ScannerCover: View {
     @Environment(AppModel.self) private var model
     @Environment(\.scenePhase) private var scenePhase
@@ -14,20 +14,17 @@ struct ScannerCover: View {
     @Environment(\.openURL) private var openURL
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var sizeClass
-    /// Home's appearance, kept while the scanner is still just the lens (so the status bar doesn't flip).
-    @Environment(\.colorScheme) private var outerColorScheme
 
     @AppStorage(Pref.haptics) private var haptics = Pref.Default.haptics
 
     private var camera: ScannerCamera { model.camera }
     @State private var coordinator = ScanCoordinator()
+    /// Settled in after the zoom: the controls are up and the scanner reads codes.
     @State private var isOpen = false
     /// The first camera frame is up, so the feed can fade in rather than pop.
     @State private var isFeedLive = false
     /// Bumped when the brackets land in place after opening (the ripple).
     @State private var landings = 0
-    /// Closing, until this cover is gone (outlasts `isScannerClosing`, which resets a frame early).
-    @State private var isFoldingAway = false
     @State private var isPickingPhoto = false
     @State private var idleClock = ScannerIdleClock(now: ScannerCover.now)
     /// The countdown ring's fill during the last seconds, nil otherwise.
@@ -35,44 +32,27 @@ struct ScannerCover: View {
     /// The cover lays out edge to edge, so it reads the safe area from the window: every side on its
     /// own, since on iPhone Duo the status bar is a column down one side.
     @State private var insets = EdgeInsets(top: 59, leading: 0, bottom: 34, trailing: 0)
+    /// iPhone Duo's status column, where the controls stand; nil for the usual top and bottom bars.
+    @State private var railEdge: HorizontalEdge?
 
     /// Fraction of the screen the result sheet covers (`AppModel.resultDetent`).
     private let resultFraction: CGFloat = 0.62
-    private static let closeDiameter = ScannerBottomRow.closeDiameter
 
     var body: some View {
         GeometryReader { proxy in
-            let screen = proxy.frame(in: .global)
-            let anchor = closeCenter(in: screen)
+            let size = proxy.size
+            let layout = Layout(size: size, insets: insets, railEdge: railEdge)
             ZStack {
-                cameraLayer(size: screen.size, controlsTop: anchor.y - 64, anchor: anchor)
-                chrome(anchor: anchor)
+                cameraLayer(layout)
+                chrome(layout)
             }
-            .mask { reveal(anchor: anchor, in: screen.size) }
-            .overlay {
-                if !reduceMotion {
-                    LensEdge(
-                        diameter: revealDiameter(anchor: anchor, in: screen.size),
-                        closedDiameter: Self.glassDiameter,
-                        openDiameter: farthestReach(from: anchor, in: screen.size) * 2
-                    )
-                    .position(anchor)
-                }
-            }
-            // Closing, the window melts into the real lens over its last stretch instead of cutting.
-            .modifier(MeltIntoLens(
-                diameter: revealDiameter(anchor: anchor, in: screen.size),
-                closedDiameter: Self.glassDiameter,
-                openDiameter: farthestReach(from: anchor, in: screen.size) * 2,
-                isActive: isFoldingAway && !reduceMotion
-            ))
-            .opacity(reduceMotion && !isOpen ? 0 : 1)
         }
         .ignoresSafeArea()
         // Turning, or iPhone Duo opening and closing, moves the safe area.
         .onGeometryChange(for: CGSize.self) { $0.size } action: { _ in readInsets() }
-        .environment(\.colorScheme, isOpen ? .dark : outerColorScheme)
-        .presentationBackground(.clear)
+        .onStatusColumnChange { edge in withAnimation(.smooth(duration: 0.3)) { railEdge = edge } }
+        .environment(\.colorScheme, .dark)
+        .background(.black)
         .sheet(item: sheet) { SheetContent(sheet: $0, overCamera: true) }
         .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged { _ in registerActivity() })
         .dropDestination(for: DroppedImage.self) { items, _ in
@@ -80,20 +60,10 @@ struct ScannerCover: View {
             Task { await coordinator.importImage(image.data, context: context) }
             return true
         }
-        .onAppear {
-            prepare()
-            if !model.isPeeking { expand() }
-        }
+        .onAppear(perform: open)
         .onDisappear {
             camera.setActive(false)
             MultiScanActivity.end()
-        }
-        .onChange(of: model.isScannerClosing) { _, closing in
-            // Reopened mid-close. (Not when the cover is going away: that used to replay the opening.)
-            if closing { close() } else if model.isScannerPresented { expand() }
-        }
-        .onChange(of: model.isPeeking) { _, peeking in
-            if !peeking && model.isScannerPresented && !model.isScannerClosing { expand() }
         }
         // iPhone Duo open (regular width) faces the person with the camera over the inner display.
         .onChange(of: sizeClass, initial: true) { _, size in camera.setDisplay(size == .regular ? .inner : .outer) }
@@ -127,6 +97,56 @@ struct ScannerCover: View {
         .sensoryFeedback(trigger: coordinator.captureFeedback) { _, _ in haptics ? .impact(weight: .light) : nil }
     }
 
+    // MARK: Layout
+
+    /// Where everything goes: the controls in a bar at the top and a row at the bottom, or (iPhone Duo)
+    /// a rail down the status column; the reticle in the middle of what's left of the camera.
+    struct Layout {
+        var size: CGSize
+        var insets: EdgeInsets
+        var railEdge: HorizontalEdge?
+
+        /// The rail stands inside the status column when it fits, otherwise beside it.
+        var railInColumn: Bool { railColumn >= ScannerRail.width + 4 }
+
+        private var railColumn: CGFloat { railEdge == .trailing ? insets.trailing : railEdge == .leading ? insets.leading : 0 }
+
+        /// The rail's frame (the whole column, so its contents can line up with the clock).
+        var railFrame: CGRect? {
+            guard let railEdge else { return nil }
+            let width = railInColumn ? railColumn : railColumn + ScannerRail.width + 16
+            let top = railInColumn ? StatusColumn.clearance : max(insets.top, 12) + 12
+            let bottom = max(insets.bottom, 16) + 8
+            let x = railEdge == .trailing ? size.width - width : 0
+            return CGRect(x: x, y: top, width: width, height: max(0, size.height - top - bottom))
+        }
+
+        /// The camera's open area, clear of the rail or the bars, where the reticle centers.
+        var content: EdgeInsets {
+            var room = insets
+            if let rail = railFrame {
+                if railEdge == .trailing { room.trailing = rail.width } else { room.leading = rail.width }
+                room.bottom = max(insets.bottom, 16)
+                room.top = max(insets.top, 16)
+            } else {
+                room.bottom = bottomRowCenter.y > 0 ? size.height - bottomRowCenter.y + 56 : insets.bottom
+            }
+            return room
+        }
+
+        /// Close, in the middle of the content's width, low over the camera (no rail).
+        var bottomRowCenter: CGPoint {
+            let midX = insets.leading + (size.width - insets.leading - insets.trailing) / 2
+            return CGPoint(x: midX, y: size.height - max(insets.bottom, 16) - 62)
+        }
+
+        var idleQuad: Quad {
+            let room = content
+            let midX = room.leading + (size.width - room.leading - room.trailing) / 2
+            return .idle(in: size, bottomInset: room.bottom, centerX: midX, insets: room)
+        }
+    }
+
     // MARK: State
 
     private var sheet: Binding<AppModel.Sheet?> {
@@ -137,13 +157,13 @@ struct ScannerCover: View {
         if case .result = model.sheet { true } else { false }
     }
 
-    /// Live from the finger landing on the lens until the window has folded all the way back into it.
+    /// Live for as long as the cover is up, through the zoom back into the lens.
     private var cameraShouldRun: Bool {
-        (isOpen || model.isPeeking || model.isScannerClosing) && scenePhase != .background && !isPickingPhoto && model.sheet != .multiReview
+        scenePhase != .background && !isPickingPhoto && model.sheet != .multiReview
     }
 
     private var detectionEnabled: Bool {
-        isOpen && cameraShouldRun && model.sheet == nil
+        isOpen && model.isScannerPresented && cameraShouldRun && model.sheet == nil
     }
 
     /// Time doesn't count toward closing while something else has the person's attention.
@@ -157,23 +177,22 @@ struct ScannerCover: View {
 
     private static var now: TimeInterval { ProcessInfo.processInfo.systemUptime }
 
-    /// Close sits exactly where Home's Scan lens was.
-    private func closeCenter(in screen: CGRect) -> CGPoint {
-        if let lens = model.lensFrame, screen.contains(CGPoint(x: lens.midX, y: lens.midY)) {
-            return CGPoint(x: lens.midX - screen.minX, y: lens.midY - screen.minY)
-        }
-        return CGPoint(x: screen.width / 2, y: screen.height - 150)
-    }
+    // MARK: Opening
 
-    // MARK: Opening and closing
-
-    private func prepare() {
+    private func open() {
         readInsets()
         let context = context
         let coordinator = coordinator
         camera.onCodes = { reads in coordinator.process(reads, context: context) }
         idleClock = ScannerIdleClock(now: Self.now)
         countdown = nil
+        // The controls settle in as the zoom finishes, and the brackets land just after.
+        withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .smooth(duration: 0.35).delay(0.18)) { isOpen = true }
+        guard !reduceMotion else { return }
+        Task {
+            try? await Task.sleep(for: .milliseconds(380))
+            landings += 1
+        }
     }
 
     private func readInsets() {
@@ -182,65 +201,6 @@ struct ScannerCover: View {
         let safe = window.safeAreaInsets
         let rtl = window.effectiveUserInterfaceLayoutDirection == .rightToLeft
         insets = EdgeInsets(top: safe.top, leading: rtl ? safe.right : safe.left, bottom: safe.bottom, trailing: rtl ? safe.left : safe.right)
-    }
-
-    private func idleQuad(in size: CGSize, bottomInset: CGFloat, anchor: CGPoint) -> Quad {
-        .idle(in: size, bottomInset: bottomInset, centerX: anchor.x, insets: insets)
-    }
-
-    private func expand() {
-        isFoldingAway = false
-        guard !isOpen else { return }
-        idleClock = ScannerIdleClock(now: Self.now)
-        if !reduceMotion { LensHaptics.shared.open() }
-        withAnimation(reduceMotion ? .easeOut(duration: 0.2) : Self.openAnimation) {
-            isOpen = true
-            model.isScannerRevealed = true
-        }
-        guard !reduceMotion else { return }
-        // The brackets land a beat after the lens fills the screen.
-        Task {
-            try? await Task.sleep(for: .milliseconds(300))
-            if isOpen { landings += 1 }
-        }
-    }
-
-    private func close() {
-        isFoldingAway = true
-        if !reduceMotion { LensHaptics.shared.close() }
-        withAnimation(reduceMotion ? .easeIn(duration: 0.18) : Self.closeAnimation) {
-            isOpen = false
-            model.isScannerRevealed = false
-        } completion: {
-            model.scannerDidClose()
-            if !reduceMotion { LensHaptics.shared.settle() }
-        }
-    }
-
-    /// Quick off the lens, then a long settle as the edge sweeps past the corners.
-    private static let openAnimation = Animation.spring(response: 0.55, dampingFraction: 0.86)
-    private static let closeAnimation = Animation.spring(response: 0.42, dampingFraction: 0.92)
-    /// The lens's glass, inside its colored rim, so the real rim frames the hand-off both ways.
-    private static let glassDiameter = ScanLensButton.defaultDiameter - 2 * ScanLensButton.rimWidth
-
-    /// The window onto the camera: the lens's glass, opening out past the screen's far corner.
-    private func reveal(anchor: CGPoint, in size: CGSize) -> some View {
-        let diameter = revealDiameter(anchor: anchor, in: size)
-        return Circle()
-            .frame(width: diameter, height: diameter)
-            .position(anchor)
-    }
-
-    private func revealDiameter(anchor: CGPoint, in size: CGSize) -> CGFloat {
-        if reduceMotion || isOpen { return farthestReach(from: anchor, in: size) * 2 }
-        // Under a finger the lens is pressed in, and the window with it.
-        return Self.glassDiameter * (model.isPeeking ? LensFace.pressedScale : 1)
-    }
-
-    private func farthestReach(from anchor: CGPoint, in size: CGSize) -> CGFloat {
-        [CGPoint.zero, CGPoint(x: size.width, y: 0), CGPoint(x: 0, y: size.height), CGPoint(x: size.width, y: size.height)]
-            .map { hypot($0.x - anchor.x, $0.y - anchor.y) }
-            .max() ?? 0
     }
 
     // MARK: Idle
@@ -268,9 +228,11 @@ struct ScannerCover: View {
 
     // MARK: Camera layer (full screen, preview-layer coordinates)
 
-    private func cameraLayer(size: CGSize, controlsTop: CGFloat, anchor: CGPoint) -> some View {
+    private func cameraLayer(_ layout: Layout) -> some View {
+        let size = layout.size
         let lock = coordinator.lock
-        let bottomInset = max(0, size.height - controlsTop)
+        let bottomInset = layout.content.bottom
+        let idle = layout.idleQuad
         let choices = coordinator.stage == .searching && model.sheet == nil ? coordinator.tracker.choices : []
         return ZStack(alignment: .topLeading) {
             CameraPreview(camera: camera)
@@ -289,24 +251,23 @@ struct ScannerCover: View {
                 .opacity(isFeedLive ? 0 : 1)
                 .allowsHitTesting(false)
 
-            ScannerScrims()
+            ScannerScrims(railEdge: layout.railEdge)
 
             if statusKind == nil {
                 ReticleView(
                     quad: lock?.quad ?? coordinator.tracker.trackedQuad,
-                    // Closed, the brackets sit where the Scan lens draws them.
-                    idle: isOpen ? idleQuad(in: size, bottomInset: bottomInset, anchor: anchor) : ScanLensButton.glyphQuad(around: anchor, pressed: model.isPeeking),
+                    idle: idle,
                     tint: lock.map { $0.result.payload.kind.tint } ?? .white,
-                    // In the lens, the brackets have the lens glyph's weight.
-                    lineWidth: isOpen || reduceMotion ? 4 : 3.4
+                    lineWidth: 4
                 )
                 .opacity(reticleOpacity(hasChoices: !choices.isEmpty))
                 .animation(.smooth(duration: 0.2), value: coordinator.stage)
                 .animation(.smooth(duration: 0.2), value: choices.isEmpty)
+                .animation(.smooth(duration: 0.3), value: idle)
             }
 
             if statusKind == nil && !reduceMotion {
-                LandingRipple(quad: idleQuad(in: size, bottomInset: bottomInset, anchor: anchor), trigger: landings)
+                LandingRipple(quad: idle, trigger: landings)
             }
 
             if !choices.isEmpty {
@@ -346,8 +307,8 @@ struct ScannerCover: View {
 
     private func reticleOpacity(hasChoices: Bool) -> Double {
         if hasChoices || coordinator.stage == .lifting { return 0 }
-        // While opening and closing the brackets are part of the transition.
-        if !isOpen || model.isScannerClosing { return 1 }
+        // While opening and closing the brackets are part of the zoom (the lens draws them too).
+        if !isOpen || !model.isScannerPresented { return 1 }
         return !detectionEnabled && coordinator.lock == nil ? 0 : 1
     }
 
@@ -359,61 +320,82 @@ struct ScannerCover: View {
 
     // MARK: Chrome
 
-    private func chrome(anchor: CGPoint) -> some View {
+    private var controls: ScannerControls {
+        ScannerControls(
+            countdown: countdown,
+            isMultiScanActive: Bindable(model).isMultiScanActive,
+            canScanPasteboard: UIPasteboard.general.hasImages,
+            canFlip: camera.canFlip,
+            onClose: { model.closeScanner() },
+            onPhotos: scanFromPhotos,
+            onPasteboard: scanPasteboard,
+            onFlip: camera.flip
+        )
+    }
+
+    private func chrome(_ layout: Layout) -> some View {
         let showsControls = model.sheet == nil && coordinator.stage != .lifting
-        return ZStack {
-            GeometryReader { proxy in
-                VStack(spacing: 12) {
+        let content = layout.content
+        let rail = layout.railFrame
+        return ZStack(alignment: .topLeading) {
+            VStack(spacing: 12) {
+                if rail == nil {
                     ScannerTopBar(camera: camera)
-                        .padding(.leading, insets.leading + 16)
-                        .padding(.trailing, insets.trailing + 16)
                         // Under the status bar, or (iPhone Duo, status bar down the side) clear of the corner.
                         .padding(.top, max(insets.top, 12) + 8)
-                    if !coordinator.tracker.choices.isEmpty && coordinator.stage == .searching && model.sheet == nil {
-                        ChoiceHint()
-                            .transition(.move(edge: .top).combined(with: .opacity))
-                    }
-                    if let toast = coordinator.toast {
-                        ScannerToast(toast: toast)
-                            .id(toast.id)
-                            .transition(.move(edge: .top).combined(with: .opacity))
-                    }
-                    Spacer(minLength: 0)
-                    if let status = statusKind {
-                        CameraStatusView(kind: status, onOpenSettings: openSystemSettings, onScanPhotos: scanFromPhotos)
-                            .opacity(model.sheet == nil ? 1 : 0)
-                        Spacer(minLength: 0)
-                    }
-                    if model.isMultiScanActive {
-                        MultiScanTray(codes: model.multiScanCodes) { model.sheet = .multiReview }
-                            .padding(.horizontal, 16)
-                            .opacity(showsControls ? 1 : 0)
-                            .allowsHitTesting(showsControls)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
-                    }
                 }
-                .animation(.smooth(duration: 0.3), value: model.isMultiScanActive)
-                .animation(.smooth(duration: 0.25), value: coordinator.tracker.choices.isEmpty)
-                .padding(.bottom, max(0, proxy.size.height - anchor.y + Self.closeDiameter / 2 + 20))
+                if !coordinator.tracker.choices.isEmpty && coordinator.stage == .searching && model.sheet == nil {
+                    ChoiceHint()
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
+                if let toast = coordinator.toast {
+                    ScannerToast(toast: toast)
+                        .id(toast.id)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
+                Spacer(minLength: 0)
+                if let status = statusKind {
+                    CameraStatusView(kind: status, onOpenSettings: openSystemSettings, onScanPhotos: scanFromPhotos)
+                        .opacity(model.sheet == nil ? 1 : 0)
+                    Spacer(minLength: 0)
+                }
+                if model.isMultiScanActive {
+                    MultiScanTray(codes: model.multiScanCodes) { model.sheet = .multiReview }
+                        .opacity(showsControls ? 1 : 0)
+                        .allowsHitTesting(showsControls)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
             }
+            .padding(.top, rail == nil ? 0 : content.top)
+            .padding(.leading, content.leading + 16)
+            .padding(.trailing, content.trailing + 16)
+            .padding(.bottom, rail == nil ? layout.size.height - layout.bottomRowCenter.y + ScannerBottomRow.closeDiameter / 2 + 20 : content.bottom + 8)
+            .frame(width: layout.size.width, height: layout.size.height)
+            .animation(.smooth(duration: 0.3), value: model.isMultiScanActive)
+            .animation(.smooth(duration: 0.25), value: coordinator.tracker.choices.isEmpty)
 
-            ScannerBottomRow(
-                countdown: countdown,
-                isMultiScanActive: Bindable(model).isMultiScanActive,
-                canScanPasteboard: UIPasteboard.general.hasImages,
-                canFlip: camera.canFlip,
-                onClose: { model.closeScanner() },
-                onPhotos: scanFromPhotos,
-                onPasteboard: scanPasteboard,
-                onFlip: camera.flip
-            )
-            .position(anchor)
+            Group {
+                if let rail {
+                    ScannerRail(camera: camera, controls: controls)
+                        .frame(width: layout.railInColumn ? rail.width : nil, height: rail.height)
+                        .frame(width: rail.width)
+                        .alignsWithStatusColumn()
+                        .offset(x: rail.minX, y: rail.minY)
+                        .transition(.move(edge: layout.railEdge == .trailing ? .trailing : .leading).combined(with: .opacity))
+                } else {
+                    ScannerBottomRow(controls: controls)
+                        .position(layout.bottomRowCenter)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+            }
             .opacity(showsControls ? 1 : 0)
             .allowsHitTesting(showsControls)
         }
         .animation(.smooth(duration: 0.25), value: showsControls)
         .opacity(isOpen ? 1 : 0)
-        .animation(isOpen ? .smooth(duration: 0.3).delay(0.15) : .easeOut(duration: 0.12), value: isOpen)
+        // Into the lens, the controls go first so only the picture shrinks back.
+        .opacity(model.isScannerPresented ? 1 : 0)
+        .animation(.easeOut(duration: 0.12), value: model.isScannerPresented)
     }
 
     private var statusKind: CameraStatusView.Kind? {
@@ -454,94 +436,6 @@ struct ScannerCover: View {
         guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
         openURL(url)
     }
-}
-
-/// The rim of the opening window: the Scan lens's own colored rim, carried out with the edge so the
-/// lens itself grows into the camera, thinning and fading as it sweeps toward the corners, over a soft
-/// shadow that lifts the camera above Home. It follows the window's own animated diameter, so it
-/// never drifts from the edge, and turns with the lens's rim so the hand-off doesn't jump.
-private struct LensEdge: View, Animatable {
-    var diameter: CGFloat
-    var closedDiameter: CGFloat
-    var openDiameter: CGFloat
-
-    var animatableData: CGFloat {
-        get { diameter }
-        set { diameter = newValue }
-    }
-
-    /// How far the shadow reaches out over Home.
-    private let shadowReach: CGFloat = 26
-
-    var body: some View {
-        let t = lensProgress(diameter, closed: closedDiameter, open: openDiameter)
-        let fade = 1 - smoothstep(t, from: 0.08, to: 0.55)
-        let radius = diameter / 2
-        let outer = radius + shadowReach
-        // Full rim width at the lens, a hairline by the time it fades.
-        let rim = ScanLensButton.rimWidth * (1 - 0.6 * smoothstep(t, from: 0, to: 0.4))
-        ZStack {
-            // A soft shadow just outside the edge, as a gradient (no blur pass on a screen-sized layer).
-            Circle()
-                .fill(RadialGradient(
-                    stops: [
-                        .init(color: .clear, location: 0),
-                        .init(color: .clear, location: max(0, (radius - 1) / outer)),
-                        .init(color: .black.opacity(0.28), location: radius / outer),
-                        .init(color: .clear, location: 1),
-                    ],
-                    center: .center,
-                    startRadius: 0,
-                    endRadius: outer
-                ))
-                .frame(width: outer * 2, height: outer * 2)
-            Circle()
-                .strokeBorder(
-                    AngularGradient(colors: LunetPalette.rims + [LunetPalette.rims[0]], center: .center, angle: LensFace.rimAngle(at: .now)),
-                    lineWidth: rim
-                )
-                .frame(width: diameter + rim * 2, height: diameter + rim * 2)
-            // The glass's specular edge, inside the rim.
-            Circle()
-                .strokeBorder(
-                    LinearGradient(colors: [.white.opacity(0.7), .white.opacity(0.1), .white.opacity(0.35)], startPoint: .topLeading, endPoint: .bottomTrailing),
-                    lineWidth: 1
-                )
-                .frame(width: diameter, height: diameter)
-        }
-        .opacity(t > 0.001 ? fade : 0)
-        .allowsHitTesting(false)
-        .accessibilityHidden(true)
-    }
-}
-
-/// Fades the whole scanner out as its window closes the last stretch into the Scan lens, so the real
-/// lens (rim, glyph, "Scan") shows through and takes over without a cut.
-private struct MeltIntoLens: ViewModifier, Animatable {
-    var diameter: CGFloat
-    var closedDiameter: CGFloat
-    var openDiameter: CGFloat
-    var isActive: Bool
-
-    var animatableData: CGFloat {
-        get { diameter }
-        set { diameter = newValue }
-    }
-
-    func body(content: Content) -> some View {
-        let t = lensProgress(diameter, closed: closedDiameter, open: openDiameter)
-        content.opacity(isActive ? smoothstep(t, from: 0.005, to: 0.1) : 1)
-    }
-}
-
-/// 0 with the window in the lens, 1 with it past the screen's far corner.
-private func lensProgress(_ diameter: CGFloat, closed: CGFloat, open: CGFloat) -> CGFloat {
-    min(max((diameter - closed) / max(open - closed, 1), 0), 1)
-}
-
-private func smoothstep(_ x: CGFloat, from a: CGFloat, to b: CGFloat) -> CGFloat {
-    let u = min(max((x - a) / (b - a), 0), 1)
-    return u * u * (3 - 2 * u)
 }
 
 /// The brackets landing: a soft light ring that leaves the reticle and fades, like a drop in water.
@@ -603,15 +497,27 @@ private struct ScannerBackdrop: View {
     }
 }
 
-/// Keeps glass controls legible over bright scenes without tinting the view.
+/// Keeps glass controls legible over bright scenes without tinting the view: across the top and
+/// bottom, or down the rail's side on iPhone Duo.
 private struct ScannerScrims: View {
+    var railEdge: HorizontalEdge?
+
     var body: some View {
-        VStack(spacing: 0) {
-            LinearGradient(colors: [.black.opacity(0.45), .clear], startPoint: .top, endPoint: .bottom)
-                .frame(height: 180)
-            Spacer(minLength: 0)
-            LinearGradient(colors: [.clear, .black.opacity(0.4)], startPoint: .top, endPoint: .bottom)
-                .frame(height: 320)
+        Group {
+            if let railEdge {
+                let trailing = railEdge == .trailing
+                LinearGradient(colors: [.black.opacity(0.45), .clear], startPoint: trailing ? .trailing : .leading, endPoint: trailing ? .leading : .trailing)
+                    .frame(width: 200)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: trailing ? .trailing : .leading)
+            } else {
+                VStack(spacing: 0) {
+                    LinearGradient(colors: [.black.opacity(0.45), .clear], startPoint: .top, endPoint: .bottom)
+                        .frame(height: 180)
+                    Spacer(minLength: 0)
+                    LinearGradient(colors: [.clear, .black.opacity(0.4)], startPoint: .top, endPoint: .bottom)
+                        .frame(height: 320)
+                }
+            }
         }
         .allowsHitTesting(false)
         .accessibilityHidden(true)

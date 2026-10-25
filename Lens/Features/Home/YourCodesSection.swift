@@ -118,35 +118,24 @@ struct YourCodesSection: View {
 }
 
 /// Title and an optional trailing action, shared by Home's sections.
-struct HomeSectionHeader<Trailing: View, Accessory: View>: View {
+struct HomeSectionHeader<Trailing: View>: View {
     var title: LocalizedStringKey
     /// In the page title's size, heading a whole pane.
     var isPageTitle = false
     @ViewBuilder var trailing: Trailing
-    /// Glass buttons after the link (Settings), centered on the row.
-    @ViewBuilder var accessory: Accessory
 
     var body: some View {
-        HStack(spacing: 16) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(title)
-                    .font(isPageTitle ? .largeTitle.bold() : .title2.bold())
-                    .accessibilityAddTraits(.isHeader)
-                Spacer(minLength: 8)
-                trailing
-                    .font(.body)
-                    .labelStyle(.titleOnly)
-                    .tint(Palette.accent)
-            }
-            accessory
+        HStack(alignment: .firstTextBaseline) {
+            Text(title)
+                .font(isPageTitle ? .largeTitle.bold() : .title2.bold())
+                .accessibilityAddTraits(.isHeader)
+            Spacer(minLength: 8)
+            trailing
+                .font(.body)
+                .labelStyle(.titleOnly)
+                .tint(Palette.accent)
         }
         .frame(minHeight: isPageTitle ? 44 : nil)
-    }
-}
-
-extension HomeSectionHeader where Accessory == EmptyView {
-    init(title: LocalizedStringKey, isPageTitle: Bool = false, @ViewBuilder trailing: () -> Trailing) {
-        self.init(title: title, isPageTitle: isPageTitle, trailing: trailing) { EmptyView() }
     }
 }
 

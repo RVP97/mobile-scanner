@@ -13,6 +13,7 @@ struct HomeView: View {
     @AppStorage(Pref.successfulScans) private var successfulScans = 0
     @AppStorage(Pref.lastReviewPromptScans) private var lastReviewPromptScans = 0
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @State private var size = CGSize.zero
 
     /// Reads codes from photos picked on Home.
     @State private var importer = ScanCoordinator()
@@ -27,19 +28,25 @@ struct HomeView: View {
     }
 
     var body: some View {
-        GeometryReader { proxy in
-            Group {
-                if isWide(proxy.size) {
-                    wideLayout
-                } else {
-                    narrowLayout
-                }
+        let isWide = isWide(size)
+        Group {
+            if isWide {
+                wideLayout
+            } else {
+                narrowLayout
             }
-            .background(Color(.systemGroupedBackground))
         }
-        .overlay(alignment: .top) { statusBarFade }
+        .background(Color(.systemGroupedBackground))
+        .onGeometryChange(for: CGSize.self) { $0.size } action: { size = $0 }
         .overlay(alignment: .top) { toast }
-        .toolbar(.hidden, for: .navigationBar)
+        // Content first, as Wallet does: the page is titled by what's on it, not by the app's name. Wide,
+        // each pane has its own heading instead.
+        .navigationTitle(isWide ? "" : String(localized: "Your codes"))
+        // Large, on the bar's own row beside Settings, so no row goes to the gear alone.
+        .toolbarTitleDisplayMode(isWide ? .inline : .inlineLarge)
+        // The system's own bars, so on iPhone Duo these stand in the status column (Settings under the
+        // clock, the rest at its foot) like every system app's, and the page keeps the display's width.
+        .toolbar { toolbar }
         .task { LegacyImporter.runIfNeeded(into: modelContext) }
         .task {
             // Once Home has settled: the scanner then opens onto a live feed even on a quick tap.
@@ -65,7 +72,6 @@ struct HomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 32) {
                 VStack(alignment: .leading, spacing: 12) {
-                    header(showsSettings: true)
                     if isLocked {
                         LockedHomeCard()
                             .padding(.horizontal, 20)
@@ -93,7 +99,7 @@ struct HomeView: View {
         HingeSplit {
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
-                    header(showsSettings: false)
+                    header
                     if isLocked {
                         LockedHomeCard()
                             .padding(.horizontal, 20)
@@ -109,13 +115,7 @@ struct HomeView: View {
         } trailing: {
             ScrollView {
                 Group {
-                    if isLocked {
-                        HStack {
-                            Spacer(minLength: 0)
-                            HomeSettingsButton()
-                        }
-                        .padding(.horizontal, 20)
-                    } else {
+                    if !isLocked {
                         RecentSection(titlesPane: true)
                     }
                 }
@@ -128,42 +128,32 @@ struct HomeView: View {
     }
 
     private var actionBar: some View {
-        HomeActionBar(
-            isLensAnimating: isFrontmost,
-            onScan: { model.openScanner() },
-            onPhotos: scanFromPhotos,
-            onMultiScan: { model.openScanner(multi: true) },
-            onCreate: { model.openCreate() }
-        )
+        HomeActionBar(isLensAnimating: isFrontmost) { model.openScanner() }
     }
 
-    private func header(showsSettings: Bool) -> some View {
-        // Content first, as Wallet does: the page is titled by what's on it, not by the app's name.
-        HStack(spacing: 12) {
-            Text("Your codes")
-                .font(.largeTitle.bold())
-                .accessibilityAddTraits(.isHeader)
-            Spacer(minLength: 8)
-            if showsSettings { HomeSettingsButton() }
+    @ToolbarContentBuilder
+    private var toolbar: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("Settings", systemImage: "gearshape") { model.openSettings() }
         }
-        .frame(minHeight: 44)
-        .padding(.horizontal, 20)
+        ToolbarItemGroup(placement: .bottomBar) {
+            Button("Photos", systemImage: "photo.on.rectangle", action: scanFromPhotos)
+                .accessibilityHint("Scans a code in a photo")
+            Button("Multi-scan", systemImage: "square.stack.3d.up") { model.openScanner(multi: true) }
+                .accessibilityHint("Opens the camera to collect several codes")
+            Spacer()
+            Button("Create", systemImage: "plus") { model.openCreate() }
+                .accessibilityHint("Makes a new code")
+        }
     }
 
-
-    /// Content scrolling up under the clock softens away instead of colliding with it.
-    private var statusBarFade: some View {
-        GeometryReader { proxy in
-            LinearGradient(
-                colors: [Color(.systemGroupedBackground), Color(.systemGroupedBackground).opacity(0)],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .frame(height: proxy.safeAreaInsets.top + 12)
-            .ignoresSafeArea(edges: .top)
-        }
-        .allowsHitTesting(false)
-        .accessibilityHidden(true)
+    /// The codes pane's heading, level with Recent's across the hinge.
+    private var header: some View {
+        Text("Your codes")
+            .font(.largeTitle.bold())
+            .accessibilityAddTraits(.isHeader)
+            .frame(minHeight: 44)
+            .padding(.horizontal, 20)
     }
 
     @ViewBuilder
@@ -196,24 +186,6 @@ struct HomeView: View {
             try? await Task.sleep(for: .seconds(0.8))
             requestReview()
         }
-    }
-}
-
-/// Home's way into Settings: a glass gear beside the page title.
-struct HomeSettingsButton: View {
-    @Environment(AppModel.self) private var model
-
-    var body: some View {
-        Button { model.openSettings() } label: {
-            Image(systemName: "gearshape")
-                .font(.system(size: 19, weight: .semibold))
-                .foregroundStyle(.primary)
-                .frame(width: 44, height: 44)
-                .contentShape(.circle)
-                .lensGlass(.regular, in: Circle(), interactive: true)
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("Settings")
     }
 }
 

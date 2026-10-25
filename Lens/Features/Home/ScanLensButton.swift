@@ -43,14 +43,6 @@ struct ScanLensButton: View {
         .accessibilityHint("Opens the camera")
         .accessibilityIdentifier("scanLens")
     }
-
-    /// Where the brackets sit, for a default-sized lens centered on `center`.
-    static func glyphQuad(around center: CGPoint, pressed: Bool = false) -> Quad {
-        let press = pressed ? LensFace.pressedScale : 1
-        let side = defaultDiameter * LensFace.glyphScale * press * (pressed ? LensFace.pressedGlyphScale : 1)
-        let mid = CGPoint(x: center.x, y: center.y + LensFace.glyphOffset * press)
-        return Quad(rect: CGRect(x: mid.x - side / 2, y: mid.y - side / 2, width: side, height: side))
-    }
 }
 
 struct LensFace: View {

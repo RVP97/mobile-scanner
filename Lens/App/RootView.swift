@@ -7,7 +7,7 @@ struct RootView: View {
     @Environment(AppModel.self) private var model
     @AppStorage(Pref.onboardingDone) private var onboardingDone = false
     @Environment(\.modelContext) private var modelContext
-    /// Home's code cards grow into the full-screen code through this.
+    /// Home's code cards grow into the full-screen code, and its lens into the camera, through this.
     @Namespace private var codeZoom
 
     var body: some View {
@@ -23,15 +23,6 @@ struct RootView: View {
         }
         .environment(\.codeZoomNamespace, codeZoom)
         .tint(Palette.accent)
-        // Home falls back as the camera opens out of the Scan lens.
-        // (A dim, not a blur: blurring all of Home every frame makes the opening stutter on a phone.)
-        .scaleEffect(model.isScannerRevealed ? 0.92 : 1, anchor: UnitPoint(x: 0.5, y: 0.8))
-        .overlay {
-            Color.black
-                .opacity(model.isScannerRevealed ? 0.3 : 0)
-                .ignoresSafeArea()
-                .allowsHitTesting(false)
-        }
         .sheet(item: homeSheet) { SheetContent(sheet: $0) }
         .sheet(item: $model.modal) { modal in
             switch modal {
@@ -43,7 +34,11 @@ struct RootView: View {
             ShowCodeView(item: item)
                 .codeZoomDestination(id: item.zoomSource, in: codeZoom)
         }
-        .fullScreenCover(isPresented: scannerBinding) { ScannerCover() }
+        .fullScreenCover(isPresented: scannerBinding, onDismiss: model.scannerDidClose) {
+            // The Scan lens zooms open into the camera, and the camera back into the lens.
+            ScannerCover()
+                .codeZoomDestination(id: ScannerZoom.lens, in: codeZoom)
+        }
         .fullScreenCover(isPresented: .constant(!onboardingDone)) {
             OnboardingFlow()
         }
@@ -72,6 +67,7 @@ struct RootView: View {
     }
 
     private var scannerBinding: Binding<Bool> {
-        Binding(get: { model.isScannerPresented }, set: { if !$0 { model.scannerDidClose() } })
+        // Swiped away: the same as Close.
+        Binding(get: { model.isScannerPresented }, set: { if !$0 { model.closeScanner() } })
     }
 }

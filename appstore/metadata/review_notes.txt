@@ -1,4 +1,4 @@
-New in 2.2 (build 106): the camera zooms out of the Scan button and back (swipe down also closes it); iPhone Duo support (controls in the side status bar column; two panes when open); saved codes zoom to full screen. No new permissions or data use.
+New in 2.2 (build 107): the camera zooms out of the Scan button and back (swipe down also closes it); iPhone Duo support (controls in the side status bar column; two panes when open); saved codes zoom to full screen. No new permissions or data use.
 
 Thank you for reviewing Lunet (version 2.2; formerly listed as "Fast QR & Barcode").
 

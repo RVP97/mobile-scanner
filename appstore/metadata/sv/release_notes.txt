@@ -1,4 +1,2 @@
-- Kameran zoomar nu upp direkt ur Skanna-knappen och tillbaka in i den när du är klar. Svep nedåt för att stänga den.
-- Gjord för iPhone Duo: knapparna sitter i statusfältets kolumn, så att dina koder och kameran får hela skärmen.
-- Tryck på en sparad kod för att visa den i helskärm.
-- Mjukare animeringar i 120 Hz på ProMotion-skärmar.
+- Om du valde ett språk i en tidigare version av Lunet används det igen.
+- Din historik flyttas över från en tidigare version på ett mer pålitligt sätt.

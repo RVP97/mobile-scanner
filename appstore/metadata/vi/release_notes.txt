@@ -1,4 +1,2 @@
-- Camera giờ mở ra bằng hiệu ứng thu phóng ngay từ nút Quét và thu về nút đó khi bạn xong. Vuốt xuống để đóng.
-- Dành cho iPhone Duo: các nút nằm trong cột thanh trạng thái, để mã của bạn và camera dùng toàn bộ màn hình.
-- Chạm vào một mã đã lưu để phóng to toàn màn hình.
-- Hiệu ứng chuyển động mượt hơn ở 120 Hz trên màn hình ProMotion.
+- Nếu bạn đã chọn ngôn ngữ trong phiên bản Lunet trước đây, ứng dụng sẽ dùng lại ngôn ngữ đó.
+- Việc chuyển lịch sử từ phiên bản trước đáng tin cậy hơn.

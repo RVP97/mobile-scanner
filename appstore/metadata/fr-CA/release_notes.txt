@@ -1,4 +1,2 @@
-- L’appareil photo s’ouvre maintenant en zoomant à partir du bouton Scanner, et s’y referme quand vous avez terminé. Balayez vers le bas pour le fermer.
-- Conçu pour l’iPhone Duo : les boutons se placent dans la colonne de la barre d’état, pour que vos codes et l’appareil photo occupent tout l’écran.
-- Touchez un code enregistré pour l’agrandir en plein écran.
-- Animations plus fluides à 120 Hz sur les écrans ProMotion.
+- Si vous aviez choisi une langue dans une version précédente de Lunet, l’app l’utilise de nouveau.
+- Le transfert de votre historique depuis une version précédente est plus fiable.

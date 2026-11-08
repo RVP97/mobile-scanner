@@ -1,4 +1,2 @@
-- Kamera se sada otvara zumiranjem ravno iz tipke Skeniraj i vraća se u nju kad završite. Povucite prema dolje da je zatvorite.
-- Izrađeno za iPhone Duo: tipke su u stupcu statusne trake, pa vaši kodovi i kamera dobivaju cijeli zaslon.
-- Dodirnite spremljeni kod da biste ga povećali na cijeli zaslon.
-- Glađe animacije od 120 Hz na ProMotion zaslonima.
+- Ako ste u ranijoj verziji Luneta odabrali jezik, aplikacija ga ponovno koristi.
+- Prijenos povijesti iz ranije verzije pouzdaniji je.

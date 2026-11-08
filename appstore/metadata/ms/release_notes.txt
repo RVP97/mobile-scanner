@@ -1,4 +1,2 @@
-- Kamera kini dibuka dengan zum terus dari butang Imbas dan kembali ke dalamnya apabila anda selesai. Leret ke bawah untuk menutupnya.
-- Dibina untuk iPhone Duo: butang berada dalam lajur bar status, jadi kod anda dan kamera mendapat seluruh skrin.
-- Ketik kod yang disimpan untuk mengezumnya ke skrin penuh.
-- Animasi lebih lancar pada 120 Hz di skrin ProMotion.
+- Jika anda memilih bahasa dalam versi Lunet terdahulu, app menggunakannya semula.
+- Pemindahan sejarah daripada versi terdahulu kini lebih dipercayai.

@@ -1,4 +1,2 @@
-- Camera se deschide acum cu un zoom direct din butonul Scanați și revine în el când termini. Glisează în jos pentru a o închide.
-- Creat pentru iPhone Duo: butoanele stau în coloana barei de stare, astfel încât codurile tale și camera folosesc tot ecranul.
-- Atinge un cod salvat pentru a-l mări pe tot ecranul.
-- Animații mai fluide la 120 Hz pe ecranele ProMotion.
+- Dacă ai ales o limbă într-o versiune anterioară Lunet, aplicația o folosește din nou.
+- Transferul istoricului dintr-o versiune anterioară este mai fiabil.

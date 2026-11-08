@@ -1,4 +1,2 @@
-- Ara la càmera s’obre amb un zoom directament des del botó Escaneja i hi torna quan acabes. Llisca cap avall per tancar-la.
-- Fet per a l’iPhone Duo: els botons van a la columna de la barra d’estat, així els teus codis i la càmera ocupen tota la pantalla.
-- Toca un codi desat per ampliar-lo a pantalla completa.
-- Animacions més fluides a 120 Hz a les pantalles ProMotion.
+- Si vas triar un idioma en una versió anterior de Lunet, l’app el torna a fer servir.
+- El traspàs de l’historial des d’una versió anterior és més fiable.

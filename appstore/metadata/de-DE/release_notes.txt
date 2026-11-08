@@ -1,4 +1,2 @@
-- Die Kamera zoomt jetzt direkt aus der Scannen-Taste auf und danach wieder hinein. Zum Schließen nach unten streichen.
-- Gemacht für das iPhone Duo: Die Tasten sitzen in der Spalte der Statusleiste, damit deine Codes und die Kamera den ganzen Bildschirm nutzen.
-- Tippe auf einen gespeicherten Code, um ihn im Vollbild zu zeigen.
-- Flüssigere Animationen mit 120 Hz auf ProMotion-Displays.
+- Wenn du in einer früheren Version von Lunet eine Sprache gewählt hast, nutzt die App sie wieder.
+- Dein Verlauf wird aus einer früheren Version zuverlässiger übernommen.

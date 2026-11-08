@@ -1,4 +1,2 @@
-- Fotoaparát sa teraz otvára priblížením priamo z tlačidla Skenovať a po skončení sa doň vracia. Zatvoríte ho potiahnutím nadol.
-- Pre iPhone Duo: tlačidlá sú v stĺpci stavového riadka, takže vaše kódy aj fotoaparát majú celú obrazovku.
-- Klepnutím na uložený kód ho zobrazíte na celú obrazovku.
-- Plynulejšie animácie pri 120 Hz na displejoch ProMotion.
+- Ak ste v staršej verzii Lunetu zvolili jazyk, aplikácia ho opäť používa.
+- Prenos histórie zo staršej verzie je spoľahlivejší.

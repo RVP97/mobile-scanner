@@ -1,4 +1,2 @@
-- A câmara abre agora com um zoom a partir do botão Ler e regressa a ele quando termina. Deslize para baixo para a fechar.
-- Feito para o iPhone Duo: os botões ficam na coluna da barra de estado, para que os seus códigos e a câmara ocupem o ecrã inteiro.
-- Toque num código guardado para o ampliar em ecrã inteiro.
-- Animações mais suaves a 120 Hz em ecrãs ProMotion.
+- Se escolheu um idioma numa versão anterior do Lunet, a app volta a usá-lo.
+- A transferência do histórico de uma versão anterior está mais fiável.

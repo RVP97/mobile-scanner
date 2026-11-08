@@ -1,4 +1,2 @@
-- Kamera artık doğrudan Tara düğmesinden yakınlaşarak açılıyor ve işiniz bitince ona geri dönüyor. Kapatmak için aşağı kaydırın.
-- iPhone Duo için tasarlandı: düğmeler durum çubuğunun sütununda durur, böylece kodlarınız ve kamera tüm ekranı kullanır.
-- Kayıtlı bir koda dokunarak onu tam ekranda büyütün.
-- ProMotion ekranlarda 120 Hz’de daha akıcı animasyonlar.
+- Lunet’in önceki bir sürümünde dil seçtiyseniz uygulama artık yine o dili kullanıyor.
+- Geçmişinizin önceki bir sürümden aktarılması daha güvenilir.

@@ -1,4 +1,2 @@
-- Kamera kini terbuka dengan zoom langsung dari tombol Pindai, lalu kembali ke tombol itu saat Anda selesai. Gesek ke bawah untuk menutupnya.
-- Dibuat untuk iPhone Duo: tombol berada di kolom bar status, sehingga kode Anda dan kamera mendapatkan seluruh layar.
-- Ketuk kode tersimpan untuk memperbesarnya ke layar penuh.
-- Animasi lebih mulus pada 120 Hz di layar ProMotion.
+- Jika Anda memilih bahasa di versi Lunet sebelumnya, app kembali menggunakannya.
+- Pemindahan riwayat dari versi sebelumnya kini lebih andal.

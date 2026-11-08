@@ -1,4 +1,2 @@
-- Kameraet zoomer nu op direkte fra Scan-knappen og tilbage i den, når du er færdig. Skub nedad for at lukke det.
-- Lavet til iPhone Duo: knapperne sidder i statuslinjens kolonne, så dine koder og kameraet får hele skærmen.
-- Tryk på en gemt kode for at vise den i fuld skærm.
-- Glattere animationer i 120 Hz på ProMotion-skærme.
+- Hvis du valgte et sprog i en tidligere version af Lunet, bruger appen det igen.
+- Din historik flyttes mere pålideligt over fra en tidligere version.

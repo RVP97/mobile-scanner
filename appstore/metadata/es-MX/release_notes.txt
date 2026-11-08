@@ -1,4 +1,2 @@
-- La cámara ahora se abre con un zoom desde el botón Escanear y vuelve a él al terminar. Desliza hacia abajo para cerrarla.
-- Hecho para iPhone Duo: los botones van en la columna de la barra de estado, así tus códigos y la cámara usan toda la pantalla.
-- Toca un código guardado para verlo en pantalla completa con un zoom.
-- Animaciones más fluidas a 120 Hz en pantallas ProMotion.
+- Si elegiste un idioma en una versión anterior de Lunet, la app vuelve a usarlo.
+- Pasar tu historial desde una versión anterior ahora es más confiable.

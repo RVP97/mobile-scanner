@@ -1,4 +1,2 @@
-- Aparat otwiera się teraz z efektem przybliżenia prosto z przycisku Skanuj i wraca do niego, gdy skończysz. Przesuń w dół, aby go zamknąć.
-- Stworzone dla iPhone’a Duo: przyciski są w kolumnie paska stanu, więc Twoje kody i aparat zajmują cały ekran.
-- Stuknij zapisany kod, aby powiększyć go na pełny ekran.
-- Płynniejsze animacje 120 Hz na ekranach ProMotion.
+- Jeśli wybrano język we wcześniejszej wersji Lunet, aplikacja znów go używa.
+- Przenoszenie historii z wcześniejszej wersji jest bardziej niezawodne.

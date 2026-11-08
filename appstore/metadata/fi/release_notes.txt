@@ -1,4 +1,2 @@
-- Kamera avautuu nyt zoomaten suoraan Skannaa-painikkeesta ja palaa siihen, kun olet valmis. Sulje se pyyhkäisemällä alas.
-- Tehty iPhone Duolle: painikkeet ovat tilapalkin sarakkeessa, joten koodisi ja kamera saavat koko näytön.
-- Napauta tallennettua koodia, niin se avautuu koko näytölle.
-- Sulavammat 120 Hz:n animaatiot ProMotion-näytöillä.
+- Jos valitsit kielen Lunetin aiemmassa versiossa, sovellus käyttää sitä taas.
+- Historian siirto aiemmasta versiosta on luotettavampi.

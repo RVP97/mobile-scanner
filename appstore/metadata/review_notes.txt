@@ -1,6 +1,6 @@
-New in 2.2 (build 107): the camera zooms out of the Scan button and back (swipe down also closes it); iPhone Duo support (controls in the side status bar column; two panes when open); saved codes zoom to full screen. No new permissions or data use.
+New in 2.2.1 (build 108): the one-time import from the app's old React Native version now keeps the language picked there, and retries the history import if saving fails. No new permissions or data use.
 
-Thank you for reviewing Lunet (version 2.2; formerly listed as "Fast QR & Barcode").
+Thank you for reviewing Lunet (version 2.2.1; formerly listed as "Fast QR & Barcode").
 
 NO LOGIN NEEDED
 Lunet has no accounts, sign-in, subscriptions or in-app purchases. Every feature is available on first launch.

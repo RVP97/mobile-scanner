@@ -107,4 +107,34 @@ struct HistoryLegacyImportTests {
         #expect(defaults.object(forKey: Pref.sound) as? Bool == true)
         #expect(defaults.object(forKey: Pref.multiScan) == nil)
     }
+
+    // MARK: Language
+
+    static let localizations = ["en", "en-GB", "es", "fr", "de"]
+
+    static func override(_ language: String?, selected: String? = "true", preferred: [String]) -> [String]? {
+        var values: [String: String] = [:]
+        values["language"] = language.map { "\"\($0)\"" }  // JSON-encoded, as the old storage wrote it
+        values["hasSelectedLanguage"] = selected
+        return LegacySettings.languageOverride(from: values, preferred: preferred, localizations: localizations)
+    }
+
+    @Test func keepsTheOldLanguagePickOverTheSystemLanguage() {
+        #expect(Self.override("es", preferred: ["en-US"]) == ["es"])
+        #expect(Self.override("fr", preferred: ["de-DE", "en-US"]) == ["fr"])
+        #expect(Self.override("en", preferred: ["es-MX"]) == ["en"])
+    }
+
+    @Test func keepsTheRegionWhenTheUserHasItInTheirList() {
+        #expect(Self.override("es", preferred: ["en-US", "es-MX"]) == ["es-MX"])
+    }
+
+    @Test func leavesTheLanguageAloneWhenItAlreadyMatchesOrWasNeverPicked() {
+        #expect(Self.override("es", preferred: ["es-MX"]) == nil)
+        #expect(Self.override("en", preferred: ["en-GB"]) == nil)
+        #expect(Self.override("es", selected: "false", preferred: ["en-US"]) == nil)
+        #expect(Self.override("es", selected: nil, preferred: ["en-US"]) == nil)
+        #expect(Self.override(nil, preferred: ["en-US"]) == nil)
+        #expect(Self.override("de", preferred: ["en-US"]) == nil)
+    }
 }

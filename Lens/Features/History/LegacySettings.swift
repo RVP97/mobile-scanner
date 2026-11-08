@@ -16,13 +16,56 @@ enum LegacySettings {
     ]
 
     static func migrate(into defaults: UserDefaults) {
+        if let values = legacyValues() { apply(values, to: defaults) }
+    }
+
+    /// The old localStorage table, from the first candidate database that has any rows.
+    static func legacyValues() -> [String: String]? {
         for database in candidateDatabases() {
             let values = readKeyValues(at: database)
-            if !values.isEmpty {
-                apply(values, to: defaults)
-                return
-            }
+            if !values.isEmpty { return values }
         }
+        return nil
+    }
+
+    // MARK: Language
+
+    static let languageDoneKey = "legacyLanguageMigrated"
+
+    /// The old app made everyone pick a language on first run (en, es or fr) and showed itself in it
+    /// whatever the iPhone's language; Lens follows the system. So the pick becomes the app's own
+    /// language (the one Settings › Lunet › Language sets), which iOS applies from the next launch.
+    /// Runs once, apart from the history import, so it also reaches people who opened Lens before this
+    /// step existed: the old database is still on disk for them.
+    static func migrateLanguageIfNeeded(defaults: UserDefaults = .standard, bundle: Bundle = .main) {
+        guard !defaults.bool(forKey: languageDoneKey) else { return }
+        defer { defaults.set(true, forKey: languageDoneKey) }
+
+        // `defaults.object(forKey:)` would also find the global AppleLanguages; only the app's own counts.
+        let existing = bundle.bundleIdentifier.flatMap { defaults.persistentDomain(forName: $0)?["AppleLanguages"] }
+        guard existing == nil, let values = legacyValues(),
+              let languages = languageOverride(from: values, preferred: Locale.preferredLanguages, localizations: bundle.localizations)
+        else { return }
+        defaults.set(languages, forKey: "AppleLanguages")
+    }
+
+    /// The app language to set for the old pick, or nil when there was no pick or Lens already shows
+    /// that language. Keeps the user's region when they have it in their list ("es-MX", not "es").
+    static func languageOverride(from values: [String: String], preferred: [String], localizations: [String]) -> [String]? {
+        guard json(values["hasSelectedLanguage"]) as? Bool == true,
+              let pick = json(values["language"]) as? String, ["en", "es", "fr"].contains(pick)
+        else { return nil }
+        let shown = Bundle.preferredLocalizations(from: localizations, forPreferences: preferred).first
+        guard shown.map(languageCode) != pick else { return nil }
+        return [preferred.first { languageCode($0) == pick } ?? pick]
+    }
+
+    private static func languageCode(_ identifier: String) -> String {
+        Locale(identifier: identifier).language.languageCode?.identifier ?? identifier
+    }
+
+    private static func json(_ string: String?) -> Any? {
+        string?.data(using: .utf8).flatMap { try? JSONSerialization.jsonObject(with: $0, options: .fragmentsAllowed) }
     }
 
     /// Applies JSON-encoded legacy values ("true" / "false") for the keys Lens understands.

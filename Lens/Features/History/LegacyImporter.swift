@@ -15,16 +15,29 @@ enum LegacyImporter {
     }
 
     static func runIfNeeded(into context: ModelContext, defaults: UserDefaults = .standard) {
+        LegacySettings.migrateLanguageIfNeeded(defaults: defaults)
         guard !defaults.bool(forKey: doneKey) else { return }
-        defer { defaults.set(true, forKey: doneKey) }
 
         if let storage = AsyncStorageReader.locate() {
             let entries = scannedEntries(from: storage.value(forKey: "scanHistory"))
                 + createdEntries(from: storage.value(forKey: "generationHistory"))
             entries.map(record(for:)).forEach(context.insert)
-            if !entries.isEmpty { try? context.save() }
+            if !entries.isEmpty, !save(context) { return }
         }
         LegacySettings.migrate(into: defaults)
+        defaults.set(true, forKey: doneKey)
+    }
+
+    /// Saves the imported records. On failure they're dropped from the context, so a later autosave
+    /// can't store them and the next launch's retry can't add them twice.
+    static func save(_ context: ModelContext) -> Bool {
+        do {
+            try context.save()
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
     }
 
     // MARK: Parsing
